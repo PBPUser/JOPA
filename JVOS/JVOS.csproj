@@ -1,0 +1,64 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net7.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <LangVersion>latest</LangVersion>
+  </PropertyGroup>
+
+  
+  <ItemGroup>
+    <AvaloniaResource Include="Assets\**" />
+  </ItemGroup>
+
+  
+  <ItemGroup>
+    <AvaloniaXaml Remove="Resources.axaml" />
+  </ItemGroup>
+
+  
+  <ItemGroup>
+    <None Remove="Assets\background_light.png" />
+    <None Remove="Assets\default_avatar.png" />
+    <None Remove="Assets\Fonts\Anton.ttf" />
+    <None Remove="Assets\Fonts\Chilanka-Regular.ttf" />
+    <None Remove="Assets\Fonts\BubbleGumSans\BubblegumSans-Regular.ttf" />
+    <None Remove="Assets\Lockscreen\q.png" />
+    <None Remove="Assets\Resources.xml" />
+    <None Remove="Assets\sugar.png" />
+    <None Remove="Assets\Taskbar\assistent.png" />
+    <None Remove="Assets\Taskbar\desktopSwitch.png" />
+    <None Remove="Assets\Taskbar\search.png" />
+    <None Remove="Assets\Taskbar\start.png" />
+    <None Remove="Assets\wellcum.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Avalonia" Version="11.0.4" />
+    <PackageReference Include="Avalonia.Themes.Fluent" Version="11.0.4" />
+    <PackageReference Include="Avalonia.Fonts.Inter" Version="11.0.4" />
+    <PackageReference Include="Avalonia.ReactiveUI" Version="11.0.4" />
+    <!--Condition below is needed to remove Avalonia.Diagnostics package from build output in Release configuration.-->
+    <PackageReference Condition="'$(Configuration)' == 'Debug'" Include="Avalonia.Diagnostics" Version="11.0.4" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <AvaloniaResource Include="Resources.axaml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\JVOS.ApplicationAPI\JVOS.ApplicationAPI.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="EmbededWindows\Preferences.axaml.cs">
+      <DependentUpon>Preferences.axaml</DependentUpon>
+    </Compile>
+    <Compile Update="Screens\LoginScreen.axaml.cs">
+      <DependentUpon>LoginScreen.axaml</DependentUpon>
+    </Compile>
+    <Compile Update="JWindow.axaml.cs">
+      <DependentUpon>JWindow.axaml</DependentUpon>
+    </Compile>
+  </ItemGroup>
+</Project>

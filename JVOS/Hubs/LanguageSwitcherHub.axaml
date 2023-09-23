@@ -1,0 +1,21 @@
+<local:IHub xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="JVOS.Hubs.LanguageSwitcherHub" Foreground="{DynamicResource BarForeground}"
+			 xmlns:local="clr-namespace:JVOS.Hubs">
+	<Border Background="{DynamicResource BarBackground}" BoxShadow="{DynamicResource BarClaymorphismBoxShadow}" CornerRadius="12" MinWidth="256" MinHeight="256">
+		<DockPanel>
+			<StackPanel Orientation="Horizontal" DockPanel.Dock="Top">
+				<Button x:Name="CloseBtn" Content="Close"/>
+				<TextBlock Text="Select Language" FontFamily="{DynamicResource AntonFont}" Foreground="{DynamicResource BarForeground}"/>
+			</StackPanel>
+			<ScrollViewer>
+				<StackPanel x:Name="Languages" >
+
+				</StackPanel>
+			</ScrollViewer>
+		</DockPanel>
+	</Border>
+</local:IHub>

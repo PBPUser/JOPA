@@ -1,0 +1,59 @@
+		<local:ScreenBase 
+		     xmlns:local="clr-namespace:JVOS.Screens;assembly=JVOS"
+			 xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="JVOS.Screens.DesktopScreen">
+	<Grid Background="Black" x:Name="baseGrid">
+		<Grid ZIndex="-4" x:Name="backgroundImageHoster">
+		</Grid>
+		<Grid ZIndex="-3" x:Name="desktopCanvasHoster">
+			
+		</Grid>
+		<Border ZIndex="999999" BoxShadow="{DynamicResource BarClaymorphismBoxShadow}" ClipToBounds="true" VerticalAlignment="Bottom" Height="72.1488" Margin="8" Background="{DynamicResource BarBackground}" CornerRadius="8">
+			<DockPanel>
+				<ScrollViewer>
+					<StackPanel Orientation="Horizontal">
+						<Button Padding="0" x:Name="widgetsBtn" Height="64" VerticalAlignment="Center" Margin="2">
+							<StackPanel Orientation="Horizontal">
+								<Image Source="../Assets/Taskbar/natribu.png"/>
+								<StackPanel VerticalAlignment="Center">
+									<TextBlock x:Name="barRandWordTitle" Text="" FontSize="14" Foreground="{DynamicResource BarForeground}" FontFamily="{DynamicResource AntonFont}"/>
+									<TextBlock x:Name="barRandWordSubtitle" Text="Loading..." FontSize="12" Foreground="{DynamicResource BarForeground}" FontFamily="{DynamicResource AntonFont}" Opacity="0.5"/>
+								</StackPanel>
+							</StackPanel>
+						</Button>
+					</StackPanel>
+				</ScrollViewer>
+				<ScrollViewer DockPanel.Dock="Right">
+					<StackPanel Orientation="Horizontal">
+						<Button Margin="2" Padding="0" x:Name="clockBtn">
+							<TextBlock Text="14:88" VerticalAlignment="Center" Margin="4" FontSize="32" Foreground="{DynamicResource BarForeground}" FontFamily="{DynamicResource AntonFont}"/>
+						</Button>
+					</StackPanel>
+				</ScrollViewer>
+				<ScrollViewer HorizontalAlignment="Center">
+					<StackPanel Orientation="Horizontal">
+						<Button Padding="0" x:Name="startBtn" Height="64" Width="64" VerticalAlignment="Center" Margin="2">
+							<Image Source="../Assets/Taskbar/start.png"/>
+						</Button>
+						<Button Padding="0" x:Name="searchBtn" Height="64" Width="64" VerticalAlignment="Center" Margin="2">
+							<Image Source="../Assets/Taskbar/search.png"/>
+						</Button>
+						<Button Padding="0" x:Name="deskBtn" Height="64" Width="64" VerticalAlignment="Center" Margin="2">
+							<Image Source="../Assets/Taskbar/desktopSwitch.png"/>
+						</Button>
+						<Button Padding="0" x:Name="assistBtn" Height="64" Width="64" VerticalAlignment="Center" Margin="2">
+							<Image Source="../Assets/Taskbar/assistent.png"/>
+						</Button>
+						<StackPanel x:Name="runnedApps" Orientation="Horizontal">
+							
+						</StackPanel>
+					</StackPanel>
+				</ScrollViewer>
+			</DockPanel>
+		</Border>
+	</Grid>
+</local:ScreenBase>

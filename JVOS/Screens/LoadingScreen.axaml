@@ -1,0 +1,27 @@
+<local:ScreenBase
+		     xmlns:local="clr-namespace:JVOS.Screens;assembly=JVOS"
+			 xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="JVOS.Screens.LoadingScreen">
+	<Grid>
+		<Border Background="Black"/>
+		<StackPanel Orientation="Horizontal">
+			<Grid x:Name="runtimeUnsupported" VerticalAlignment="Top" HorizontalAlignment="Left">
+				<Border Background="LightGreen" CornerRadius="20" Margin="8">
+					<TextBlock Text="Your OS is unsupported" FontFamily="{DynamicResource AntonFont}" FontSize="16" Foreground="Black" Margin="8"/>
+				</Border>
+			</Grid>
+			<Grid x:Name="debugModeEnabled" VerticalAlignment="Top" HorizontalAlignment="Left">
+				<Border Background="Pink" CornerRadius="20" Margin="8">
+					<TextBlock Text="Debug Mode" FontFamily="{DynamicResource AntonFont}" FontSize="16" Foreground="Black" Margin="8"/>
+				</Border>
+			</Grid>
+		</StackPanel>
+		<TextBlock x:Name="loadtext" Grid.RowSpan="3" Margin="32" Text="sample text are now preparing..." FontFamily="{DynamicResource BubblegumSansFont}" HorizontalAlignment="Right" VerticalAlignment="Bottom" FontSize="24"/>
+		<TextBlock Foreground="#284C64" x:Name="loadtext2" Grid.RowSpan="3" Margin="16" Text="Loading..." FontFamily="{DynamicResource AntonFont}" HorizontalAlignment="Right" VerticalAlignment="Bottom" FontSize="20"/>
+		<Image Width="128" Height="128" VerticalAlignment="Center" HorizontalAlignment="Center" Source="../Assets/sugar.png"/>
+	</Grid>
+</local:ScreenBase>

@@ -1,0 +1,21 @@
+<Application xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="JVOS.App"
+             RequestedThemeVariant="Default">
+             <!-- "Default" ThemeVariant follows system theme variant. "Dark" or "Light" are other available options. -->
+
+    <Application.Styles>
+        <FluentTheme />
+    </Application.Styles>
+	<Application.Resources>
+		<ResourceDictionary>
+			<FontFamily x:Key="AntonFont">
+				avares://JVOS/Assets/Fonts/#Anton
+			</FontFamily>
+			<FontFamily x:Key="BubblegumSansFont">
+				avares://JVOS/Assets/Fonts/#Anton
+			</FontFamily>
+		</ResourceDictionary>
+	</Application.Resources>
+	
+</Application>

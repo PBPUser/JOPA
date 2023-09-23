@@ -1,0 +1,67 @@
+<local:ScreenBase
+		     xmlns:local="clr-namespace:JVOS.Screens;assembly=JVOS"
+			 xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="JVOS.Screens.LoginScreen" >
+	<Grid>
+		<Image x:Name="loginImage" Stretch="Fill" Source="../Assets/background_light.png">
+		</Image>
+		<Grid x:Name="subsign_page">
+			<Border Background="{DynamicResource BasicBackground}" Opacity="0.3"/>
+			<Grid x:Name="sign_page" >
+				<DockPanel VerticalAlignment="Center" HorizontalAlignment="Center">
+					<Border DockPanel.Dock="Top" Background="{DynamicResource BarBackground}"  BoxShadow="{DynamicResource BarClaymorphismBoxShadow}" Width="192" Height="192" CornerRadius="96">
+						<Image Source="{DynamicResource Userimage}"/>
+					</Border>
+					<TextBlock Foreground="{DynamicResource BasicForeground}" Margin="0,16" Text="{DynamicResource Username}" HorizontalAlignment="Center" DockPanel.Dock="Top" FontSize="24" FontFamily="{DynamicResource AntonFont}"/>
+					<TextBox IsVisible="false" x:Name="password_box" Foreground="{DynamicResource BasicForeground}" CornerRadius="16, 0, 0, 16" Padding="16, 0, 0, 0" SelectionBrush="{DynamicResource AccentBackground}" Background="{DynamicResource BasicBackground}" BorderThickness="2, 2, 0, 2" BorderBrush="{DynamicResource AccentBackground}" Width="160" Height="32" VerticalContentAlignment="Center"/>
+					<Button IsVisible="false" Foreground="{DynamicResource BasicForeground}" Background="{DynamicResource BasicBackground}" BorderBrush="{DynamicResource AccentBackground}" BorderThickness="0, 2, 2, 2" CornerRadius="0, 16, 16, 0" Content="->" Width="32" Height="32" />
+					<Border ClipToBounds="true" Background="{DynamicResource ButtonBarBackground}" CornerRadius="16" IsVisible="true" Width="120" Height="32" HorizontalAlignment="Center" DockPanel.Dock="Top"  BoxShadow="{DynamicResource ButtonBarClaymorphismBoxShadow}">
+						<Button x:Name="loginWithoutPasswordBtn" Content="Sign In" HorizontalContentAlignment="Center" HorizontalAlignment="Stretch" Background="Transparent" Foreground="{DynamicResource ButtonBarForeground}"/>
+					</Border>
+				</DockPanel>
+				<Border ClipToBounds="true" CornerRadius="32"  VerticalAlignment="Bottom" HorizontalAlignment="Right" Margin="8" BoxShadow="{DynamicResource BarClaymorphismBoxShadow}" Background="{DynamicResource BarBackground}" Height="64" x:Name="menuBorder">
+					<StackPanel Orientation="Horizontal">
+						<Button x:Name="userSwitchBtn" HorizontalContentAlignment="Center" Width="62" Background="Transparent" Foreground="{DynamicResource BasicForeground}">
+							<Image Source="../Assets/Lockscreen/userSwitch.png"/>
+						</Button>
+						<Button x:Name="languageSwitchBtn" HorizontalContentAlignment="Center" Width="62" Background="Transparent" Content="{DynamicResource LangShortName}" FontWeight="Bold" Foreground="{DynamicResource AccentBackground}"/>
+						<Button x:Name="networkBtn" HorizontalContentAlignment="Center" Width="62" Background="Transparent" Foreground="{DynamicResource BasicForeground}">
+							<Image Source="../Assets/Lockscreen/network.png"/>
+						</Button>
+						<Button x:Name="easeOfAccessBtn" HorizontalContentAlignment="Center" Width="62" Background="Transparent" Foreground="{DynamicResource BasicForeground}">
+							<Image Source="../Assets/Lockscreen/easeofaccess.png"/>
+						</Button>
+						<Button x:Name="powerSwitchBtn" HorizontalContentAlignment="Center" Width="62" Background="Transparent" Foreground="{DynamicResource BasicForeground}">
+							<Image Source="../Assets/Lockscreen/power.png"/>
+						</Button>
+					</StackPanel>
+				</Border>
+				<Grid x:Name="menus" IsVisible="false">
+					<Border x:Name="closeMenuBorder" Opacity="0.3" Background="{DynamicResource BasicBackground}"/>
+					<Border MinWidth="{Binding ElementName=menuBorder, Path=Bounds.Width}" VerticalAlignment="Bottom" HorizontalAlignment="Right" x:Name="menuChildHoster" Margin="8">
+					</Border>
+				</Grid>
+				<StackPanel HorizontalAlignment="Left" VerticalAlignment="Bottom" x:Name="usersStack">
+					
+				</StackPanel>
+			</Grid>
+		</Grid>
+		<Grid x:Name="lock_screen" IsVisible="true">
+			<Grid.RowDefinitions>
+				<RowDefinition/>
+				<RowDefinition Height="auto"/>
+				<RowDefinition Height="5*"/>
+			</Grid.RowDefinitions>
+			<StackPanel x:Name="lockScreenJV" Grid.Row="1">
+				<TextBlock HorizontalAlignment="Center" Text="1488" FontSize="72" FontWeight="Black" FontFamily="{DynamicResource AntonFont}"/>
+				<TextBlock x:Name="dateBlock" HorizontalAlignment="Center" Text="Pakhomsday, Binabry 12" FontSize="24" FontFamily="{DynamicResource AntonFont}"/>
+			</StackPanel>
+			<Border x:Name="borderFront" Background="#01000001" Grid.RowSpan="3" Opacity="0.01"/>
+		</Grid>
+		<Image x:Name="wellcumimg" IsVisible="false" Source="/Assets/wellcum.png" Stretch="Fill"/>
+	</Grid>
+</local:ScreenBase>
