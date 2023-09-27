@@ -1,12 +1,27 @@
-<local:IHub xmlns="https://github.com/avaloniaui"
+<api:IHub xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-             x:Class="JVOS.Hubs.ClockHub"
-			 xmlns:local="clr-namespace:JVOS.Hubs">
+             xmlns:controls="clr-namespace:JVOS.Controls;assembly=JVOS"
+             x:Class="JVOS.Hubs.ClockHub" ClipToBounds="false"
+			 xmlns:local="clr-namespace:JVOS.Hubs"
+			xmlns:api="clr-namespace:JVOS.ApplicationAPI;assembly=JVOS.ApplicationAPI">
 	<Border Background="{DynamicResource BarBackground}" BoxShadow="{DynamicResource
 			BarClaymorphismBoxShadow}" Margin="8" CornerRadius="12">
-		<TextBlock Text="1488" FontSize="64" FontWeight="Bold" Foreground="{DynamicResource BarForeground}" Margin="48, 32"/>
+		<StackPanel>
+			<TextBlock Text="1488" FontSize="64" FontWeight="Bold" Foreground="{DynamicResource BarForeground}" Margin="48, 32"/>
+			<Border CornerRadius="16" Margin="8" BoxShadow="{DynamicResource ButtonBarClaymorphismInnerBoxShadow}">
+				<Grid>
+					<Grid.ColumnDefinitions>
+						<ColumnDefinition/>
+						<ColumnDefinition/>
+					</Grid.ColumnDefinitions>
+					<controls:JButton ClipToBounds="false" Height="32" Foreground="{DynamicResource BarForeground}" Background="{DynamicResource ButtonBarBackground}" BoxShadow="{DynamicResource ButtonBarClaymorphismBoxShadow}" Margin="8, 8, 4, 8" CornerRadius="16" x:Name="_setLeft" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" Content="Alig Left"/>
+					<controls:JButton ClipToBounds="false" Grid.Column="1" Height="32" Foreground="{DynamicResource BarForeground}" Background="{DynamicResource ButtonBarBackground}" BoxShadow="{DynamicResource ButtonBarClaymorphismBoxShadow}" Margin="8, 8, 4, 8" CornerRadius="16" x:Name="_setCenter" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" Content="Align Center"/>
+				</Grid>
+			</Border>
+		</StackPanel>
+		
 	</Border>
-</local:IHub>
+</api:IHub>

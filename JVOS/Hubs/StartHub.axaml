@@ -1,0 +1,22 @@
+<api:IHub xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="640" d:DesignHeight="724"
+             x:Class="JVOS.Hubs.StartHub"
+			xmlns:api="clr-namespace:JVOS.ApplicationAPI;assembly=JVOS.ApplicationAPI"
+			 xmlns:local="clr-namespace:JVOS.Hubs">
+	<Border MinHeight="724" MinWidth="640" ClipToBounds="false" Background="{DynamicResource BarBackground}" BoxShadow="{DynamicResource
+			BarClaymorphismBoxShadow}" Margin="8" CornerRadius="12">
+		<Grid>
+			<Grid.RowDefinitions>
+				<RowDefinition/>
+				<RowDefinition Height="80"/>
+			</Grid.RowDefinitions>
+			<Border Grid.Row="1" Margin="8" CornerRadius="12" BoxShadow="{DynamicResource
+			BarClaymorphismInnerBoxShadow}">
+				
+			</Border>
+		</Grid>
+	</Border>
+</api:IHub>

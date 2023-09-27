@@ -3,9 +3,9 @@ using JVOS.ApplicationAPI;
 
 namespace JVOS.Hubs
 {
-    public partial class ClockHub : IHub
+    public partial class StartHub : IHub
     {
-        public ClockHub()
+        public StartHub()
         {
             InitializeComponent();
         }

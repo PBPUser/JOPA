@@ -10,8 +10,8 @@ public partial class MainWindow : Window
     public MainWindow()
     {
         InitializeComponent();
+        App.MainWindowInstance = this;
         if(File.Exists("fullscreen"))
                 WindowState = WindowState.FullScreen;
-        
     }
 }

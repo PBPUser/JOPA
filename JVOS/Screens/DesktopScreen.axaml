@@ -4,6 +4,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:controls="clr-namespace:JVOS.Controls;assembly=JVOS"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="JVOS.Screens.DesktopScreen">
 	<Grid Background="Black" x:Name="baseGrid">
@@ -12,48 +13,60 @@
 		<Grid ZIndex="-3" x:Name="desktopCanvasHoster">
 			
 		</Grid>
-		<Border ZIndex="999999" BoxShadow="{DynamicResource BarClaymorphismBoxShadow}" ClipToBounds="true" VerticalAlignment="Bottom" Height="72.1488" Margin="8" Background="{DynamicResource BarBackground}" CornerRadius="8">
-			<DockPanel>
-				<ScrollViewer>
-					<StackPanel Orientation="Horizontal">
-						<Button Padding="0" x:Name="widgetsBtn" Height="64" VerticalAlignment="Center" Margin="2">
-							<StackPanel Orientation="Horizontal">
-								<Image Source="../Assets/Taskbar/natribu.png"/>
-								<StackPanel VerticalAlignment="Center">
-									<TextBlock x:Name="barRandWordTitle" Text="" FontSize="14" Foreground="{DynamicResource BarForeground}" FontFamily="{DynamicResource AntonFont}"/>
-									<TextBlock x:Name="barRandWordSubtitle" Text="Loading..." FontSize="12" Foreground="{DynamicResource BarForeground}" FontFamily="{DynamicResource AntonFont}" Opacity="0.5"/>
+		<Border x:Name="barBorder" ZIndex="999999" BoxShadow="{DynamicResource BarClaymorphismBoxShadow}" ClipToBounds="true" VerticalAlignment="Bottom" Height="72.1488" Margin="8" Background="{DynamicResource BarBackground}" CornerRadius="8">
+			<Grid>
+				<Border HorizontalAlignment="Left" ClipToBounds="false" Background="{DynamicResource ButtonBarBackground}" CornerRadius="12" Margin="4" BoxShadow="{DynamicResource ButtonBarClaymorphismBoxShadow}" >
+					<ScrollViewer>
+						<StackPanel Orientation="Horizontal" x:Name="leftStack" ClipToBounds="False">
+							<controls:JButton ClipToBounds="False" Width="128" BoxShadow="{DynamicResource ButtonBarClaymorphismInnerBoxShadow}" CornerRadius="12" Padding="0" x:Name="widgetsBtn" Height="56" VerticalAlignment="Center" Margin="2">
+								<StackPanel Orientation="Horizontal">
+									<Image Source="../Assets/Taskbar/natribu.png"/>
+									<StackPanel VerticalAlignment="Center">
+										<TextBlock x:Name="barRandWordTitle" Text="" FontSize="14" Foreground="{DynamicResource BarForeground}" FontFamily="{DynamicResource AntonFont}"/>
+										<TextBlock x:Name="barRandWordSubtitle" Text="Loading..." FontSize="12" Foreground="{DynamicResource BarForeground}" FontFamily="{DynamicResource AntonFont}" Opacity="0.5"/>
+									</StackPanel>
 								</StackPanel>
-							</StackPanel>
-						</Button>
-					</StackPanel>
-				</ScrollViewer>
-				<ScrollViewer DockPanel.Dock="Right">
-					<StackPanel Orientation="Horizontal">
-						<Button Margin="2" Padding="0" x:Name="clockBtn">
-							<TextBlock Text="14:88" VerticalAlignment="Center" Margin="4" FontSize="32" Foreground="{DynamicResource BarForeground}" FontFamily="{DynamicResource AntonFont}"/>
-						</Button>
-					</StackPanel>
-				</ScrollViewer>
-				<ScrollViewer HorizontalAlignment="Center">
-					<StackPanel Orientation="Horizontal">
-						<Button Padding="0" x:Name="startBtn" Height="64" Width="64" VerticalAlignment="Center" Margin="2">
-							<Image Source="../Assets/Taskbar/start.png"/>
-						</Button>
-						<Button Padding="0" x:Name="searchBtn" Height="64" Width="64" VerticalAlignment="Center" Margin="2">
-							<Image Source="../Assets/Taskbar/search.png"/>
-						</Button>
-						<Button Padding="0" x:Name="deskBtn" Height="64" Width="64" VerticalAlignment="Center" Margin="2">
-							<Image Source="../Assets/Taskbar/desktopSwitch.png"/>
-						</Button>
-						<Button Padding="0" x:Name="assistBtn" Height="64" Width="64" VerticalAlignment="Center" Margin="2">
-							<Image Source="../Assets/Taskbar/assistent.png"/>
-						</Button>
-						<StackPanel x:Name="runnedApps" Orientation="Horizontal">
-							
+							</controls:JButton>
 						</StackPanel>
-					</StackPanel>
-				</ScrollViewer>
-			</DockPanel>
+					</ScrollViewer>
+				</Border>
+				<Border HorizontalAlignment="Right" Background="{DynamicResource ButtonBarBackground}" CornerRadius="12" Margin="4" BoxShadow="{DynamicResource ButtonBarClaymorphismBoxShadow}" >
+					<ScrollViewer >
+						<StackPanel Orientation="Horizontal" >
+							<controls:JButton ClipToBounds="false" BoxShadow="{DynamicResource ButtonBarClaymorphismInnerBoxShadow}" CornerRadius="12" FontFamily="Jcons" Content="2" VerticalContentAlignment="Center" Foreground="{DynamicResource BarForeground}" FontSize="36" HorizontalContentAlignment="Center" Height="56" Width="56" x:Name="forkBtn" Margin="4"/>
+							<controls:JButton ClipToBounds="false" BoxShadow="{DynamicResource ButtonBarClaymorphismInnerBoxShadow}" CornerRadius="12" FontFamily="Jcons" Content="7" VerticalContentAlignment="Center" Foreground="{DynamicResource BarForeground}" FontSize="36" HorizontalContentAlignment="Center" Height="56" Width="56" x:Name="keyBtn" Margin="4"/>
+							<controls:JButton ClipToBounds="false" BoxShadow="{DynamicResource ButtonBarClaymorphismInnerBoxShadow}" CornerRadius="12" Content="{DynamicResource LangShortName}" VerticalContentAlignment="Center" Foreground="{DynamicResource BarForeground}" FontSize="14" HorizontalContentAlignment="Center" Height="56" Width="56" x:Name="langBtn" Margin="4"/>
+							<controls:JButton Width="128" Foreground="{DynamicResource ButtonBarForeground}" Height="56" VerticalAlignment="Center" Content="14:88" FontSize="36" FontFamily="{DynamicResource AntonFont}" ClipToBounds="false" BoxShadow="{DynamicResource ButtonBarClaymorphismInnerBoxShadow}" CornerRadius="12" Margin="4" Padding="0" x:Name="clockBtn">
+							</controls:JButton>
+							<controls:JButton ClipToBounds="false" BoxShadow="{DynamicResource ButtonBarClaymorphismInnerBoxShadow}" CornerRadius="12" FontFamily="Jcons" Content="=" VerticalContentAlignment="Center" Foreground="{DynamicResource BarForeground}" FontSize="36" HorizontalContentAlignment="Center" Height="56" Width="56" Margin="4"/>
+						</StackPanel>
+					</ScrollViewer>
+				</Border>
+				<Border HorizontalAlignment="Center" x:Name="appsPlace" ClipToBounds="False" Background="{DynamicResource ButtonBarBackground}" CornerRadius="12" Margin="4" BoxShadow="{DynamicResource ButtonBarClaymorphismBoxShadow}" >
+					<ScrollViewer ClipToBounds="False" >
+						<StackPanel Orientation="Horizontal" ClipToBounds="False">
+							<controls:JButton ClipToBounds="false" BoxShadow="{DynamicResource ButtonBarClaymorphismInnerBoxShadow}" Padding="4" x:Name="startBtn" CornerRadius="12" Height="56" Width="56" VerticalAlignment="Center" Margin="4">
+								<Image Source="../Assets/Taskbar/start.png"/>
+							</controls:JButton>
+							<controls:JButton ClipToBounds="false" BoxShadow="{DynamicResource ButtonBarClaymorphismInnerBoxShadow}" Padding="4" x:Name="searchBtn" CornerRadius="12" Height="56" Width="56" VerticalAlignment="Center" Margin="4">
+								<Image Source="../Assets/Taskbar/search.png"/>
+							</controls:JButton>
+							<controls:JButton ClipToBounds="false" BoxShadow="{DynamicResource ButtonBarClaymorphismInnerBoxShadow}" Padding="4" x:Name="deskBtn" CornerRadius="12" Height="56" Width="56" VerticalAlignment="Center" Margin="4">
+								<Image Source="../Assets/Taskbar/desktopSwitch.png"/>
+							</controls:JButton>
+							<Grid x:Name="widgetsBtnPlace" ClipToBounds="False">
+
+							</Grid>
+							<controls:JButton ClipToBounds="false" BoxShadow="{DynamicResource ButtonBarClaymorphismInnerBoxShadow}" Padding="4" x:Name="assistBtn" CornerRadius="12" Height="56" Width="56" VerticalAlignment="Center" Margin="4">
+								<Image Source="../Assets/Taskbar/assistent.png"/>
+							</controls:JButton>
+							<StackPanel x:Name="runnedApps" Orientation="Horizontal">
+
+							</StackPanel>
+						</StackPanel>
+					</ScrollViewer>
+				</Border>
+			</Grid>
 		</Border>
 	</Grid>
 </local:ScreenBase>

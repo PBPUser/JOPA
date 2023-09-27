@@ -1,4 +1,5 @@
 using Avalonia.Controls;
+using JVOS.ApplicationAPI;
 
 namespace JVOS.Hubs
 {

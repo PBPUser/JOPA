@@ -15,6 +15,8 @@ namespace JVOS;
 
 public partial class App : Application
 {
+    public static MainWindow MainWindowInstance;
+
     public static void SendNotification(string message, double time = 3000,bool isDebug = true)
     {
         

@@ -29,6 +29,6 @@ public class MainActivity : AvaloniaMainActivity<App>
         base.OnResume();
 
 
-        //StartActivity(new Intent(Avalonia.Android.Platform.Application.Context, typeof(MainActivity)));
+        StartActivity(new Intent(Avalonia.Android.Platform.Application.Context, typeof(MainActivity)));
     }
 }

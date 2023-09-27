@@ -1,0 +1,19 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450" ClipToBounds="false"
+             x:Class="JVOS.Controls.Plate" Foreground="{DynamicResource ButtonBarForeground}">
+	<Border CornerRadius="12" Background="{DynamicResource ButtonBarBackground}" BoxShadow="{DynamicResource
+			ButtonBarClaymorphismBoxShadow}" >
+		<StackPanel>
+			<TextBlock Margin="48, 15" x:Name="_plateTitle"/>
+			<Border ClipToBounds="True" Margin="21, 18, 21, 9" CornerRadius="12" BoxShadow="{DynamicResource
+			BarClaymorphismBoxShadow}">
+				<Image x:Name="_img"/>
+			</Border>
+			<TextBlock Margin="0, 0" x:Name="_title" FontWeight="Bold" FontSize="16"/>
+			<TextBlock Margin="0, 15" x:Name="_text"/>
+		</StackPanel>
+	</Border>
+</UserControl>
