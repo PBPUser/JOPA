@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d" d:DesignWidth="640" d:DesignHeight="724"
              x:Class="JVOS.Hubs.StartHub"
+             xmlns:controls="clr-namespace:JVOS.Controls;assembly=JVOS.Controls"
 			xmlns:api="clr-namespace:JVOS.ApplicationAPI;assembly=JVOS.ApplicationAPI"
 			 xmlns:local="clr-namespace:JVOS.Hubs">
 	<Border MinHeight="724" MinWidth="640" ClipToBounds="false" Background="{DynamicResource BarBackground}" BoxShadow="{DynamicResource
@@ -15,7 +16,10 @@
 			</Grid.RowDefinitions>
 			<Border Grid.Row="1" Margin="8" CornerRadius="12" BoxShadow="{DynamicResource
 			BarClaymorphismInnerBoxShadow}">
-				
+				<StackPanel Orientation="Horizontal">
+					<controls:JButton ClipToBounds="false" Grid.Column="1" Height="32" Width="100" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Foreground="{DynamicResource BarForeground}" BoxShadows="{DynamicResource ButtonBarClaymorphismBoxShadow}" ActiveBoxShadows="{DynamicResource ButtonBarClaymorphismInnerBoxShadow}"  Margin="8, 8, 4, 8" CornerRadius="16" x:Name="_runButton" HorizontalAlignment="Stretch" Content="Run"/>
+					<controls:JButton ClipToBounds="false" Grid.Column="1" Height="32" Width="100" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Foreground="{DynamicResource BarForeground}" BoxShadows="{DynamicResource ButtonBarClaymorphismBoxShadow}" ActiveBoxShadows="{DynamicResource ButtonBarClaymorphismInnerBoxShadow}"  Margin="8, 8, 4, 8" CornerRadius="16" x:Name="_thmButton" HorizontalAlignment="Stretch" Content="Theme"/>
+				</StackPanel>
 			</Border>
 		</Grid>
 	</Border>

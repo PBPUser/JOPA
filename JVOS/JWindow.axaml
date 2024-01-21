@@ -15,11 +15,14 @@
 	</Grid.Effect>
     <DockPanel Margin="2">
 		<Grid DockPanel.Dock="Top">
-			<Border CornerRadius="12" Height="24" Margin="0,4" Padding="4, 0" Background="{DynamicResource TitleBackground}" VerticalAlignment="Center" HorizontalAlignment="Center">
-				<TextBlock FontFamily="Comic Sans MS" DockPanel.Dock="Top" x:Name="title" />
+			<Border CornerRadius="12" Height="24" Margin="0,4" Padding="8, 0" Background="{DynamicResource TitleBackground}" VerticalAlignment="Center" HorizontalAlignment="Center">
+				<TextBlock FontFamily="Comic Sans MS" DockPanel.Dock="Top" VerticalAlignment="Center" x:Name="title" />
+			</Border>
+			<Border CornerRadius="12" Height="24" Margin="0,4" Padding="0, 0" Width="24" Background="{DynamicResource TitleBackground}" VerticalAlignment="Center" HorizontalAlignment="Right">
+				<Image Margin="4" x:Name="icon"/>
 			</Border>
 			<controls:JWindowMoveThumb ParentWindow="{Binding ElementName=jwin}"/>
-			<Border Margin="4" Padding="4" Background="{DynamicResource TitleBackground}" HorizontalAlignment="Left" CornerRadius="12" Height="24">
+			<Border Margin="4" Padding="8, 4" Background="{DynamicResource TitleBackground}" HorizontalAlignment="Left" CornerRadius="12" Height="24">
 				<StackPanel Orientation="Horizontal">
 					<Rectangle x:Name="clButton" Width="16" RadiusX="8" RadiusY="8" Fill="Red"/>
 					<Rectangle Width="4"/>

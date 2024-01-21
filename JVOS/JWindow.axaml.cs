@@ -13,6 +13,8 @@ using System.Timers;
 using JVOS.ApplicationAPI;
 using System.Diagnostics;
 using System.Threading.Tasks;
+using Avalonia.Input;
+using JVOS.Views;
 
 namespace JVOS
 {
@@ -22,7 +24,20 @@ namespace JVOS
         {
             TitleProperty = AvaloniaProperty.RegisterAttached<JWindow, UserControl, string>("Title");
             IconProperty = AvaloniaProperty.RegisterAttached<JWindow, UserControl, Image>("Icon");
+            TopLevel.GetTopLevel(App.MainWindowInstance).KeyDown += (a, b) =>
+            {
+                if (b.Key == Key.LeftShift)
+                    SlowDownAnimations = true;
+            };
+            TopLevel.GetTopLevel(App.MainWindowInstance).KeyUp += (a, b) =>
+            {
+                if (b.Key == Key.LeftShift)
+                    SlowDownAnimations = false;
+            };
+            
         }
+
+        static bool SlowDownAnimations = false;
 
         public JWindow()
         {
@@ -36,7 +51,12 @@ namespace JVOS
             this.RenderTransform = WindowTransformGroup;
             Transitions = new Transitions();
             InitializeAnimationTransforms();
-            Loaded += (a, b) =>
+            WindowAnimationsRotateTransform.Angle = 30;
+            WindowAnimationsScaleTransform.ScaleX = 0.75;
+            WindowAnimationsScaleTransform.ScaleY = 0.75;
+            Opacity = 0;
+
+            ChildWindowSet += (a, b) =>
             {
                 PlayOpenAnimation();
             };
@@ -51,15 +71,24 @@ namespace JVOS
                 else
                     WindowSpace.CloseWindow(this);
             };
+            this.PointerReleased += (a, b) => WindowSpace.BringToFront(this);
         }
 
-        const int AnimationLength = 500;
+        const int AnimationLength = 250;
 
         public event EventHandler<EventArgs>? WindowClosing = null;
         public event EventHandler<WindowState>? WindowStateChanged = null;
+        public event EventHandler<IJWindow> ChildWindowSet;
+
         public IWindowSpace? WindowSpace {
             get => _iWindowSpace;
             set => _iWindowSpace = value;
+        }
+
+        public IJWindow.WindowStartupLocation StartupLocation
+        {
+            get => _iWindowStartupLocation;
+            set => _iWindowStartupLocation = value;
         }
         
         public int ID
@@ -70,6 +99,7 @@ namespace JVOS
 
         private int _id = -1;
         private IWindowSpace? _iWindowSpace;
+        private IJWindow.WindowStartupLocation _iWindowStartupLocation = IJWindow.WindowStartupLocation.TopLeft;
 
         private TransformGroup WindowTransformGroup;
         private TransformGroup WindowAnimationGroup;
@@ -96,7 +126,8 @@ namespace JVOS
             WindowHeight = 400;
 
         private PositionState PreMaximizedState = PositionState.Normal;
-        public PositionState StatePosition = PositionState.Normal;
+        private IJWindow? _ChildWindow;
+        public PositionState StatePosition = PositionState.Maximized;
         public WindowState StateWindow = WindowState.Normal;
 
         public static readonly AttachedProperty<string> TitleProperty;
@@ -109,8 +140,9 @@ namespace JVOS
             get => _allowMinimize;
             set => _allowMinimize = value;
         }
+        public IJWindow ChildWindow { get => _ChildWindow; set => _ChildWindow = value; }
 
-        private bool _isAnimationsActive = false;
+        private bool _isAnimationsActive = true;
         private bool isSubscribed = false;
 
         private void SubscribeTitleIcon()
@@ -121,13 +153,18 @@ namespace JVOS
             title.Bind(TextBlock.TextProperty, JWindowChild.Title);
         }
 
+        private static int GetAnimationLength()
+        {
+            return AnimationLength * (SlowDownAnimations ? 50 : 1);
+        }
+
         private void SetAnimationState(bool Active, double? timeL = null)
         {
             if (_isAnimationsActive == Active)
                 return;
             _isAnimationsActive = Active;
             if (timeL == null)
-                timeL = AnimationLength;
+                timeL = GetAnimationLength();
             if (Active)
             {
                 var time = TimeSpan.FromMilliseconds(timeL.Value);
@@ -151,7 +188,7 @@ namespace JVOS
 
         private void InitializeAnimationTransforms()
         {
-            WindowOpacityTransition = new DoubleTransition() { Duration = TimeSpan.FromMilliseconds(AnimationLength), Property = OpacityProperty };
+            WindowOpacityTransition = new DoubleTransition() { Duration = TimeSpan.FromMilliseconds(GetAnimationLength()), Property = OpacityProperty };
             WindowAnimationsScaleTransform = new ScaleTransform();
             WindowAnimationsSkewTransform = new SkewTransform();
             WindowAnimationsTranslateTransform = new TranslateTransform();
@@ -312,17 +349,19 @@ namespace JVOS
             {
                 var jWnd = userControl as IJWindow;
                 JWindowChild = jWnd;
+                ChildWindow = jWnd;
                 ChildSubscription = SubscribeToBindings(jWnd);
                 jWnd.WhenLoaded();
+                if (ChildWindowSet != null)
+                    ChildWindowSet.Invoke(this, userControl as IJWindow);
             }
             this.childHost.Children.Add(userControl);
-            
         }
 
         private (IDisposable, IDisposable) SubscribeToBindings(IJWindow jwindow)
         {
             IDisposable binding = title.Bind(TextBlock.TextProperty, jwindow.Title);
-            IDisposable binding2 = title.Bind(Image.SourceProperty, jwindow.Icon);
+            IDisposable binding2 = icon.Bind(Image.SourceProperty, jwindow.Icon);
             return (binding, binding2);
         }
 
@@ -357,53 +396,51 @@ namespace JVOS
 
         private void PlayOpenAnimation()
         {
-            WindowAnimationsRotateTransform.Angle = 30;
-            WindowAnimationsScaleTransform.ScaleX = 0.75;
-            WindowAnimationsScaleTransform.ScaleY = 0.75;
-            Opacity = 0;
             SetAnimationState(true);
             WindowAnimationsRotateTransform.Angle = 0;
             WindowAnimationsScaleTransform.ScaleX = 1;
             WindowAnimationsScaleTransform.ScaleY = 1;
             Opacity = 1;
+            new Task(() =>
+            {
+                Task.Delay(GetAnimationLength());
+                Dispatcher.UIThread.Invoke(() =>
+                {
+                    SwitchPositionState(PositionState.Normal);
+                });
+            }).Start();
         }
 
         private void PlayCloseAnimation(Action actionThen)
         {
             SetAnimationState(true);
-            WindowAnimationsRotateTransform.Angle = 30;
+            WindowAnimationsTranslateTransform.Y = -64;
             WindowAnimationsScaleTransform.ScaleX = 0.75;
             WindowAnimationsScaleTransform.ScaleY = 0.75;
-            Opacity = 0;
             new Thread(() =>
             {
-                Thread.Sleep(AnimationLength);
-                Dispatcher.UIThread.Invoke(actionThen);
+                Thread.Sleep(GetAnimationLength());
+                Dispatcher.UIThread.Invoke(() =>
+                {
+                    actionThen.Invoke();
+                });
             }).Start();
         }
 
         private void PlayMaximizeStateAnimation(Action actionThen)
         {
             this.RenderTransformOrigin = RelativePoint.Center;
-            SetAnimationState(true, 500);
-            WindowAnimationsScaleTransform.ScaleX = (Parent as Control).Bounds.Width / Bounds.Width;
-            WindowAnimationsScaleTransform.ScaleY = (Parent as Control).Bounds.Height / Bounds.Height;
-            WindowAnimationsTranslateTransform.X = -WindowPositionTransform.X;
-            WindowAnimationsTranslateTransform.Y = -WindowPositionTransform.Y;
-            WindowAnimationsRotateTransform.Angle = 360;
+            SetAnimationState(true);
+            WindowAnimationsScaleTransform.ScaleX = 1.1;
+            WindowAnimationsScaleTransform.ScaleY = 1;
             new Thread(() =>
             {
-                Thread.Sleep(250);
-                Dispatcher.UIThread.Invoke(() =>
-                {
-                });
-                Thread.Sleep(250);
+                Thread.Sleep(GetAnimationLength());
                 Dispatcher.UIThread.Invoke(() =>
                 {
                     SetAnimationState(false);
                     WindowAnimationsScaleTransform.ScaleX = 1;
                     WindowAnimationsScaleTransform.ScaleY = 1;
-                    WindowAnimationsRotateTransform.Angle = 0;
                     WindowAnimationsTranslateTransform.X = 0;
                     WindowAnimationsTranslateTransform.Y = 0;
                     actionThen.Invoke();
@@ -416,17 +453,19 @@ namespace JVOS
             SetAnimationState(true);
             WindowAnimationsScaleTransform.ScaleX = WindowWidth / Bounds.Width;
             WindowAnimationsScaleTransform.ScaleY = WindowHeight / Bounds.Height;
-            WindowAnimationsRotateTransform.Angle = -360;
+            WindowAnimationsTranslateTransform.X = -((((Parent as Control).Bounds.Width) - WindowWidth) / 2 - WindowPositionTransform.X) / (WindowWidth / Bounds.Width);
+            WindowAnimationsTranslateTransform.Y = -((((Parent as Control).Bounds.Height) - WindowHeight) / 2 - WindowPositionTransform.Y) / (WindowHeight / Bounds.Height);
+
+            App.MainWindowInstance.Title = ((((Parent as Control).Bounds.Width) - WindowWidth) / 2).ToString();
 
             new Thread(() =>
             {
-                Thread.Sleep(AnimationLength);
+                Thread.Sleep(GetAnimationLength());
                 Dispatcher.UIThread.Invoke(() =>
                 {
                     SetAnimationState(false);
                     WindowAnimationsScaleTransform.ScaleX = 1;
                     WindowAnimationsScaleTransform.ScaleY = 1;
-                    WindowAnimationsRotateTransform.Angle = 0;
                     actionThen.Invoke();
                 });
             }).Start();
@@ -440,6 +479,12 @@ namespace JVOS
                     JWindowChild.Closed();
                 actionThen?.Invoke();
             });
+        }
+
+        public void SetPosition(int x, int y)
+        {
+            WindowPositionTransform.X = x;
+            WindowPositionTransform.Y = y;
         }
 
         public void Dispose()

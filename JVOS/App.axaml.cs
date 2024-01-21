@@ -5,11 +5,14 @@ using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
 using Avalonia.Media;
 using Avalonia.Threading;
+using JVOS.ApplicationAPI;
 using JVOS.ViewModels;
 using JVOS.Views;
 using System;
+using System.Linq;
 using System.Net.Http.Headers;
 using System.Threading;
+using Application = Avalonia.Application;
 
 namespace JVOS;
 
@@ -71,6 +74,29 @@ public partial class App : Application
     public override void Initialize()
     {
         AvaloniaXamlLoader.Load(this);
+        Communicator.CommandRun += CommandRun;
+        Communicator.ShowDialog += ShowDialogCommunicate;
+    }
+
+    private void ShowDialogCommunicate(object? sender, (Avalonia.Media.Imaging.Bitmap? bitmap, string title, string message, System.Collections.Generic.List<(string, Action?)> buttons) e)
+    {
+        throw new NotImplementedException();
+    }
+
+    private void CommandRun(object? sender, string e)
+    {
+        string[] eSplit = e.Split("://");
+        if(eSplit.Length == 2)
+        {
+            var protocol = ProtocolWorker.Protocols.Where(x => x.Item1 == eSplit[0]);
+            if(protocol.Count() == 0)
+                Communicator.ShowMessageDialog((null, "Shell", $"Invalid Protocol {eSplit[0]}", new System.Collections.Generic.List<(string, Action?)> { ("OK", null) }));
+
+        }
+        else
+        {
+            Communicator.ShowMessageDialog((null, "Shell", $"Invalid Command {e}", new System.Collections.Generic.List<(string, Action?)> { ("OK", null) }));
+        }
     }
 
     public override void OnFrameworkInitializationCompleted()

@@ -10,5 +10,6 @@ namespace JVOS.ApplicationAPI
     {
         public void OpenWindow(IJWindowFrame window);
         public void CloseWindow(IJWindowFrame window);
+        public void BringToFront(IJWindowFrame window);
     }
 }

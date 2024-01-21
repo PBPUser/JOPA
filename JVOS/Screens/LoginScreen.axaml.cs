@@ -2,6 +2,7 @@ using Avalonia.Animation;
 using Avalonia.Controls;
 using Avalonia.Media;
 using Avalonia.Threading;
+using JVOS.ApplicationAPI;
 using JVOS.EmbededWindows;
 using JVOS.Hubs;
 using JVOS.Views;

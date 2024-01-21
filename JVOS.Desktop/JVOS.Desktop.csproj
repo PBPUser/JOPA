@@ -9,8 +9,8 @@
     <ApplicationManifest>app.manifest</ApplicationManifest>
     <SupportedOSPlatformVersion>8.0</SupportedOSPlatformVersion>
   </PropertyGroup>
-
   <ItemGroup>
+    <PackageReference Include="Avalonia" Version="11.0.4" />
     <PackageReference Include="Avalonia.Desktop" Version="11.0.4" />
   </ItemGroup>
 

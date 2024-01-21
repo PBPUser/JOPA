@@ -24,6 +24,7 @@
     <None Remove="Assets\Fonts\BubbleGumSans\BubblegumSans-Regular.ttf" />
     <None Remove="Assets\Lockscreen\q.png" />
     <None Remove="Assets\Resources.xml" />
+    <None Remove="Assets\Shell\run.png" />
     <None Remove="Assets\sugar.png" />
     <None Remove="Assets\Taskbar\assistent.png" />
     <None Remove="Assets\Taskbar\desktopSwitch.png" />
@@ -34,6 +35,7 @@
 
   <ItemGroup>
     <PackageReference Include="Avalonia" Version="11.0.4" />
+    <PackageReference Include="Avalonia.Skia" Version="11.0.4" />
     <PackageReference Include="Avalonia.Themes.Fluent" Version="11.0.4" />
     <PackageReference Include="Avalonia.Fonts.Inter" Version="11.0.4" />
     <PackageReference Include="Avalonia.ReactiveUI" Version="11.0.4" />
@@ -49,6 +51,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\JVOS.ApplicationAPI\JVOS.ApplicationAPI.csproj" />
+    <ProjectReference Include="..\JVOS.Controls\JVOS.Controls.csproj" />
   </ItemGroup>
 
   <ItemGroup>

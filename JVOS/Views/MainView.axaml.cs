@@ -18,6 +18,9 @@ using JVOS.ApplicationAPI;
 using ReactiveUI;
 using Avalonia.Controls.Chrome;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using JVOS.Controls;
+using Avalonia.Animation.Easings;
+using System.Linq.Expressions;
 
 namespace JVOS.Views
 {
@@ -36,6 +39,9 @@ namespace JVOS.Views
             GLOBAL = this;
             Loading = new LoadingScreen();
             Login = new LoginScreen();
+            WindowManager.Initialize();
+            ApplicationManager.Load();
+            JVOSResourceBunch.SetResourceBunchToColorScheme();
             WindowManager.SetCurrentWindowSpace(this);
             int sleep = 5000;
 #if DEBUG
@@ -61,8 +67,8 @@ namespace JVOS.Views
                         SwitchScreen(Login);
                     });
                 }).Start();
+                InitializeAdaptiveController();
             };
-            //ColorScheme.ApplyScheme(ColorScheme.Current, ColorScheme.Current.UseDarkScheme, ColorScheme.Current.AccentTitle, ColorScheme.Current.AccentBar);
             bool ctrlTabActivated = false;
             this.KeyDown += (a, b) =>
             {
@@ -151,37 +157,34 @@ namespace JVOS.Views
                 });
                 //await L();
             }).Start();
-        }
-
-        private void MainWindow_SizeChanged(object sender, SizeChangedEventArgs e)
-        {
-            var isPrevMobile = IsMobile;
-            IsMobile = Width < Height;
-            if (IsMobile != isPrevMobile)
-            {
-                var size = IsMobile ? 1 : 0;
-                if (IsMobile)
-                {
-                    desktop.CloseClock();
-                    desktop.CloseNCenter();
-                    desktop.CloseLang();
-                    desktop.CloseCenter();
-                }
-                ((TranslateTransform)desktop.task.RenderTransform).BeginAnimation(TranslateTransform.XProperty, new DoubleAnimation { To = (desktop.task.ActualWidth + 12) * size, Duration = TimeSpan.FromSeconds(0.25), DecelerationRatio = 1 });
-                ((ScaleTransform)desktop.srat.RenderTransform).BeginAnimation(ScaleTransform.ScaleXProperty, new DoubleAnimation { To = (1 - size) * 0.5d + 0.5d, Duration = TimeSpan.FromSeconds(0.25), DecelerationRatio = 1 });
-                ((ScaleTransform)desktop.srat.RenderTransform).BeginAnimation(ScaleTransform.ScaleYProperty, new DoubleAnimation { To = (1 - size) * 0.5d + 0.5d, Duration = TimeSpan.FromSeconds(0.25), DecelerationRatio = 1 });
-                ((ScaleTransform)desktop.srach.RenderTransform).BeginAnimation(ScaleTransform.ScaleXProperty, new DoubleAnimation { To = (1 - size) * 0.5d + 0.5d, Duration = TimeSpan.FromSeconds(0.25), DecelerationRatio = 1 });
-                ((ScaleTransform)desktop.srach.RenderTransform).BeginAnimation(ScaleTransform.ScaleYProperty, new DoubleAnimation { To = (1 - size) * 0.5d + 0.5d, Duration = TimeSpan.FromSeconds(0.25), DecelerationRatio = 1 });
-                ((TranslateTransform)statusBar.RenderTransform).BeginAnimation(TranslateTransform.YProperty, new DoubleAnimation { To = (size - 1) * (statusBar.ActualHeight + 12), Duration = TimeSpan.FromSeconds(0.25), DecelerationRatio = 0.25 });
-            }
-            var margin = new Thickness(0);
-            if (!this.loading.IsLoading)
-                margin = new Thickness(0, -e.NewSize.Height, 0, e.NewSize.Height);
-            this.loading.BeginAnimation(MarginProperty, null);
-            this.loading.Margin = margin;*/
+        }*/
         }
 
         private ScreenBase? CurrentScreen;
+        
+        private Overlays.XboxAccessController AdaptiveController = new() { ClipToBounds = false, Margin = new Thickness(0, 100), MinWidth = 1024, MaxWidth = 1024, MinHeight = 384, VerticalAlignment = Avalonia.Layout.VerticalAlignment.Bottom, HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center };
+        private TranslateTransform AdaptiveControllerTranslate = new();
+        public bool IsAdaptiveControllerShown = false;
+
+        public void SwitchAdaptiveControllerState(bool? state = null)
+        {
+            if (state == null)
+                state = !IsAdaptiveControllerShown;
+            IsAdaptiveControllerShown = state == true;
+            AdaptiveControllerTranslate.Y = state == true ? 0 : AdaptiveController.Bounds.Height + 100;
+        }
+
+        public void InitializeAdaptiveController()
+        {
+            basegrid.Children.Add(AdaptiveController);
+            AdaptiveController.ZIndex = int.MaxValue;
+            AdaptiveController.RenderTransform = AdaptiveControllerTranslate;
+            AdaptiveController.Loaded += (a, b) =>
+            {
+                AdaptiveControllerTranslate.Y = AdaptiveController.Bounds.Height + 100;
+                AdaptiveControllerTranslate.Transitions = new Transitions() { new DoubleTransition() { Duration = TimeSpan.FromMilliseconds(333), Easing = new QuadraticEaseInOut(), Property = TranslateTransform.YProperty } };
+            };
+        }
 
         public static void SwitchScreen(ScreenBase newScreen)
         {
@@ -326,6 +329,11 @@ namespace JVOS.Views
             {
                 basegrid.Children.Remove(jWindow as Control);
             });
+        }
+
+        public void BringToFront(IJWindowFrame window)
+        {
+            throw new NotImplementedException();
         }
     }
 }

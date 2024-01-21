@@ -2,15 +2,21 @@ using Avalonia;
 using Avalonia.Animation;
 using Avalonia.Animation.Easings;
 using Avalonia.Controls;
+using Avalonia.Data;
 using Avalonia.Layout;
 using Avalonia.Media;
 using Avalonia.Media.Imaging;
 using Avalonia.Threading;
 using JVOS.ApplicationAPI;
+using JVOS.Controls;
 using JVOS.Hubs;
+using JVOS.Views;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
+using System.Reactive.Concurrency;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -22,7 +28,7 @@ namespace JVOS.Screens
         {
             InitializeComponent();
             AttachHandlers();
-            AddWindowHub(new DesktopHub());
+            AddWindowHub(new DesktopHub() { ParentScreen = this });
             OHubXTransition = new DoubleTransition() { Property = TranslateTransform.XProperty, Duration = TimeSpan.FromMilliseconds(500), Easing = new CubicEaseOut() };
             OHubYTransition = new DoubleTransition() { Property = TranslateTransform.YProperty, Duration = TimeSpan.FromMilliseconds(500), Easing = new CubicEaseOut() };
             CHubXTransition = new DoubleTransition() { Property = TranslateTransform.XProperty, Duration = TimeSpan.FromMilliseconds(500), Easing = new CubicEaseIn() };
@@ -47,6 +53,7 @@ namespace JVOS.Screens
             CHubTransitions = new Transitions();
             CHubTransitions.Add(CHubXTransition);
             CHubTransitions.Add(CHubYTransition);
+            keyBtn.Click += (a, b) => MainView.GLOBAL.SwitchAdaptiveControllerState();
         }
 
         DoubleTransition WidgetPlaceTransition = new DoubleTransition() { Duration = TimeSpan.FromMilliseconds(500), Property = WidthProperty, Easing = new SineEaseIn() };
@@ -71,6 +78,7 @@ namespace JVOS.Screens
         PanoramaHub Panorama;
         ClockHub Clock;
         StartHub Start;
+
 
         HorizontalAlignment BarAlignment = HorizontalAlignment.Center;
 
@@ -140,11 +148,65 @@ namespace JVOS.Screens
             }).Start();
         }
 
+        private Dictionary<IJWindowFrame, (JButton, BarTooltip, IDisposable, IDisposable, EventHandler<ColorScheme>)> BarApps = new();
+
+        private static void UpdateBarButtonScheme(JButton btn, ColorScheme colorScheme)
+        {
+            btn.ActiveBoxShadows = colorScheme.ButtonBarClaymorphismInnerBoxShadow;
+            btn.BoxShadows = colorScheme.ButtonBarClaymorphismBoxShadow;
+        }
+
+        public void AttachBarApplication(IJWindowFrame jWindowFrame)
+        {
+            jWindowFrame.ChildWindowSet += (a, b) =>
+            {
+                var bt = new BarTooltip() { Icon = jWindowFrame.ChildWindow.IconValue, Height = 56, Title = jWindowFrame.ChildWindow.TitleValue };
+                var btn = new JButton() { Width = 0, Padding = new Thickness(4), Margin = new Thickness(4), CornerRadius = new CornerRadius(12), ClipToBounds = false, Transitions = new Transitions() { new DoubleTransition { Property = WidthProperty, Duration = TimeSpan.FromMilliseconds(175) } }, HorizontalAlignment = HorizontalAlignment.Left, Foreground = Brushes.Black, Content = bt, VerticalContentAlignment = VerticalAlignment.Stretch, HorizontalContentAlignment = HorizontalAlignment.Stretch };
+                EventHandler<ColorScheme> handle = (a, b) =>
+                {
+                    UpdateBarButtonScheme(btn, ColorScheme.Current);
+                };
+                ColorScheme.Updated += handle;
+                var disp = bt.Bind(BarTooltip.TitleProperty, jWindowFrame.ChildWindow.Title);
+                var disp2 = bt.Bind(BarTooltip.IconProperty, jWindowFrame.ChildWindow.Icon);
+                btn.Click += (a, b) =>
+                {
+                    jWindowFrame.BringToFront();
+                };
+                runnedApps.Children.Add(btn);
+                BarApps.Add(jWindowFrame, (btn, bt, disp, disp2, handle));
+                btn.Width = 192;
+                UpdateBarButtonScheme(btn, ColorScheme.Current);
+            };
+        }
+
+        public void DeattachBarApplication(IJWindowFrame jWindowFrame)
+        {
+            (JButton, BarTooltip, IDisposable, IDisposable, EventHandler<ColorScheme>) x;
+            if(BarApps.TryGetValue(jWindowFrame, out x))
+            {
+                ColorScheme.Updated -= x.Item5;
+                x.Item1.Width = 0;
+                new Thread(() =>
+                {
+                    Thread.Sleep(175);
+                    Dispatcher.UIThread.Invoke(() =>
+                    {
+                        x.Item3.Dispose();
+                        x.Item4.Dispose();
+                        this.runnedApps.Children.Remove(x.Item1);
+                        BarApps.Remove(jWindowFrame);
+                    });
+                }).Start();
+            }
+        }
+        
         private void AttachHandlers()
         {
             widgetsBtn.Click += (a, b) =>
             {
                 ToggleHub(Panorama);
+                widgetsBtn.DoGlare();
             };
             clockBtn.Click += (a, b) =>
             {
@@ -330,6 +392,13 @@ namespace JVOS.Screens
             };
             Hubs.Add(hub);
             return hub;
+        }
+
+        private static int TopZIndex = 0;
+
+        public void BringToFront(IJWindowFrame window)
+        {
+            ((Control)window).ZIndex = TopZIndex++;
         }
     }
 }

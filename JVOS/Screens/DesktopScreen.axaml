@@ -4,7 +4,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:controls="clr-namespace:JVOS.Controls;assembly=JVOS"
+             xmlns:controls="clr-namespace:JVOS.Controls;assembly=JVOS.Controls"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="JVOS.Screens.DesktopScreen">
 	<Grid Background="Black" x:Name="baseGrid">
@@ -18,7 +18,7 @@
 				<Border HorizontalAlignment="Left" ClipToBounds="false" Background="{DynamicResource ButtonBarBackground}" CornerRadius="12" Margin="4" BoxShadow="{DynamicResource ButtonBarClaymorphismBoxShadow}" >
 					<ScrollViewer>
 						<StackPanel Orientation="Horizontal" x:Name="leftStack" ClipToBounds="False">
-							<controls:JButton ClipToBounds="False" Width="128" BoxShadow="{DynamicResource ButtonBarClaymorphismInnerBoxShadow}" CornerRadius="12" Padding="0" x:Name="widgetsBtn" Height="56" VerticalAlignment="Center" Margin="2">
+							<controls:JButton ClipToBounds="False" Width="128" BoxShadows="{DynamicResource ButtonBarClaymorphismBoxShadow}" ActiveBoxShadows="{DynamicResource ButtonBarClaymorphismInnerBoxShadow}" CornerRadius="12" Padding="0" x:Name="widgetsBtn" Height="56" VerticalAlignment="Center" Margin="2">
 								<StackPanel Orientation="Horizontal">
 									<Image Source="../Assets/Taskbar/natribu.png"/>
 									<StackPanel VerticalAlignment="Center">
@@ -27,37 +27,40 @@
 									</StackPanel>
 								</StackPanel>
 							</controls:JButton>
+							<controls:JButton Width="128" BoxShadows="{DynamicResource ButtonBarClaymorphismBoxShadow}" ActiveBoxShadows="{DynamicResource ButtonBarClaymorphismInnerBoxShadow}" CornerRadius="12" Padding="0" x:Name="testBtn" Height="56" VerticalAlignment="Center" Margin="2">
+								<controls:DualPanelColorPicker/>
+							</controls:JButton>
 						</StackPanel>
 					</ScrollViewer>
 				</Border>
-				<Border HorizontalAlignment="Right" Background="{DynamicResource ButtonBarBackground}" CornerRadius="12" Margin="4" BoxShadow="{DynamicResource ButtonBarClaymorphismBoxShadow}" >
+				<Border HorizontalAlignment="Right" Background="{DynamicResource ButtonBarBackground}" CornerRadius="12" Margin="4" BoxShadow="{DynamicResource ButtonBarClaymorphismInnerBoxShadow}" >
 					<ScrollViewer >
 						<StackPanel Orientation="Horizontal" >
-							<controls:JButton ClipToBounds="false" BoxShadow="{DynamicResource ButtonBarClaymorphismInnerBoxShadow}" CornerRadius="12" FontFamily="Jcons" Content="2" VerticalContentAlignment="Center" Foreground="{DynamicResource BarForeground}" FontSize="36" HorizontalContentAlignment="Center" Height="56" Width="56" x:Name="forkBtn" Margin="4"/>
-							<controls:JButton ClipToBounds="false" BoxShadow="{DynamicResource ButtonBarClaymorphismInnerBoxShadow}" CornerRadius="12" FontFamily="Jcons" Content="7" VerticalContentAlignment="Center" Foreground="{DynamicResource BarForeground}" FontSize="36" HorizontalContentAlignment="Center" Height="56" Width="56" x:Name="keyBtn" Margin="4"/>
-							<controls:JButton ClipToBounds="false" BoxShadow="{DynamicResource ButtonBarClaymorphismInnerBoxShadow}" CornerRadius="12" Content="{DynamicResource LangShortName}" VerticalContentAlignment="Center" Foreground="{DynamicResource BarForeground}" FontSize="14" HorizontalContentAlignment="Center" Height="56" Width="56" x:Name="langBtn" Margin="4"/>
-							<controls:JButton Width="128" Foreground="{DynamicResource ButtonBarForeground}" Height="56" VerticalAlignment="Center" Content="14:88" FontSize="36" FontFamily="{DynamicResource AntonFont}" ClipToBounds="false" BoxShadow="{DynamicResource ButtonBarClaymorphismInnerBoxShadow}" CornerRadius="12" Margin="4" Padding="0" x:Name="clockBtn">
+							<controls:JButton ClipToBounds="false" BoxShadows="{DynamicResource ButtonBarClaymorphismBoxShadow}" ActiveBoxShadows="{DynamicResource ButtonBarClaymorphismInnerBoxShadow}" CornerRadius="12" FontFamily="Jcons" Content="2" VerticalContentAlignment="Center" Foreground="{DynamicResource BarForeground}" FontSize="36" HorizontalContentAlignment="Center" Height="56" Width="56" x:Name="forkBtn" Margin="4"/>
+							<controls:JButton ClipToBounds="false" BoxShadows="{DynamicResource ButtonBarClaymorphismBoxShadow}" ActiveBoxShadows="{DynamicResource ButtonBarClaymorphismInnerBoxShadow}" CornerRadius="12" FontFamily="Jcons" Content="7" VerticalContentAlignment="Center" Foreground="{DynamicResource BarForeground}" FontSize="36" HorizontalContentAlignment="Center" Height="56" Width="56" x:Name="keyBtn" Margin="4"/>
+							<controls:JButton ClipToBounds="false" BoxShadows="{DynamicResource ButtonBarClaymorphismBoxShadow}" ActiveBoxShadows="{DynamicResource ButtonBarClaymorphismInnerBoxShadow}" CornerRadius="12" Content="{DynamicResource LangShortName}" VerticalContentAlignment="Center" Foreground="{DynamicResource BarForeground}" FontSize="14" HorizontalContentAlignment="Center" Height="56" Width="56" x:Name="langBtn" Margin="4"/>
+							<controls:JButton Padding="8, 0" Foreground="{DynamicResource ButtonBarForeground}" ActiveBoxShadows="{DynamicResource ButtonBarClaymorphismInnerBoxShadow}" Height="56" VerticalAlignment="Center" Content="14:88" FontSize="36" FontFamily="{DynamicResource AntonFont}" ClipToBounds="false" BoxShadows="{DynamicResource ButtonBarClaymorphismBoxShadow}" CornerRadius="12" Margin="4" x:Name="clockBtn">
 							</controls:JButton>
-							<controls:JButton ClipToBounds="false" BoxShadow="{DynamicResource ButtonBarClaymorphismInnerBoxShadow}" CornerRadius="12" FontFamily="Jcons" Content="=" VerticalContentAlignment="Center" Foreground="{DynamicResource BarForeground}" FontSize="36" HorizontalContentAlignment="Center" Height="56" Width="56" Margin="4"/>
+							<controls:JButton ClipToBounds="false" BoxShadows="{DynamicResource ButtonBarClaymorphismBoxShadow}" ActiveBoxShadows="{DynamicResource ButtonBarClaymorphismInnerBoxShadow}" CornerRadius="12" FontFamily="Jcons" Content="=" VerticalContentAlignment="Center" Foreground="{DynamicResource BarForeground}" FontSize="36" HorizontalContentAlignment="Center" Height="56" Width="56" Margin="4"/>
 						</StackPanel>
 					</ScrollViewer>
 				</Border>
 				<Border HorizontalAlignment="Center" x:Name="appsPlace" ClipToBounds="False" Background="{DynamicResource ButtonBarBackground}" CornerRadius="12" Margin="4" BoxShadow="{DynamicResource ButtonBarClaymorphismBoxShadow}" >
 					<ScrollViewer ClipToBounds="False" >
 						<StackPanel Orientation="Horizontal" ClipToBounds="False">
-							<controls:JButton ClipToBounds="false" BoxShadow="{DynamicResource ButtonBarClaymorphismInnerBoxShadow}" Padding="4" x:Name="startBtn" CornerRadius="12" Height="56" Width="56" VerticalAlignment="Center" Margin="4">
+							<controls:JButton ClipToBounds="false" BoxShadows="{DynamicResource ButtonBarClaymorphismBoxShadow}" ActiveBoxShadows="{DynamicResource ButtonBarClaymorphismInnerBoxShadow}" Padding="4" x:Name="startBtn" CornerRadius="12" Height="56" Width="56" VerticalAlignment="Center" Margin="4">
 								<Image Source="../Assets/Taskbar/start.png"/>
 							</controls:JButton>
-							<controls:JButton ClipToBounds="false" BoxShadow="{DynamicResource ButtonBarClaymorphismInnerBoxShadow}" Padding="4" x:Name="searchBtn" CornerRadius="12" Height="56" Width="56" VerticalAlignment="Center" Margin="4">
+							<controls:JButton ClipToBounds="false" BoxShadows="{DynamicResource ButtonBarClaymorphismBoxShadow}" ActiveBoxShadows="{DynamicResource ButtonBarClaymorphismInnerBoxShadow}" Padding="4" x:Name="searchBtn" CornerRadius="12" Height="56" Width="56" VerticalAlignment="Center" Margin="4">
 								<Image Source="../Assets/Taskbar/search.png"/>
 							</controls:JButton>
-							<controls:JButton ClipToBounds="false" BoxShadow="{DynamicResource ButtonBarClaymorphismInnerBoxShadow}" Padding="4" x:Name="deskBtn" CornerRadius="12" Height="56" Width="56" VerticalAlignment="Center" Margin="4">
+							<controls:JButton ClipToBounds="false" BoxShadows="{DynamicResource ButtonBarClaymorphismBoxShadow}" ActiveBoxShadows="{DynamicResource ButtonBarClaymorphismInnerBoxShadow}" Padding="4" x:Name="deskBtn" CornerRadius="12" Height="56" Width="56" VerticalAlignment="Center" Margin="4">
 								<Image Source="../Assets/Taskbar/desktopSwitch.png"/>
 							</controls:JButton>
 							<Grid x:Name="widgetsBtnPlace" ClipToBounds="False">
 
 							</Grid>
-							<controls:JButton ClipToBounds="false" BoxShadow="{DynamicResource ButtonBarClaymorphismInnerBoxShadow}" Padding="4" x:Name="assistBtn" CornerRadius="12" Height="56" Width="56" VerticalAlignment="Center" Margin="4">
+							<controls:JButton ClipToBounds="false" BoxShadows="{DynamicResource ButtonBarClaymorphismBoxShadow}" ActiveBoxShadows="{DynamicResource ButtonBarClaymorphismInnerBoxShadow}" Padding="4" x:Name="assistBtn" CornerRadius="12" Height="56" Width="56" VerticalAlignment="Center" Margin="4">
 								<Image Source="../Assets/Taskbar/assistent.png"/>
 							</controls:JButton>
 							<StackPanel x:Name="runnedApps" Orientation="Horizontal">

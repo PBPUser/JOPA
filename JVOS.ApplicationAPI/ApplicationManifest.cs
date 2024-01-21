@@ -15,6 +15,7 @@ namespace JVOS.ApplicationAPI
         public string VersionHuman = "";
         public int Version = -1;
         public string[] Runners = new string[0];
+        public string[] RunnersHuman = new string[0];
 
         public ApplicationManifest() {
             

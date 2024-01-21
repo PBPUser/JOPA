@@ -11,7 +11,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "JVOS.Desktop", "JVOS.Deskto
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "JVOS.ApplicationAPI", "JVOS.ApplicationAPI\JVOS.ApplicationAPI.csproj", "{1CCBAFAA-8FAE-4885-90B4-0334708FE789}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JOPA.Hub", "JOPA.Hub\JOPA.Hub.csproj", "{4E7AD375-0F8D-4FC0-908B-78F3569DE08D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "JOPA.Hub", "JOPA.Hub\JOPA.Hub.csproj", "{4E7AD375-0F8D-4FC0-908B-78F3569DE08D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JVOS.Controls", "JVOS.Controls\JVOS.Controls.csproj", "{251FE252-0624-4B3A-AAF6-E1874F1A9427}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -41,6 +43,10 @@ Global
 		{4E7AD375-0F8D-4FC0-908B-78F3569DE08D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4E7AD375-0F8D-4FC0-908B-78F3569DE08D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4E7AD375-0F8D-4FC0-908B-78F3569DE08D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{251FE252-0624-4B3A-AAF6-E1874F1A9427}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{251FE252-0624-4B3A-AAF6-E1874F1A9427}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{251FE252-0624-4B3A-AAF6-E1874F1A9427}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{251FE252-0624-4B3A-AAF6-E1874F1A9427}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

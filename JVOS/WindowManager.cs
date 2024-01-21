@@ -10,7 +10,24 @@ namespace JVOS
 {
     public static class WindowManager
     {
-        public static IWindowSpace WindowSpace;
+        static bool isInitialized = false;
+
+        public static void Initialize()
+        {
+            if (isInitialized)
+                return;
+            isInitialized = true;
+            Communicator.WindowCloseRequest += (a, b) =>
+            {
+                CloseJWindow(b);
+            };
+            Communicator.WindowOpenRequest += (a, b) =>
+            {
+                OpenInJWindow(b);
+            };
+        }
+
+        public static IWindowSpace? WindowSpace;
          
         public static void SetCurrentWindowSpace(IWindowSpace windowSpace)
         {
@@ -25,8 +42,8 @@ namespace JVOS
         public static void OpenInJWindow(IJWindow windowContent)
         {
             JWindow jwin = new JWindow() {  };
-            jwin.SetChild((UserControl)windowContent);
             OpenJWindow(jwin);
+            jwin.SetChild((UserControl)windowContent);
         }
 
         public static void CloseJWindow(IJWindowFrame window)
