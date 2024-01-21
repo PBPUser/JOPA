@@ -19,6 +19,7 @@ namespace JVOS.ApplicationAPI
         public string TitleValue { get; set; }
         public Subject<Bitmap> Icon { get; set; }
         public Bitmap IconValue { get; set; }
+        public IJWindowFrame WindowFrame { get; set;}
         public virtual void Closed()
         {
 

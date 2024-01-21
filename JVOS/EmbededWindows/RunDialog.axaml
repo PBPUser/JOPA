@@ -33,6 +33,7 @@
 			BarClaymorphismInnerBoxShadow}">
 				<StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="8, 0">
 					<controls:JButton x:Name="cnBtn" Width="100" VerticalContentAlignment="Center" ClipToBounds="false" Height="32" Foreground="{DynamicResource BarForeground}" BoxShadows="{DynamicResource ButtonBarClaymorphismBoxShadow}" ActiveBoxShadows="{DynamicResource ButtonBarClaymorphismInnerBoxShadow}"  Margin="8, 8, 4, 8" CornerRadius="16" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" Content="Cancel"/>
+					<controls:JButton x:Name="brBtn" Width="100" VerticalContentAlignment="Center" ClipToBounds="false" Height="32" Foreground="{DynamicResource BarForeground}" BoxShadows="{DynamicResource ButtonBarClaymorphismBoxShadow}" ActiveBoxShadows="{DynamicResource ButtonBarClaymorphismInnerBoxShadow}"  Margin="8, 8, 4, 8" CornerRadius="16" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" Content="Browse..."/>
 					<controls:JButton x:Name="okBtn" Width="100" VerticalContentAlignment="Center" ClipToBounds="false" Grid.Column="1" Height="32" Foreground="{DynamicResource BarForeground}" BoxShadows="{DynamicResource ButtonBarClaymorphismBoxShadow}" ActiveBoxShadows="{DynamicResource ButtonBarClaymorphismInnerBoxShadow}" Margin="8, 8, 4, 8" CornerRadius="16" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" Content="OK"/>
 				</StackPanel>
 			</Border>

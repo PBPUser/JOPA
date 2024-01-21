@@ -2,6 +2,7 @@ using Avalonia;
 using Avalonia.Animation;
 using Avalonia.Animation.Easings;
 using Avalonia.Controls;
+using Avalonia.Controls.Primitives;
 using Avalonia.Data;
 using Avalonia.Layout;
 using Avalonia.Media;
@@ -148,9 +149,9 @@ namespace JVOS.Screens
             }).Start();
         }
 
-        private Dictionary<IJWindowFrame, (JButton, BarTooltip, IDisposable, IDisposable, EventHandler<ColorScheme>)> BarApps = new();
+        private Dictionary<IJWindowFrame, (BarTooltip, IDisposable, IDisposable, EventHandler<ColorScheme>)> BarApps = new();
 
-        private static void UpdateBarButtonScheme(JButton btn, ColorScheme colorScheme)
+        private static void UpdateBarButtonScheme(BarTooltip btn, ColorScheme colorScheme)
         {
             btn.ActiveBoxShadows = colorScheme.ButtonBarClaymorphismInnerBoxShadow;
             btn.BoxShadows = colorScheme.ButtonBarClaymorphismBoxShadow;
@@ -160,40 +161,52 @@ namespace JVOS.Screens
         {
             jWindowFrame.ChildWindowSet += (a, b) =>
             {
-                var bt = new BarTooltip() { Icon = jWindowFrame.ChildWindow.IconValue, Height = 56, Title = jWindowFrame.ChildWindow.TitleValue };
-                var btn = new JButton() { Width = 0, Padding = new Thickness(4), Margin = new Thickness(4), CornerRadius = new CornerRadius(12), ClipToBounds = false, Transitions = new Transitions() { new DoubleTransition { Property = WidthProperty, Duration = TimeSpan.FromMilliseconds(175) } }, HorizontalAlignment = HorizontalAlignment.Left, Foreground = Brushes.Black, Content = bt, VerticalContentAlignment = VerticalAlignment.Stretch, HorizontalContentAlignment = HorizontalAlignment.Stretch };
+                var bt = new BarTooltip() { Icon = jWindowFrame.ChildWindow.IconValue, ClipToBounds = false, Margin = new Thickness(4), VerticalAlignment = VerticalAlignment.Center, Height = 32, Width = 0, Title = jWindowFrame.ChildWindow.TitleValue };
+                var c = new TaskbarItemContextMenu();
+                var p = new Popup { Child = c };
+                c.jWindowFrame = jWindowFrame;
+                bt.PointerReleased += (a, b) =>
+                {
+                    if(b.InitialPressMouseButton == Avalonia.Input.MouseButton.Right)
+                    p.Open();
+                };
+                p.Opened += (a, b) => throw new Exception();
                 EventHandler<ColorScheme> handle = (a, b) =>
                 {
-                    UpdateBarButtonScheme(btn, ColorScheme.Current);
+                    UpdateBarButtonScheme(bt, ColorScheme.Current);
                 };
                 ColorScheme.Updated += handle;
+                bt.Transitions = new Transitions { new DoubleTransition { Property = WidthProperty, Duration = TimeSpan.FromMilliseconds(175) }, new DoubleTransition { Property = BarTooltip.ShadowPosProperty, Duration = TimeSpan.FromMilliseconds(175) }, new DoubleTransition { Property = BarTooltip.ScaleProperty, Duration = TimeSpan.FromMilliseconds(175) }, bt.DeltaTransition, new DoubleTransition { Duration = TimeSpan.FromMilliseconds(2000), Property = BarTooltip.StartAnimationProperty } };
                 var disp = bt.Bind(BarTooltip.TitleProperty, jWindowFrame.ChildWindow.Title);
                 var disp2 = bt.Bind(BarTooltip.IconProperty, jWindowFrame.ChildWindow.Icon);
-                btn.Click += (a, b) =>
+                bt.PointerReleased += (a, b) =>
                 {
                     jWindowFrame.BringToFront();
                 };
-                runnedApps.Children.Add(btn);
-                BarApps.Add(jWindowFrame, (btn, bt, disp, disp2, handle));
-                btn.Width = 192;
-                UpdateBarButtonScheme(btn, ColorScheme.Current);
+                runnedApps.Children.Add(bt);
+                BarApps.Add(jWindowFrame, (bt, disp, disp2, handle));
+                bt.Width = 192;
+                UpdateBarButtonScheme(bt, ColorScheme.Current);
+                bt.Height = 56;
+                
             };
         }
 
         public void DeattachBarApplication(IJWindowFrame jWindowFrame)
         {
-            (JButton, BarTooltip, IDisposable, IDisposable, EventHandler<ColorScheme>) x;
+            (BarTooltip, IDisposable, IDisposable, EventHandler<ColorScheme>) x;
             if(BarApps.TryGetValue(jWindowFrame, out x))
             {
-                ColorScheme.Updated -= x.Item5;
+                ColorScheme.Updated -= x.Item4;
                 x.Item1.Width = 0;
+                x.Item1.StartAnimation = 0;
                 new Thread(() =>
                 {
                     Thread.Sleep(175);
                     Dispatcher.UIThread.Invoke(() =>
                     {
+                        x.Item2.Dispose();
                         x.Item3.Dispose();
-                        x.Item4.Dispose();
                         this.runnedApps.Children.Remove(x.Item1);
                         BarApps.Remove(jWindowFrame);
                     });
@@ -399,6 +412,12 @@ namespace JVOS.Screens
         public void BringToFront(IJWindowFrame window)
         {
             ((Control)window).ZIndex = TopZIndex++;
+        }
+
+        public void CloseAllHubs()
+        {
+            foreach (var hub in Hubs)
+                ToggleHub(hub, false);
         }
     }
 }

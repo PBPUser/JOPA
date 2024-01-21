@@ -17,11 +17,13 @@ namespace JVOS.Hubs
         private void OnThm(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
         {
             WindowManager.OpenInJWindow(new EaseOfAccess());
+            WindowManager.CloseAllHubsInActiveWindowSpace();
         }
 
         private void OnRun(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
         {
             WindowManager.OpenInJWindow(new RunDialog());
+            WindowManager.CloseAllHubsInActiveWindowSpace();
         }
     }
 }

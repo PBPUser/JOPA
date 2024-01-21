@@ -55,7 +55,6 @@ namespace JVOS
             WindowAnimationsScaleTransform.ScaleX = 0.75;
             WindowAnimationsScaleTransform.ScaleY = 0.75;
             Opacity = 0;
-
             ChildWindowSet += (a, b) =>
             {
                 PlayOpenAnimation();

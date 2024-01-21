@@ -335,5 +335,10 @@ namespace JVOS.Views
         {
             throw new NotImplementedException();
         }
+
+        public void CloseAllHubs()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

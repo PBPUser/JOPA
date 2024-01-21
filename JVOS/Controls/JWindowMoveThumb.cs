@@ -22,6 +22,10 @@ namespace JVOS.Controls
             ParentWindowProperty = AvaloniaProperty.RegisterAttached<JWindowMoveThumb, Thumb, JWindow>("ParentWindow");
         }
 
+        public JWindowMoveThumb()
+        {
+            Loaded += (a, b) => Height = 32;
+        }
 
         public JWindow ParentWindow
         {
@@ -32,7 +36,9 @@ namespace JVOS.Controls
         protected override void OnDragDelta(VectorEventArgs e)
         {
             if (ParentWindow == null)
+            {
                 return;
+            }
             if(ParentWindow.StatePosition != JWindow.PositionState.Normal)
                 ParentWindow.SwitchPositionState(JWindow.PositionState.Normal);
             ParentWindow.WindowPositionTransform.X += e.Vector.X;
@@ -41,7 +47,7 @@ namespace JVOS.Controls
 
         public override void Render(DrawingContext context)
         {
-            context.FillRectangle(TransparentA1, new Rect(0, 0, ParentWindow.Width, 32));
+            context.FillRectangle(TransparentA1, new Rect(Bounds.Size));
             base.Render(context);
         }
 

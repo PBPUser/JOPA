@@ -80,5 +80,10 @@ namespace JVOS.Screens
         {
             ((Control)window).ZIndex = TopZIndex++;
         }
+
+        public void CloseAllHubs()
+        {
+            
+        }
     }
 }

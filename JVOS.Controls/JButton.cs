@@ -209,7 +209,6 @@ namespace JVOS.Controls
                 var c = Content as Control;
                 c.Render(context);
 
-                Debug.WriteLine("Rendering Content");
             }
             scaleCtrl.Dispose();
             if (Glare > 0 && Glare < 1)

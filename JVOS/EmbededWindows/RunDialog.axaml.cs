@@ -13,6 +13,12 @@ namespace JVOS.EmbededWindows
         {
             InitializeComponent();
             okBtn.Click += OkButton;
+            cnBtn.Click += CancelButton;
+        }
+
+        private void CancelButton(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
+        {
+            WindowManager.CloseJWindow(JWindowFrame);
         }
 
         private void OkButton(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
@@ -24,6 +30,7 @@ namespace JVOS.EmbededWindows
         private Subject<Bitmap> _icon = new Subject<Bitmap>();
         private string _titleValue = "";
         private Bitmap _iconValue;
+        private IJWindowFrame JWindowFrame;
 
 
         public void WhenLoaded()
@@ -39,5 +46,6 @@ namespace JVOS.EmbededWindows
         public Subject<Bitmap> Icon { get => _icon; set => _icon = value; }
         public string TitleValue { get => _titleValue; set => _titleValue = value; }
         public Bitmap IconValue { get => _iconValue; set => _iconValue = value; }
+        public IJWindowFrame WindowFrame { get => JWindowFrame; set => JWindowFrame = value; }
     }
 }

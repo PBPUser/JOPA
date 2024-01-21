@@ -67,7 +67,7 @@ namespace JVOS.Controls
 
         public override void Render(DrawingContext context)
         {
-            context.FillRectangle(TransparentA1, new Rect(0, 0, ParentWindow.Width, ParentWindow.Height));
+            context.FillRectangle(TransparentA1, new Rect(Bounds.Size));
         }
 
         public static readonly AttachedProperty<JWindow> ParentWindowProperty;

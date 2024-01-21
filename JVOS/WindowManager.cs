@@ -50,5 +50,10 @@ namespace JVOS
         {
             WindowSpace?.CloseWindow(window);
         }
+
+        public static void CloseAllHubsInActiveWindowSpace()
+        {
+            WindowSpace?.CloseAllHubs();
+        }
     }
 }
