@@ -23,8 +23,11 @@ namespace JVOS.EmbededWindows
 
         private void OkButton(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
         {
-            ((IJWindow)this).UpdateTitle(promptTb.Text);
+            WindowManager.CloseJWindow(JWindowFrame);
+            Communicator.RunCommand(promptTb.Text);
         }
+
+        public string GetPanelId() => "jvos.system:run";
 
         private Subject<string> _title = new Subject<string>();
         private Subject<Bitmap> _icon = new Subject<Bitmap>();

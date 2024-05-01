@@ -1,5 +1,6 @@
 ﻿using Avalonia.Threading;
 using HtmlAgilityPack;
+using JVOS.ApplicationAPI;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -64,9 +65,14 @@ namespace JVOS.PanoramaBar
                 {
                     goto loaded;
                 }
-                File.WriteAllText("PanoramaDateTest.txt", httpStr);
+
+                if (!Directory.Exists(PlatformSpecifixController.GetLocalFilePath("debug")))
+                    Directory.CreateDirectory(PlatformSpecifixController.GetLocalFilePath("debug"));
+                string debugLoc = PlatformSpecifixController.GetLocalFilePath("debug/PanoramaDateTest.txt");
+
+                File.WriteAllText(debugLoc, httpStr);
                 var doc = new HtmlDocument() { };
-                writer = File.CreateText("PanoramaDateDebug.txt");
+                writer = File.CreateText(debugLoc);
                 doc.LoadHtml(httpStr);
                 ScanNode(doc.DocumentNode, "");
                 writer.Close();

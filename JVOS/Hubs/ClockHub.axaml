@@ -7,21 +7,22 @@
              x:Class="JVOS.Hubs.ClockHub" ClipToBounds="false"
 			 xmlns:local="clr-namespace:JVOS.Hubs"
 			xmlns:api="clr-namespace:JVOS.ApplicationAPI;assembly=JVOS.ApplicationAPI">
-	<Border Background="{DynamicResource BarBackground}" BoxShadow="{DynamicResource
-			BarClaymorphismBoxShadow}" Margin="8" CornerRadius="12">
-		<StackPanel>
-			<TextBlock Text="1488" FontSize="64" FontWeight="Bold" Foreground="{DynamicResource BarForeground}" Margin="48, 32"/>
-			<Border CornerRadius="16" Margin="8" BoxShadow="{DynamicResource ButtonBarClaymorphismInnerBoxShadow}">
-				<Grid>
-					<Grid.ColumnDefinitions>
-						<ColumnDefinition/>
-						<ColumnDefinition/>
-					</Grid.ColumnDefinitions>
-					<controls:JButton ClipToBounds="false" Height="32" Foreground="{DynamicResource BarForeground}" Background="{DynamicResource ButtonBarBackground}" BoxShadows="{DynamicResource ButtonBarClaymorphismBoxShadow}" Margin="8, 8, 4, 8" CornerRadius="16" x:Name="_setLeft" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" Content="Alig Left"/>
-					<controls:JButton ClipToBounds="false" Grid.Column="1" Height="32" Foreground="{DynamicResource BarForeground}" Background="{DynamicResource ButtonBarBackground}" BoxShadows="{DynamicResource ButtonBarClaymorphismBoxShadow}" Margin="8, 8, 4, 8" CornerRadius="16" x:Name="_setCenter" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" Content="Align Center"/>
-				</Grid>
-			</Border>
-		</StackPanel>
-		
-	</Border>
+	<Grid Margin="8">
+		<controls:CustomBlurBehind CornerRadius="12"/>
+		<Border Classes="Bar Alpha Outer">
+			<StackPanel>
+				<TextBlock Text="1488" FontSize="64" FontWeight="Bold" Foreground="{DynamicResource BarForeground}" Margin="48, 32"/>
+				<Border Margin="8" Classes="Transparent Alpha Bar Inner">
+					<Grid>
+						<Grid.ColumnDefinitions>
+							<ColumnDefinition/>
+							<ColumnDefinition/>
+						</Grid.ColumnDefinitions>
+						<controls:JButton Classes="Bar Alpha Transparent" Height="32" x:Name="_setLeft" Content="Left"/>
+						<controls:JButton Classes="Bar Alpha Transparent" Height="32" x:Name="_setCenter" Content="Right" Grid.Column="1"/>
+					</Grid>
+				</Border>
+			</StackPanel>
+		</Border>
+	</Grid>
 </api:IHub>

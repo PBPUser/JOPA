@@ -1,5 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android" android:installLocation="preferExternal">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" android:installLocation="preferExternal" package="com.jvos" android:versionCode="1" android:versionName="12">
 	<uses-permission android:name="android.permission.INTERNET" />
-	<application android:label="JVOS" android:icon="@drawable/Icon" />
+	<application android:label="JOPA" />
+	<uses-sdk android:minSdkVersion="4" android:targetSdkVersion="34" />
 </manifest>

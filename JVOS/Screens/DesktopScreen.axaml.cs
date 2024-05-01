@@ -6,25 +6,32 @@ using Avalonia.Controls.Primitives;
 using Avalonia.Data;
 using Avalonia.Layout;
 using Avalonia.Media;
+using Avalonia.Media.Fonts;
 using Avalonia.Media.Imaging;
 using Avalonia.Threading;
 using JVOS.ApplicationAPI;
 using JVOS.Controls;
+using JVOS.DataModel;
 using JVOS.Hubs;
 using JVOS.Views;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Reactive.Concurrency;
+using System.Reactive.Subjects;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Threading.Tasks.Sources;
 
 namespace JVOS.Screens
 {
     public partial class DesktopScreen : ScreenBase, IWindowSpace
     {
+        public static DesktopScreen? CurrentDesktop;
+
         public DesktopScreen()
         {
             InitializeComponent();
@@ -55,6 +62,8 @@ namespace JVOS.Screens
             CHubTransitions.Add(CHubXTransition);
             CHubTransitions.Add(CHubYTransition);
             keyBtn.Click += (a, b) => MainView.GLOBAL.SwitchAdaptiveControllerState();
+            CurrentDesktop = this;
+            LoadExternalHubs();
         }
 
         DoubleTransition WidgetPlaceTransition = new DoubleTransition() { Duration = TimeSpan.FromMilliseconds(500), Property = WidthProperty, Easing = new SineEaseIn() };
@@ -149,71 +158,68 @@ namespace JVOS.Screens
             }).Start();
         }
 
-        private Dictionary<IJWindowFrame, (BarTooltip, IDisposable, IDisposable, EventHandler<ColorScheme>)> BarApps = new();
-
-        private static void UpdateBarButtonScheme(BarTooltip btn, ColorScheme colorScheme)
-        {
-            btn.ActiveBoxShadows = colorScheme.ButtonBarClaymorphismInnerBoxShadow;
-            btn.BoxShadows = colorScheme.ButtonBarClaymorphismBoxShadow;
-        }
+        public Dictionary<IJWindowFrame, BarRunningInstance> RunningApplicationInstances = new();
 
         public void AttachBarApplication(IJWindowFrame jWindowFrame)
         {
             jWindowFrame.ChildWindowSet += (a, b) =>
             {
-                var bt = new BarTooltip() { Icon = jWindowFrame.ChildWindow.IconValue, ClipToBounds = false, Margin = new Thickness(4), VerticalAlignment = VerticalAlignment.Center, Height = 32, Width = 0, Title = jWindowFrame.ChildWindow.TitleValue };
-                var c = new TaskbarItemContextMenu();
-                var p = new Popup { Child = c };
-                c.jWindowFrame = jWindowFrame;
-                bt.PointerReleased += (a, b) =>
+                foreach(var x in RunningApplicationInstances)
                 {
-                    if(b.InitialPressMouseButton == Avalonia.Input.MouseButton.Right)
-                    p.Open();
+                    if(x.Value.AssociatedBarTooltip.PanelID == jWindowFrame.GetPanelId()) {
+                        x.Value.AssociatedBarTooltip.AddJWindowFrame(jWindowFrame);
+                        RunningApplicationInstances.Add(jWindowFrame, x.Value);
+                        return;
+                    }
+                }
+                var bt = new BarTooltip() { 
+                    Icon = jWindowFrame.ChildWindow.IconValue, 
+                    ClipToBounds = false, 
+                    Margin = new Thickness(4), 
+                    VerticalAlignment = VerticalAlignment.Center, 
+                    Height = 56, 
+                    Width = 0, 
+                    Title = jWindowFrame.ChildWindow.TitleValue
                 };
-                p.Opened += (a, b) => throw new Exception();
-                EventHandler<ColorScheme> handle = (a, b) =>
-                {
-                    UpdateBarButtonScheme(bt, ColorScheme.Current);
-                };
-                ColorScheme.Updated += handle;
+                BarRunningInstance barRunningInstance = new BarRunningInstance(bt, bt.Bind(WidthProperty, RunningAppWidthSubject));
+                ColorScheme.Updated += barRunningInstance.SchemeUpdate;
                 bt.Transitions = new Transitions { new DoubleTransition { Property = WidthProperty, Duration = TimeSpan.FromMilliseconds(175) }, new DoubleTransition { Property = BarTooltip.ShadowPosProperty, Duration = TimeSpan.FromMilliseconds(175) }, new DoubleTransition { Property = BarTooltip.ScaleProperty, Duration = TimeSpan.FromMilliseconds(175) }, bt.DeltaTransition, new DoubleTransition { Duration = TimeSpan.FromMilliseconds(2000), Property = BarTooltip.StartAnimationProperty } };
-                var disp = bt.Bind(BarTooltip.TitleProperty, jWindowFrame.ChildWindow.Title);
-                var disp2 = bt.Bind(BarTooltip.IconProperty, jWindowFrame.ChildWindow.Icon);
-                bt.PointerReleased += (a, b) =>
-                {
-                    jWindowFrame.BringToFront();
-                };
+                bt.AddJWindowFrame(jWindowFrame);
                 runnedApps.Children.Add(bt);
-                BarApps.Add(jWindowFrame, (bt, disp, disp2, handle));
-                bt.Width = 192;
-                UpdateBarButtonScheme(bt, ColorScheme.Current);
-                bt.Height = 56;
-                
+
+                bt.Width = RunningAppWidth;
+                RunningApplicationInstances.Add(jWindowFrame, barRunningInstance);
+                bt.AllWindowsClosed += (a, b) =>
+                {
+                    DeattachBarTooltip(barRunningInstance);
+                };
             };
         }
 
         public void DeattachBarApplication(IJWindowFrame jWindowFrame)
         {
-            (BarTooltip, IDisposable, IDisposable, EventHandler<ColorScheme>) x;
-            if(BarApps.TryGetValue(jWindowFrame, out x))
+            BarRunningInstance x;
+            if (RunningApplicationInstances.TryGetValue(jWindowFrame, out x))
             {
-                ColorScheme.Updated -= x.Item4;
-                x.Item1.Width = 0;
-                x.Item1.StartAnimation = 0;
-                new Thread(() =>
-                {
-                    Thread.Sleep(175);
-                    Dispatcher.UIThread.Invoke(() =>
-                    {
-                        x.Item2.Dispose();
-                        x.Item3.Dispose();
-                        this.runnedApps.Children.Remove(x.Item1);
-                        BarApps.Remove(jWindowFrame);
-                    });
-                }).Start();
+                RunningApplicationInstances.Remove(jWindowFrame);
+                x.AssociatedBarTooltip.RemoveJWindowFrame(jWindowFrame);
             }
         }
-        
+
+        public void DeattachBarTooltip(BarRunningInstance instance)
+        {
+            instance.AssociatedBarTooltip.Width = 0;
+            new Task(() =>
+            {
+                Task.Delay(175).Wait();
+                Dispatcher.UIThread.Invoke(() =>
+                {
+                    runnedApps.Children.Remove(instance.AssociatedBarTooltip);
+                    ColorScheme.Updated -= instance.SchemeUpdate;
+                });
+            }).Start();
+        }
+
         private void AttachHandlers()
         {
             widgetsBtn.Click += (a, b) =>
@@ -235,6 +241,35 @@ namespace JVOS.Screens
             };
         }
 
+
+        public void SaveExternalHubsList()
+        {
+            using var file = File.CreateText(UserOptions.Current.GetPath("\\Appdata\\externalItems"));
+            ExternalHubsList.ForEach((a) =>
+            {
+                file.WriteLine(a);
+            });
+        }
+
+        public void LoadExternalHubs()
+        {
+            if (File.Exists(UserOptions.Current.GetPath("\\Appdata\\externalItems"))) {
+                ExternalHubsList = File.ReadAllLines(UserOptions.Current.GetPath("\\Appdata\\externalItems")).ToList();
+            }
+            ExternalHubsList.ForEach(a =>
+            {
+                var s = ApplicationManager.HubProviders.Where(x => x.InternalName == a).FirstOrDefault();
+                if(s != null)
+                    AddExternalHub(s,true);
+            });
+        }
+
+        public override void MobileModeStateSwitch(bool enabled)
+        {
+            runnedApps.IsVisible = !enabled;
+            topBarBorder.IsVisible = enabled;
+        }
+
         private int TopHub = 3;
 
         public void ToggleHub(IHub hub, bool? forced = null)
@@ -245,6 +280,7 @@ namespace JVOS.Screens
                 hub.IsOpen = !hub.IsOpen;
             if (hub.IsOpen)
             {
+                hub.OnOpened(EventArgs.Empty);
                 (hub.RenderTransform as TranslateTransform).Transitions = OHubTransitions;
                 hub.ZIndex = TopHub++;
                 foreach (IHub xHub in Hubs)
@@ -263,6 +299,7 @@ namespace JVOS.Screens
             }
             else
             {
+                hub.OnClosed(IHub.CloseReason.Hide);
                 (hub.RenderTransform as TranslateTransform).Transitions = CHubTransitions;
                 if (hub.AnimationOrientation == Orientation.Horizontal)
                     (hub.RenderTransform as TranslateTransform).X = hub.HorizontalAlignment == HorizontalAlignment.Left ? -hub.Bounds.Width : hub.Bounds.Width;
@@ -300,7 +337,7 @@ namespace JVOS.Screens
 
         private bool isBackgroundAnimationPlaying = false;
 
-        private void SetBackground(Bitmap image,bool animate)
+        public void SetBackground(Bitmap image,bool animate)
         {
             if (isBackgroundAnimationPlaying)
                 return;
@@ -358,6 +395,7 @@ namespace JVOS.Screens
         }
 
         private List<IHub> Hubs = new List<IHub>();
+        public List<string> ExternalHubsList = new();
 
         public IHub AttachHub(IHub hub, VerticalAlignment vAlign, HorizontalAlignment hAlign, Orientation AnimationOrientation = Orientation.Vertical)
         {
@@ -418,6 +456,66 @@ namespace JVOS.Screens
         {
             foreach (var hub in Hubs)
                 ToggleHub(hub, false);
+        }
+
+        public static Subject<double> RunningAppWidthSubject = new Subject<double>();
+        public static double RunningAppWidth = 0;
+
+        public static void SetRunningAppButtonWidth(bool value)
+        {
+            RunningAppWidth = value ? 192 : 56;
+            RunningAppWidthSubject.OnNext(RunningAppWidth);
+        }
+
+        public List<JButton> HubButtons = new();
+        public List<IHub> ExHubs = new();
+
+        public void AddExternalHub(IHubProvider hubp, bool isLoading = false)
+        {
+            object s;
+            var hub = hubp.Create(out s);
+            var btn = new JButton()
+            {
+                Content = s,
+                FontFamily = new FontFamily(hubp.ButtonFont)
+            };
+            btn.Classes.Add("Hub");
+            btn.Classes.Add("Bar");
+            btn.Click += (a, b) =>
+            {
+                ToggleHub(hub);
+            };
+            ExHubs.Add(hub);
+            if(!isLoading)
+                ExternalHubsList.Add(hubp.InternalName);
+            AttachHub(hub, VerticalAlignment.Bottom, HorizontalAlignment.Right, Orientation.Vertical);
+            externalStack.Children.Add(btn);
+            HubButtons.Add(btn);
+            SaveExternalHubsList();
+        }
+
+        public void MoveHub(int from, int to)
+        {
+            externalStack.Children.Move(from, to);
+            var btn = HubButtons[from];
+            HubButtons.RemoveAt(from);
+            HubButtons.Insert(to, btn);
+            var s = ExternalHubsList[from];
+            var e = ExHubs[from];
+            ExternalHubsList.RemoveAt(from);
+            ExternalHubsList.Insert(to, s);
+            ExHubs.RemoveAt(from);
+            ExHubs.Insert(to, e);
+            SaveExternalHubsList();
+        }
+
+        public void RemoveHub(int index)
+        {
+            ExHubs.RemoveAt(index);
+            ExternalHubsList.RemoveAt(index);
+            HubButtons.RemoveAt(index);
+            externalStack.Children.RemoveAt(index);
+            SaveExternalHubsList();
         }
     }
 }

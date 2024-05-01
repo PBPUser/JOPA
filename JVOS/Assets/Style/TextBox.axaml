@@ -1,0 +1,43 @@
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+	<ControlTheme x:Key="{x:Type TextBox}" TargetType="TextBox">
+		<Setter Property="CornerRadius" Value="12"/>
+		<Setter Property="Background" Value="{DynamicResource TextBoxBackground}"/>
+		<Setter Property="Foreground" Value="{DynamicResource TextBoxForeground}"/>
+		<Setter Property="Padding" Value="12, 8"/>
+		<Setter Property="FontSize" Value="14"/>
+		<Setter Property="Template">
+			<Setter.Value>
+				<ControlTemplate>
+					<Border 
+							Name="PART_BorderElement"
+							Padding="{TemplateBinding Padding}"
+							CornerRadius="{TemplateBinding CornerRadius}" 
+							Background="{TemplateBinding Background}">
+						<TextPresenter Name="PART_TextPresenter"
+								   Text="{TemplateBinding Text, Mode=TwoWay}"
+								   CaretIndex="{TemplateBinding CaretIndex}"
+								   SelectionStart="{TemplateBinding SelectionStart}"
+								   SelectionEnd="{TemplateBinding SelectionEnd}"
+								   TextAlignment="{TemplateBinding TextAlignment}"
+								   TextWrapping="{TemplateBinding TextWrapping}"
+								   LineHeight="{TemplateBinding LineHeight}"
+								   LetterSpacing="{TemplateBinding LetterSpacing}"
+								   PasswordChar="{TemplateBinding PasswordChar}"
+								   RevealPassword="{TemplateBinding RevealPassword}"
+								   SelectionBrush="{TemplateBinding SelectionBrush}"
+								   SelectionForegroundBrush="{TemplateBinding SelectionForegroundBrush}"
+								   CaretBrush="{TemplateBinding CaretBrush}"
+								   HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+								   VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+					</Border>
+				</ControlTemplate>
+			</Setter.Value>
+		</Setter>
+		<Style Selector="^:focus">
+			<Style Selector="^ /template/ Border#PART_BorderElement">
+				<Setter Property="BoxShadow" Value="{DynamicResource TextBoxBoxShadowsInner}"/>
+			</Style>
+		</Style>
+	</ControlTheme>
+</ResourceDictionary>

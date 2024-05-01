@@ -40,7 +40,6 @@ namespace JVOS.Views
             Loading = new LoadingScreen();
             Login = new LoginScreen();
             WindowManager.Initialize();
-            ApplicationManager.Load();
             JVOSResourceBunch.SetResourceBunchToColorScheme();
             WindowManager.SetCurrentWindowSpace(this);
             int sleep = 5000;
@@ -53,6 +52,14 @@ namespace JVOS.Views
             InitializeComponent();
             this.SizeChanged += (a, b) =>
             {
+                
+                var isMobile = Math.Min(b.NewSize.Width, b.NewSize.Height) < 600;
+                if(IsMobile != isMobile)
+                {
+                    IsMobile = isMobile;
+                    if(CurrentScreen != null)
+                        CurrentScreen.MobileModeStateSwitch(IsMobile);
+                }
                 JWindowGridController.UpdateSubjectsHWhenDesktopResized(b.NewSize.Width, b.NewSize.Height);
             };
             Loaded += (a, b) =>
@@ -69,95 +76,6 @@ namespace JVOS.Views
                 }).Start();
                 InitializeAdaptiveController();
             };
-            bool ctrlTabActivated = false;
-            this.KeyDown += (a, b) =>
-            {
-                //if (b.Key == Key.F1)
-                //{
-                //ctrltab.Visibility = Visibility.Visible;
-                //ctrlTabActivated = true;
-                //}
-            };
-            this.KeyUp += (a, b) =>
-            {
-                //if (b.Key == Key.F1)
-                //{
-                //ctrltab.Visibility = Visibility.Collapsed;
-                //ctrlTabActivated = false;
-                //}
-                //if (ctrlTabActivated)
-                //if (b.Key == Key.F2)
-                //{
-                //ctrltab.GoNext();
-                //}
-            };
-            //cancel_appinstall.IsEnabled = ok_appinstall.IsEnabled = false;
-            // += (a, b) =>
-            /*{
-                if (JWindow.TopJWin == null)
-                    return;
-                if (JWindow.TopJWin.JVinState == JWindow.JVindowState.Maximized)
-                    return;
-                if (JWindow.TopJWin._currentTT == null)
-                    return;
-                var f = desktop.window_canvas.ActualWidth;
-                if (JWindow.TopJWin._currentTT.Y < 0 && b.GetPosition(this).Y < 8)
-                    JWindow.TopJWin.SwitchState();
-                else if (JWindow.TopJWin._currentTT.X < 0 && b.GetPosition(this).X < 8)
-                {
-                    JWindow.TopJWin._currentTT.X = 0;
-                    JWindow.TopJWin._currentTT.Y = 0;
-                    JWindow.TopJWin.Height = desktop.window_canvas.ActualHeight;
-                    JWindow.TopJWin.Width = desktop.window_canvas.ActualWidth / 2;
-                    JWindow.TopJWin.JVinState = JWindow.JVindowState.LeftSide;
-                }
-                else if (b.GetPosition(this).X > f - 8 && JWindow.TopJWin._currentTT.X + JWindow.TopJWin.Width > f)
-                {
-                    JWindow.TopJWin._currentTT.X = desktop.window_canvas.ActualWidth / 2;
-                    JWindow.TopJWin._currentTT.Y = 0;
-                    JWindow.TopJWin.Height = desktop.window_canvas.ActualHeight;
-                    JWindow.TopJWin.Width = desktop.window_canvas.ActualWidth / 2;
-                    JWindow.TopJWin.JVinState = JWindow.JVindowState.RightSide;
-                }
-            };
-            GLOBAL = this;
-            var time = 10;
-#if DEBUG
-            time = 1;
-#endif
-            new Task(async () => {
-                UsersManager.LoadUserManager();
-                if (UsersManager.GLOBAL.USERS.Count > 0)
-                    UsersManager.GLOBAL.USERS[UsersManager.GLOBAL.CurrentUserID].Apply();
-                await Task.Delay(TimeSpan.FromSeconds(new Random().Next(time) + time));
-                Dispatcher.Invoke(() => {
-                    var loadingHideAnimation = new ThicknessAnimation { To = new Thickness(0, -this.ActualHeight, 0, this.ActualHeight), Duration = TimeSpan.FromSeconds(2), EasingFunction = new CircleEase() };
-                    this.loading.IsLoading = false;
-                    this.loading.BeginAnimation(MarginProperty, loadingHideAnimation);
-                    ((TranslateTransform)statusBar.RenderTransform).BeginAnimation(TranslateTransform.YProperty, new DoubleAnimation { To = (-1) * (statusBar.ActualHeight + 12), Duration = TimeSpan.FromSeconds(0.5) });
-                    if (UsersManager.GLOBAL.USERS.Count == 0)
-                    {
-                        OpenOOBE();
-                    }
-                    else
-                    {
-                        new Thread(() =>
-                        {
-                            Thread.Sleep(10000);
-                            if (UsersManager.GLOBAL.CURRENTUSER.IsFirstBoot)
-                            {
-                                UsersManager.GLOBAL.CURRENTUSER.IsFirstBoot = false;
-                                UsersManager.GLOBAL.Save();
-                                Dispatcher.Invoke(() => {
-                                    App.WebAppsManager.RunApp("org.jvos.welcome");
-                                });
-                            }
-                        }).Start();
-                    }
-                });
-                //await L();
-            }).Start();
-        }*/
         }
 
         private ScreenBase? CurrentScreen;
@@ -198,6 +116,7 @@ namespace JVOS.Views
             if (CurrentScreen != null)
                 CurrentScreen.ScreenOverlap();
             newScreen.ScreenShown();
+            newScreen.MobileModeStateSwitch(IsMobile);
             CurrentScreen = newScreen;
             CurrentScreen.ZIndex = ScreenIndex++;
         }
@@ -333,7 +252,7 @@ namespace JVOS.Views
 
         public void BringToFront(IJWindowFrame window)
         {
-            throw new NotImplementedException();
+
         }
 
         public void CloseAllHubs()

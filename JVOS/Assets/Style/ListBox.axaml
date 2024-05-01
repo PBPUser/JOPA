@@ -1,0 +1,44 @@
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+	<ControlTheme x:Key="{x:Type ListBox}" TargetType="ListBox">
+		<Setter Property="Background" Value="Transparent"/>
+		<Setter Property="BorderThickness" Value="0"/>
+		<Setter Property="Template">
+			<ControlTemplate>
+				<Border Name="PART_Border"
+						ClipToBounds="{TemplateBinding ClipToBounds}"
+						Background="{TemplateBinding Background}"
+						BorderBrush="{TemplateBinding BorderBrush}"
+						BorderThickness="{TemplateBinding BorderThickness}"
+						CornerRadius="{TemplateBinding CornerRadius}">
+					<ScrollViewer Name="PART_ScrollViewer"
+								  VerticalSnapPointsType="{TemplateBinding (ScrollViewer.VerticalSnapPointsType)}"
+								  HorizontalSnapPointsType="{TemplateBinding (ScrollViewer.HorizontalSnapPointsType)}"
+								  HorizontalScrollBarVisibility="{TemplateBinding (ScrollViewer.HorizontalScrollBarVisibility)}"
+								  VerticalScrollBarVisibility="{TemplateBinding (ScrollViewer.VerticalScrollBarVisibility)}"
+								  IsScrollChainingEnabled="{TemplateBinding (ScrollViewer.IsScrollChainingEnabled)}"
+								  IsScrollInertiaEnabled="{TemplateBinding (ScrollViewer.IsScrollInertiaEnabled)}"
+														IsDeferredScrollingEnabled="{TemplateBinding (ScrollViewer.IsDeferredScrollingEnabled)}"
+								  AllowAutoHide="{TemplateBinding (ScrollViewer.AllowAutoHide)}"
+								  BringIntoViewOnFocusChange="{TemplateBinding (ScrollViewer.BringIntoViewOnFocusChange)}">
+						<ItemsPresenter Name="PART_ItemsPresenter"
+										ItemsPanel="{TemplateBinding ItemsPanel}"
+										Margin="{TemplateBinding Padding}"/>
+					</ScrollViewer>
+				</Border>
+			</ControlTemplate>
+		</Setter>
+		<Style Selector="^.Bar /template/ Border#PART_Border">
+			<Setter Property="CornerRadius" Value="12"/>
+			<Setter Property="Margin" Value="8"/>
+			<Setter Property="BoxShadow" Value="{DynamicResource BoxShadows_BarInner}"/>
+		</Style>
+		<Style Selector="^.StartGrid /template/ ItemsPresenter#PART_ItemsPresenter">
+			<Setter Property="ItemsPanel">
+				<ItemsPanelTemplate>
+					<UniformGrid Columns="6" IsItemsHost="true"/>
+				</ItemsPanelTemplate>
+			</Setter>
+		</Style>
+	</ControlTheme>
+</ResourceDictionary>

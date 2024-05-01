@@ -7,18 +7,20 @@
              x:Class="JVOS.Hubs.PanoramaHub" Foreground="{DynamicResource BarForeground}"
 			xmlns:api="clr-namespace:JVOS.ApplicationAPI;assembly=JVOS.ApplicationAPI"
 			 xmlns:local="clr-namespace:JVOS.Hubs">
-	<Border Background="{DynamicResource BarBackground}" BoxShadow="{DynamicResource
-			BarClaymorphismBoxShadow}" Margin="8" CornerRadius="12" MinWidth="512" x:Name="baseBorder">
-		<ScrollViewer>
-			<StackPanel x:Name="stacky">
-				<Grid>
-					<TextBlock Margin="12" FontSize="34" Text="1488" HorizontalAlignment="Center" FontWeight="Bold"/>
-					<controls:JButton Background="{DynamicResource ButtonBarBackground}" CornerRadius="16" FontFamily="Jcons" x:Name="refresh" VerticalAlignment="Top" HorizontalAlignment="Right" VerticalContentAlignment="Center" Foreground="{DynamicResource BarForeground}" FontSize="36" HorizontalContentAlignment="Center" Height="64" Width="64" Margin="12"/>
-				</Grid>
-				<StackPanel x:Name="stackContent">
-					
+	<Grid Margin="8">
+		<controls:CustomBlurBehind CornerRadius="12"/>
+		<Border Classes="Bar Outer" CornerRadius="12" MinWidth="512" x:Name="baseBorder">
+			<ScrollViewer>
+				<StackPanel x:Name="stacky">
+					<Grid>
+						<TextBlock Margin="12" FontSize="34" Text="1488" HorizontalAlignment="Center" FontWeight="Bold"/>
+						<controls:JButton FontFamily="Jcons" x:Name="refresh" VerticalAlignment="Top" HorizontalAlignment="Right" Classes="Bar Hub"/>
+					</Grid>
+					<StackPanel x:Name="stackContent">
+
+					</StackPanel>
 				</StackPanel>
-			</StackPanel>
-		</ScrollViewer>
-	</Border>
+			</ScrollViewer>
+		</Border>
+	</Grid>
 </api:IHub>

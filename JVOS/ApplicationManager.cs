@@ -3,12 +3,16 @@ using Avalonia.Media.Imaging;
 using JVOS.ApplicationAPI;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Newtonsoft.Json;
+using ReactiveUI;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.InteropServices;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace JVOS
@@ -17,20 +21,39 @@ namespace JVOS
     {
         static bool isInitialized = false;
 
+        public static string ApplicationsDirectory = "";
+        public static string LibrariesDirectory = "";
+
+        public static event EventHandler<EventArgs> AppsLoaded;
+
         public static List<Application> Apps = new List<Application>();
-        public static List<(Bitmap?, string, string, string)> Runners = new List<(Bitmap?, string, string, string)>();
-        public static List<Runnable> Runnables = new List<Runnable>();
+        public static List<IEntryPoint> EntryPoints = new List<IEntryPoint>();
+        public static List<IHubProvider> HubProviders = new List<IHubProvider>();
 
         public static void Load()
         {
             if (isInitialized)
                 return;
+            RegisterApplicationEvents();
             isInitialized = true;
-            if (!Directory.Exists("Applications"))
-                Directory.CreateDirectory("Applications");
-            string[] apps = Directory.GetDirectories("Applications");
+            ApplicationsDirectory = PlatformSpecifixController.GetLocalFilePath("Applications");
+            LibrariesDirectory = PlatformSpecifixController.GetLocalFilePath("Libraries");
+            if (!Directory.Exists(ApplicationsDirectory))
+                Directory.CreateDirectory(ApplicationsDirectory);
+            if (!Directory.Exists(LibrariesDirectory))
+                Directory.CreateDirectory(LibrariesDirectory);
+            string[] apps = Directory.GetDirectories(ApplicationsDirectory);
             foreach (var app in apps)
                 PreloadApp(app);
+            AppDomain.CurrentDomain.AssemblyResolve += (a, b) =>
+            {
+                foreach (var s in Directory.GetFiles(LibrariesDirectory, "*.dll", SearchOption.AllDirectories))
+                    if (b.Name == AssemblyName.GetAssemblyName(s).FullName)
+                        return Assembly.LoadFile(System.IO.Path.GetFullPath(s));
+                return null;
+            };
+            if (AppsLoaded != null)
+                AppsLoaded.Invoke(null, new EventArgs());
         }
 
         public static void PreloadApp(string Path)
@@ -41,21 +64,52 @@ namespace JVOS
 
             if (!File.Exists(manifest))
                 return;
-            if (!File.Exists(icon))
-                return;
-            var appMani = JsonConvert.DeserializeObject<ApplicationManifest>(manifest);
-            Application app = new Application(appMani.Name, appMani.InternalName);
+            var appMani = JsonConvert.DeserializeObject<ApplicationManifest>(File.ReadAllText(manifest));
+            if (!appMani.IsWebApplication)
+            {
+                string appdll = $"{Path}\\application.dll";
+                if (!File.Exists(appdll))
+                    return;
+                if(Directory.Exists($"{Path}\\libraries"))
+                    foreach(var s in Directory.GetFiles($"{Path}\\libraries")) {
+                        LoadLib(System.IO.Path.GetFullPath(s));
+                    }
+                PreloadDll(System.IO.Path.GetFullPath(appdll));
+            }
+            else
+            {
+                string apphtml = $"{Path}\\index.html";
+                if (!File.Exists(apphtml))
+                    return;
+
+            }
+            Application app = new Application(appMani.Name, appMani.InternalName, appMani.IsWebApplication);
             if (File.Exists(icon))
                 app.Icon = new Bitmap(icon);
-            int i = 0;
-            foreach(string runn in appMani.Runners)
+            Apps.Add(app);
+        }
+
+
+        private static void LoadLib(string file)
+        {
+            
+        }
+
+        private static void PreloadDll(string Path)
+        {
+            var assembly = Assembly.LoadFile(Path);
+            Type initType = typeof(IInitializer);
+            Type[] inits = assembly.GetTypes().Where(x => initType.IsAssignableFrom(x) && x.IsClass).ToArray();
+            foreach(var init in inits)
             {
-                string ic = $"{Path}\\Runners\\{runn}.png";
-                Bitmap? bmp = null;
-                if (File.Exists(ic))
-                    bmp = new Bitmap(ic);
-                Runners.Add((bmp, app.InternalName, runn, appMani.RunnersHuman[i]));
-                i++;
+                try
+                {
+                    ((IInitializer)Activator.CreateInstance(init)).Initialize();
+                }
+                catch
+                {
+
+                }
             }
         }
 
@@ -70,67 +124,29 @@ namespace JVOS
 
         public static void UnloadApp(Application app)
         {
-            List<(Bitmap?, string, string, string)> Runners = new List<(Bitmap?, string, string, string)>();
-            foreach (var runnable in ApplicationManager.Runners)
-            {
-                if (runnable.Item2 != app.InternalName)
-                    Runners.Add(runnable);
-            }
-            ApplicationManager.Runners = Runners;
-            Apps.Remove(app);
+
         }
 
         private static void RegisterApplicationEvents()
         {
             Communicator.RegisterApp += ApplicationRegister;
+            Communicator.RegisterEntrypoint += RegisterEntryPoint;
+            Communicator.RegisterExternalhub += RegisterExtenalHub;
+        }
 
+        private static void RegisterExtenalHub(object? sender, IHubProvider e)
+        {
+            HubProviders.Add(e);
+        }
+
+        private static void RegisterEntryPoint(object? sender, IEntryPoint e)
+        {
+            EntryPoints.Add(e);
         }
 
         private static void ApplicationRegister(object? sender, string e)
         {
             PreloadApp(e);
-        }
-
-        /// <summary>
-        /// runnable hint API
-        /// bitmap - icon
-        /// string1 - appid
-        /// string2 - runid
-        /// string3 - humanname
-        /// </summary>
-        /// <param name="runner"></param>
-
-        public static void Run((Bitmap?, string, string, string) runner)
-        {
-            var runnable = Runnables.Where(x => x.InternalName == runner.Item2).FirstOrDefault();
-            if(runnable != null)
-            {
-                runnable.Run();
-                return;
-            }
-            var app = Apps.Where(x => x.InternalName == runner.Item2).FirstOrDefault();
-            if (app != null)
-            {
-                string assemblyPath = $"{app.Path}\\application.dll";
-                Assembly assembly = Assembly.LoadFrom(assemblyPath);
-                Type interfaceType = typeof(Runnable);
-                Type[] x = AppDomain.CurrentDomain.GetAssemblies()
-                    .SelectMany(a => a.GetTypes())
-                    .Where(p => interfaceType.IsAssignableFrom(p) && p.IsClass)
-                    .ToArray();
-                foreach(var assembli in x)
-                {
-                    object? template = Activator.CreateInstance(assembli);
-                    Runnable info = template as Runnable;
-                    Runnables.Add(info);
-                    if (info.InternalName == runner.Item2)
-                        Runnables.Add(info);
-                }
-            }
-            else
-            {
-                throw new Exception($"{runner.Item2} not registred in JOPA.");
-            }
         }
     }
 }

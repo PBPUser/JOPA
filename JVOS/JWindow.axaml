@@ -13,6 +13,9 @@
 	<Grid.Effect>
 		<DropShadowEffect BlurRadius="30"/>
 	</Grid.Effect>
+	<Border x:Name="border" Background="Transparent" BorderThickness="2" BorderBrush="Black">
+
+	</Border>
     <DockPanel Margin="2">
 		<Grid DockPanel.Dock="Top">
 			<Border CornerRadius="12" Height="24" Margin="0,4" Padding="8, 0" Background="{DynamicResource TitleBackground}" VerticalAlignment="Center" HorizontalAlignment="Center">
@@ -32,8 +35,8 @@
 				</StackPanel>
 			</Border>
 		</Grid>
-		<Border CornerRadius="12" ClipToBounds="True">
-			<Grid x:Name="childHost" Background="White">
+		<Border CornerRadius="12" ClipToBounds="True" Background="Transparent">
+			<Grid x:Name="childHost" Background="Transparent">
 			</Grid>
 		</Border>
     </DockPanel>

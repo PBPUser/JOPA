@@ -108,12 +108,12 @@ namespace JVOS
                 Description = desc
             };
         }
+    }
 
-        public struct Language
-        {
-            public string Name;
-            public string ShortName;
-            public string Description;
-        }
+    public struct Language
+    {
+        public string Name;
+        public string ShortName;
+        public string Description;
     }
 }

@@ -4,11 +4,16 @@ using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
 using Avalonia.Media;
+using Avalonia.Themes.Simple;
 using Avalonia.Threading;
 using JVOS.ApplicationAPI;
+using JVOS.Controls;
+using JVOS.EmbededWindows;
+using JVOS.Protocol;
 using JVOS.ViewModels;
 using JVOS.Views;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http.Headers;
 using System.Threading;
@@ -46,10 +51,10 @@ public partial class App : Application
         
         NotificationGrid.Height = 32;
         if(MainView.GLOBAL.notificationPlace != null)
-        if(MainView.GLOBAL.notificationPlace.Children.Count == 1)
-            Border2.Margin = new Thickness(8, 8, 8, 8);
-        else
-            Border2.Margin = new Thickness(8, 0, 8, 8);
+            if(MainView.GLOBAL.notificationPlace.Children.Count == 1)
+                Border2.Margin = new Thickness(8, 8, 8, 8);
+            else
+                Border2.Margin = new Thickness(8, 0, 8, 8);
         new Thread(() =>
         {
             Thread.Sleep(200);
@@ -76,26 +81,61 @@ public partial class App : Application
         AvaloniaXamlLoader.Load(this);
         Communicator.CommandRun += CommandRun;
         Communicator.ShowDialog += ShowDialogCommunicate;
+        ApplicationManager.AppsLoaded += AppsLoaoded;
+        ProtocolWorker.LoadProtocolWorker();
+
+        ApplicationManager.Load();
     }
 
-    private void ShowDialogCommunicate(object? sender, (Avalonia.Media.Imaging.Bitmap? bitmap, string title, string message, System.Collections.Generic.List<(string, Action?)> buttons) e)
+    private void AppsLoaoded(object? sender, EventArgs e)
     {
-        throw new NotImplementedException();
+        
+    }
+
+    private void ShowDialogCommunicate(object? sender, IMessageDialog dialog)
+    {
+        var jMessage = new Message();
+        jMessage.title.Text = dialog.Title;
+        jMessage.message.Text = dialog.Message;
+        if(dialog.Icon!= null)
+            jMessage.icon.Source = dialog.Icon;
+        List<EventHandler<ColorScheme>> EventHandleUpdate = new();
+        foreach (var x in dialog.Buttons)
+        {
+            var btn = new JButton() { Content = x.Title, Width = 100 };
+            btn.Click += (a, b) => x.Run();
+            jMessage.buttonStack.Children.Add(btn);
+        }
+        if(dialog.Buttons.Count == 0)
+        {
+            var btn = new JButton() { Content = "OK", Width = 100 };
+            btn.Click += (a, b) => WindowManager.CloseJWindow(jMessage.WindowFrame);
+            jMessage.buttonStack.Children.Add(btn);
+        }
+        WindowManager.OpenInJWindow(jMessage, new Action(() =>
+        {
+        }));
     }
 
     private void CommandRun(object? sender, string e)
     {
+        if (e == null)
+            e = "";
+        e.Replace(":\\\\", "://");
         string[] eSplit = e.Split("://");
-        if(eSplit.Length == 2)
+        if(eSplit.Length >= 2)
         {
-            var protocol = ProtocolWorker.Protocols.Where(x => x.Item1 == eSplit[0]);
+            string[] jSplit = new string[eSplit.Length - 1];
+            Array.Copy(eSplit, 1, jSplit, 0, jSplit.Length);
+            var protocol = ProtocolWorker.Protocols.Where(x => x.Name == eSplit[0]);
             if(protocol.Count() == 0)
-                Communicator.ShowMessageDialog((null, "Shell", $"Invalid Protocol {eSplit[0]}", new System.Collections.Generic.List<(string, Action?)> { ("OK", null) }));
-
+                Communicator.ShowMessageDialog(new MessageDialog("Shell", $"Invalid protocol {eSplit[0]}"));
+            else 
+                protocol.First().Execute(String.Join("://", jSplit).Split(' '));
         }
         else
         {
-            Communicator.ShowMessageDialog((null, "Shell", $"Invalid Command {e}", new System.Collections.Generic.List<(string, Action?)> { ("OK", null) }));
+            Communicator.ShowMessageDialog(new MessageDialog("Shell", $"Invalid command {e}\nUsage: protocol_name://arguments"));
         }
     }
 

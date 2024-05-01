@@ -1,0 +1,38 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450" MinWidth="384" Foreground="{DynamicResource BarForeground}"
+             x:Class="JVOS.EmbededWindows.Message" xmlns:controls="clr-namespace:JVOS.Controls;assembly=JVOS.Controls">
+	<Grid>
+		<controls:CustomBlurBehind/>
+		<Border Classes="Alpha">
+			<Grid>
+				<Grid.RowDefinitions>
+					<RowDefinition Height="Auto"/>
+					<RowDefinition/>
+					<RowDefinition Height="Auto"/>
+				</Grid.RowDefinitions>
+
+				<StackPanel>
+					<Grid>
+						<Grid.ColumnDefinitions>
+							<ColumnDefinition Width="auto"/>
+							<ColumnDefinition/>
+						</Grid.ColumnDefinitions>
+						<Image x:Name="icon" Margin="8" MaxWidth="48"/>
+						<StackPanel Grid.Column="1">
+							<TextBlock x:Name="title" Margin="8, 8, 8, 4" Classes="h1"/>
+							<TextBlock x:Name="message" Margin="8, 4, 8, 4" Classes="h3">
+							</TextBlock>
+						</StackPanel>
+					</Grid>
+				</StackPanel>
+				<Border Grid.Row="2" Margin="8" Classes="Alpha Transparent Inner">
+					<StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="8, 0" x:Name="buttonStack">
+					</StackPanel>
+				</Border>
+			</Grid>
+		</Border>
+	</Grid>
+</UserControl>

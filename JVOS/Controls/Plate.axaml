@@ -4,12 +4,10 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450" ClipToBounds="false"
              x:Class="JVOS.Controls.Plate" Foreground="{DynamicResource ButtonBarForeground}">
-	<Border CornerRadius="12" Background="{DynamicResource ButtonBarBackground}" BoxShadow="{DynamicResource
-			ButtonBarClaymorphismBoxShadow}" >
+	<Border CornerRadius="12" Classes="Alpha Outer">
 		<StackPanel>
 			<TextBlock Margin="48, 15" x:Name="_plateTitle"/>
-			<Border ClipToBounds="True" Margin="21, 18, 21, 9" CornerRadius="12" BoxShadow="{DynamicResource
-			BarClaymorphismBoxShadow}">
+			<Border ClipToBounds="True" Margin="21, 18, 21, 9" CornerRadius="12" Classes="Transparent Alpha Inner">
 				<Image x:Name="_img"/>
 			</Border>
 			<TextBlock Margin="0, 0" x:Name="_title" FontWeight="Bold" FontSize="16"/>

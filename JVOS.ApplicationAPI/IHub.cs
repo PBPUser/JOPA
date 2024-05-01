@@ -18,7 +18,18 @@ namespace JVOS.ApplicationAPI
 
         public event EventHandler<EventArgs>? Opened;
         public event EventHandler<CloseReason>? Closed;
+        public event EventHandler<object>? Removed;
         public event EventHandler<object>? ButtonContentChanged;
+
+        public void OnAdded()
+        {
+
+        }
+
+        public void OnRemoved()
+        {
+            Removed?.Invoke(this, EventArgs.Empty);
+        }
 
         public void OnClosed(CloseReason Reason)
         {

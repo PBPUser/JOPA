@@ -17,6 +17,10 @@ namespace JVOS.Screens
             
         }
 
+        public virtual void MobileModeStateSwitch(bool enabled)
+        {
+
+        }
 
     }
 }

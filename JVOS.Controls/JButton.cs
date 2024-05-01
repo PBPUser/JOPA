@@ -2,10 +2,16 @@
 using Avalonia.Animation;
 using Avalonia.Animation.Easings;
 using Avalonia.Controls;
+using Avalonia.Controls.Metadata;
+using Avalonia.Controls.Presenters;
 using Avalonia.Controls.Primitives;
 using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Media;
+using Avalonia.Platform;
+using Avalonia.Rendering.SceneGraph;
+using Avalonia.Skia;
+using SkiaSharp;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -45,12 +51,14 @@ namespace JVOS.Controls
                 BorderBrushProperty,
                 ContentProperty,
                 BorderThicknessProperty,
+                MaterialProperty,
                 CornerRadiusProperty,
                 BoxShadowsProperty,
                 ActiveBoxShadowsProperty,
                 HovergroundProperty,
                 OvergroundProperty,
                 GlareProperty,
+                GlarebrushProperty,
                 GlarebrushProperty,
                 OverProperty,
                 HoverProperty,
@@ -73,10 +81,30 @@ namespace JVOS.Controls
         public static readonly StyledProperty<Brush> HovergroundProperty = AvaloniaProperty.Register<JButton, Brush>(nameof(Hoverground), DEFAULT_HOVERBRUSH);
         public static readonly StyledProperty<Brush> GlarebrushProperty = AvaloniaProperty.Register<JButton, Brush>(nameof(Glarebrush), DEFAULT_GLAREBRUSH);
         public static readonly StyledProperty<Brush> OvergroundProperty = AvaloniaProperty.Register<JButton, Brush>(nameof(Overground), DEFAULT_ACTIVEBRUSH);
+        public static readonly StyledProperty<ExperimentalAcrylicMaterial?> MaterialProperty = AvaloniaProperty.Register<JButton, ExperimentalAcrylicMaterial?>("Material");
+        public static readonly StyledProperty<double> InternalScaleProperty = AvaloniaProperty.Register<JButton, double>("InternalScale");
+        public static readonly StyledProperty<bool> UseBlurBehindProperty = AvaloniaProperty.Register<JButton, bool>("UseBlurBehind", false);
 
         private static readonly StyledProperty<double> OverProperty = AvaloniaProperty.Register<JButton, double>(nameof(Over));
         private static readonly StyledProperty<double> HoverProperty = AvaloniaProperty.Register<JButton, double>(nameof(Hover));
         private static readonly StyledProperty<double> GlareProperty = AvaloniaProperty.Register<JButton, double>(nameof(Glare));
+
+        public ExperimentalAcrylicMaterial? Material
+        {
+            get => GetValue(MaterialProperty);
+            set => SetValue(MaterialProperty, value);
+        }
+
+        public bool UseBlurBehind {
+            get => GetValue(UseBlurBehindProperty);
+            set => SetValue(UseBlurBehindProperty, value);
+        }
+
+        public double InternalScale
+        {
+            get => GetValue(InternalScaleProperty);
+            set => SetValue(InternalScaleProperty, value);
+        }
 
         public RenderBoxShadow RenderShadow
         {
@@ -172,7 +200,9 @@ namespace JVOS.Controls
 
         public sealed override void Render(DrawingContext context)
         {
-            var rrc = new RoundedRect(new Rect(0, 0, Bounds.Width, Bounds.Height), CornerRadius);
+            var rrc = new RoundedRect(new Rect(Bounds.Size), CornerRadius);
+            if (UseBlurBehind)
+                context.Custom(new BlurBehindRenderOperation(BlurBehindRenderOperation.DefaultAcrylicMaterial, new Rect(Bounds.Size), CornerRadius));
             bool drawAfter = RenderShadow != RenderBoxShadow.BeforeChild;
             var opDV = context.PushOpacity(0.0001);
             context.DrawRectangle(Brushes.Black, null, rrc, default(BoxShadows));
@@ -189,27 +219,7 @@ namespace JVOS.Controls
             var scaleCtrlValue = 1 - (0.1 * Over);
             var scaleCtrl = context.PushTransform(new ScaleTransform(scaleCtrlValue, scaleCtrlValue).Value);
             Point childLoc = new Point(0, 0);
-            if (Content is String)
-            {
-                FormattedText? text;
-                text = new FormattedText(Content as string, CultureInfo.CurrentUICulture, FlowDirection, new Typeface(FontFamily, FontStyle, FontWeight, FontStretch), FontSize, Foreground);
-                childLoc = GetChildLocation(new Size(text.Width, text.Height));
-                context.DrawText(text, childLoc + (new Point(text.Width, text.Height) * (1 - scaleCtrlValue)));
-            }
-            else if (Content is Image)
-            {
-                var c = Content as Image;
-                childLoc = GetChildLocation(new Size(c.Bounds.Width, c.Bounds.Height));
-                var bl = context.PushTransform(new TranslateTransform((1-scaleCtrlValue)*((Bounds.Width - Padding.Left - Padding.Right)/2), (1 - scaleCtrlValue) * ((Bounds.Height - Padding.Top - Padding.Bottom) / 2)).Value);
-                context.DrawImage(c.Source, new Rect(Padding.Left, Padding.Top, Bounds.Width - Padding.Left - Padding.Right, Bounds.Height - Padding.Top - Padding.Bottom));    
-                bl.Dispose();
-            }
-            else if (Content is Control)
-            {
-                var c = Content as Control;
-                c.Render(context);
-
-            }
+            //Presenter.Render(context);
             scaleCtrl.Dispose();
             if (Glare > 0 && Glare < 1)
             {
@@ -231,7 +241,6 @@ namespace JVOS.Controls
                 context.DrawRectangle(null, new Pen(BorderBrush, BorderThickness.Left), rrc, ActiveBoxShadows);
                 xopAct.Dispose();
             }
-            base.Render(context);
         }
 
         private Point GetChildLocation(Size childSize)

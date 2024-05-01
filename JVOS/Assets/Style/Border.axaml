@@ -1,0 +1,91 @@
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+	<ControlTheme x:Key="{x:Type Border}"
+				TargetType="Border">
+		<Setter Property="CornerRadius" Value="12"/>
+		<Setter Property="Background" Value="{DynamicResource Background_BasicInner}"/>
+		<Setter Property="Transitions">
+			<Transitions>
+				<BoxShadowsTransition Property="BoxShadow" Duration="0:0:.25"/>
+				<BrushTransition Property="Background" Duration="0:0:.25"/>
+			</Transitions>
+		</Setter>
+		<Style Selector="^.Inner">
+			<Setter Property="Background" Value="{DynamicResource Background_BasicInner}"/>
+			<Setter Property="BoxShadow" Value="{DynamicResource BoxShadows_BasicInner}"/>
+		</Style>
+		<Style Selector="^.Outer">
+			<Setter Property="Background" Value="{DynamicResource Background_BasicOuter}"/>
+			<Setter Property="BoxShadow" Value="{DynamicResource BoxShadows_BasicOuter}"/>
+		</Style>
+		<Style Selector="^.Alpha">
+			<Setter Property="Background" Value="{DynamicResource Background_AlphaInner}"/>
+			<Style Selector="^.Inner">
+				<Setter Property="Background" Value="{DynamicResource Background_AlphaInner}"/>
+				<Setter Property="BoxShadow" Value="{DynamicResource BoxShadows_AlphaInner}"/>
+			</Style>
+			<Style Selector="^.Outer">
+				<Setter Property="Background" Value="{DynamicResource Background_AlphaOuter}"/>
+				<Setter Property="BoxShadow" Value="{DynamicResource BoxShadows_AlphaOuter}"/>
+			</Style>
+		</Style>
+		<Style Selector="^.Beta">
+			<Setter Property="Background" Value="{DynamicResource Background_BetaInner}"/>
+			<Style Selector="^.Inner">
+				<Setter Property="Background" Value="{DynamicResource Background_BetaInner}"/>
+				<Setter Property="BoxShadow" Value="{DynamicResource BoxShadows_BetaInner}"/>
+			</Style>
+			<Style Selector="^.Outer">
+				<Setter Property="Background" Value="{DynamicResource Background_BetaOuter}"/>
+				<Setter Property="BoxShadow" Value="{DynamicResource BoxShadows_BetaOuter}"/>
+			</Style>
+		</Style>
+		<Style Selector="^.Layer">
+			<Setter Property="Background" Value="{DynamicResource Background_LayerInner}"/>
+			<Style Selector="^.Inner">
+				<Setter Property="Background" Value="{DynamicResource Background_LayerInner}"/>
+				<Setter Property="BoxShadow" Value="{DynamicResource BoxShadows_LayerInner}"/>
+			</Style>
+			<Style Selector="^.Outer">
+				<Setter Property="Background" Value="{DynamicResource Background_LayerOuter}"/>
+				<Setter Property="BoxShadow" Value="{DynamicResource BoxShadows_LayerOuter}"/>
+			</Style>
+		</Style>
+		<Style Selector="^.Demi">
+			<Setter Property="Background" Value="{DynamicResource Background_DemiInner}"/>
+			<Style Selector="^.Inner">
+				<Setter Property="Background" Value="{DynamicResource Background_DemiInner}"/>
+				<Setter Property="BoxShadow" Value="{DynamicResource BoxShadows_DemiInner}"/>
+			</Style>
+			<Style Selector="^.Outer">
+				<Setter Property="Background" Value="{DynamicResource Background_DemiOuter}"/>
+				<Setter Property="BoxShadow" Value="{DynamicResource BoxShadows_DemiOuter}"/>
+			</Style>
+		</Style>
+		<Style Selector="^.Accent">
+			<Setter Property="Background" Value="{DynamicResource Background_AccentInner}"/>
+			<Style Selector="^.Inner">
+				<Setter Property="Background" Value="{DynamicResource Background_AccentInner}"/>
+				<Setter Property="BoxShadow" Value="{DynamicResource BoxShadows_AccentInner}"/>
+			</Style>
+			<Style Selector="^.Outer">
+				<Setter Property="Background" Value="{DynamicResource Background_AccentOuter}"/>
+				<Setter Property="BoxShadow" Value="{DynamicResource BoxShadows_AccentOuter}"/>
+			</Style>
+		</Style>
+		<Style Selector="^.Bar">
+			<Setter Property="Background" Value="{DynamicResource Background_BarInner}"/>
+			<Style Selector="^.Inner">
+				<Setter Property="Background" Value="{DynamicResource Background_BarInner}"/>
+				<Setter Property="BoxShadow" Value="{DynamicResource BoxShadows_BarInner}"/>
+			</Style>
+			<Style Selector="^.Outer">
+				<Setter Property="Background" Value="{DynamicResource Background_BarOuter}"/>
+				<Setter Property="BoxShadow" Value="{DynamicResource BoxShadows_BarOuter}"/>
+			</Style>
+		</Style>
+		<Style Selector="^.Transparent">
+			<Setter Property="Background" Value="Transparent"/>
+		</Style>
+	</ControlTheme>
+</ResourceDictionary>

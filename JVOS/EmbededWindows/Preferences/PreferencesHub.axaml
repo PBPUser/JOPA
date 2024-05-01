@@ -1,0 +1,30 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:controls="clr-namespace:JVOS.Controls;assembly=JVOS.Controls"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+MinWidth="800" MinHeight="450"
+             x:Class="JVOS.EmbededWindows.Preferences.PreferencesHub">
+	<Grid>
+		<controls:CustomBlurBehind CornerRadius="0"/>
+		<Border Classes="Alpha">
+			<Grid>
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition Width="2*"/>
+					<ColumnDefinition Width="5*"/>
+				</Grid.ColumnDefinitions>
+				<Border Classes="Alpha Transparent Inner" Margin="8" Padding="16, 8">
+					<StackPanel x:Name="settingsColumns" Grid.Column="0">
+
+					</StackPanel>
+				</Border>
+				<DockPanel Grid.Column="1">
+					<TextBlock x:Name="SettingsTitle" Classes="h1" Text="Settings" DockPanel.Dock="Top">
+					</TextBlock>
+					<ScrollViewer x:Name="settingsViewr"/>
+				</DockPanel>
+			</Grid>
+		</Border>
+	</Grid>
+</UserControl>

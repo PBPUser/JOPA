@@ -3,11 +3,22 @@
     <TargetFramework>net7.0</TargetFramework>
     <Nullable>enable</Nullable>
     <LangVersion>latest</LangVersion>
+    <Platforms>AnyCPU;x64</Platforms>
   </PropertyGroup>
 
   
   <ItemGroup>
     <AvaloniaResource Include="Assets\**" />
+  </ItemGroup>
+
+  
+  <ItemGroup>
+    <AvaloniaResource Remove="Assets\Style\Border.axaml" />
+    <AvaloniaResource Remove="Assets\Style\CheckBox.axaml" />
+    <AvaloniaResource Remove="Assets\Style\JButton.axaml" />
+    <AvaloniaResource Remove="Assets\Style\ListBox.axaml" />
+    <AvaloniaResource Remove="Assets\Style\TextBlock.axaml" />
+    <AvaloniaResource Remove="Assets\Style\TextBox.axaml" />
   </ItemGroup>
 
   
@@ -19,30 +30,37 @@
   <ItemGroup>
     <None Remove="Assets\background_light.png" />
     <None Remove="Assets\default_avatar.png" />
+    <None Remove="Assets\errorjv.png" />
     <None Remove="Assets\Fonts\Anton.ttf" />
     <None Remove="Assets\Fonts\Chilanka-Regular.ttf" />
     <None Remove="Assets\Fonts\BubbleGumSans\BubblegumSans-Regular.ttf" />
+    <None Remove="Assets\infojv.png" />
     <None Remove="Assets\Lockscreen\q.png" />
+    <None Remove="Assets\question.png" />
     <None Remove="Assets\Resources.xml" />
+    <None Remove="Assets\Shell\colors.png" />
+    <None Remove="Assets\Shell\message.png" />
+    <None Remove="Assets\Shell\preferences.png" />
     <None Remove="Assets\Shell\run.png" />
     <None Remove="Assets\sugar.png" />
     <None Remove="Assets\Taskbar\assistent.png" />
     <None Remove="Assets\Taskbar\desktopSwitch.png" />
+    <None Remove="Assets\Taskbar\exhubs.png" />
     <None Remove="Assets\Taskbar\search.png" />
     <None Remove="Assets\Taskbar\start.png" />
+    <None Remove="Assets\warning.png" />
     <None Remove="Assets\wellcum.png" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Avalonia" Version="11.0.4" />
-    <PackageReference Include="Avalonia.Skia" Version="11.0.4" />
-    <PackageReference Include="Avalonia.Themes.Fluent" Version="11.0.4" />
-    <PackageReference Include="Avalonia.Fonts.Inter" Version="11.0.4" />
-    <PackageReference Include="Avalonia.ReactiveUI" Version="11.0.4" />
+    <PackageReference Include="Avalonia" Version="11.0.10" />
+    <PackageReference Include="Avalonia.Skia" Version="11.0.10" />
+    <PackageReference Include="Avalonia.Fonts.Inter" Version="11.0.10" />
     <!--Condition below is needed to remove Avalonia.Diagnostics package from build output in Release configuration.-->
-    <PackageReference Condition="'$(Configuration)' == 'Debug'" Include="Avalonia.Diagnostics" Version="11.0.4" />
     <PackageReference Include="HtmlAgilityPack" Version="1.11.53" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+    <PackageReference Include="SharpCompress" Version="0.36.0" />
+    <PackageReference Include="System.Reactive" Version="6.0.0" />
   </ItemGroup>
 
   <ItemGroup>
@@ -55,8 +73,41 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Update="EmbededWindows\Preferences.axaml.cs">
-      <DependentUpon>Preferences.axaml</DependentUpon>
+    <AvaloniaXaml Update="Assets\Style\ListBox.axaml">
+      <SubType>Designer</SubType>
+    </AvaloniaXaml>
+  </ItemGroup>
+
+  <ItemGroup>
+    <AvaloniaXaml Update="Assets\Style\TextBlock.axaml">
+      <SubType>Designer</SubType>
+    </AvaloniaXaml>
+  </ItemGroup>
+
+  <ItemGroup>
+    <AvaloniaXaml Update="Assets\Style\CheckBox.axaml">
+      <SubType>Designer</SubType>
+    </AvaloniaXaml>
+  </ItemGroup>
+
+  <ItemGroup>
+    <AvaloniaXaml Update="Assets\Style\TextBox.axaml">
+      <SubType>Designer</SubType>
+    </AvaloniaXaml>
+  </ItemGroup>
+
+  <ItemGroup>
+    <AvaloniaXaml Update="Assets\Style\Border.axaml">
+      <SubType>Designer</SubType>
+    </AvaloniaXaml>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="EmbededWindows\Preferences\PreferencesHub.axaml.cs">
+      <DependentUpon>PreferencesHub.axaml</DependentUpon>
+    </Compile>
+    <Compile Update="EmbededWindows\Preferences\HubsAdd.axaml.cs">
+      <DependentUpon>HubsAdd.axaml</DependentUpon>
     </Compile>
     <Compile Update="Screens\LoginScreen.axaml.cs">
       <DependentUpon>LoginScreen.axaml</DependentUpon>
@@ -64,5 +115,11 @@
     <Compile Update="JWindow.axaml.cs">
       <DependentUpon>JWindow.axaml</DependentUpon>
     </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <AvaloniaXaml Update="Assets\Style\JButton.axaml">
+      <SubType>Designer</SubType>
+    </AvaloniaXaml>
   </ItemGroup>
 </Project>

@@ -1,0 +1,28 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                xmlns:controls="clr-namespace:JVOS.Controls;assembly=JVOS.Controls"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="JVOS.EmbededWindows.Preferences.HubsAdd">
+<Border Background="Transparent">
+    <Grid RowDefinitions="*, auto">
+        <Grid RowDefinitions="32, *" ColumnDefinitions="*, *">
+            <TextBlock Text="Available Hubs" FontSize="14" Margin="4"/>
+            <TextBlock Text="Existing Hubs" FontSize="14" Margin="4" Grid.Column="1"/>
+            <ListBox x:Name="AvailableHubs" Grid.Row="1"/>
+            <ListBox x:Name="ExistingHubs" Grid.Row="1" Grid.Column="1"/>
+        </Grid>
+        <Border Grid.Row="1" Classes="Alpha Transparent Inner" Margin="8" Padding="8">
+            <Grid>
+                <controls:JButton HorizontalAlignment="Left" VerticalAlignment="Center" x:Name="addBtn" Width="100" Content="Add"/>
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center">
+                    <controls:JButton x:Name="rmBtn" Width="100" Content="Remove"/>
+                    <controls:JButton x:Name="upBtn" Width="100" Content="Up"/>
+                    <controls:JButton x:Name="dwBtn" Width="100" Content="Down"/>
+                </StackPanel>
+            </Grid>    
+        </Border>
+    </Grid>
+</Border>
+</UserControl>

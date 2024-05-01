@@ -7,17 +7,16 @@
 			xmlns:api="clr-namespace:JVOS.ApplicationAPI;assembly=JVOS.ApplicationAPI"
              x:Class="JVOS.Hubs.LanguageSwitcherHub" Foreground="{DynamicResource BarForeground}"
 			 xmlns:local="clr-namespace:JVOS.Hubs">
-	<Border Background="{DynamicResource BarBackground}" BoxShadow="{DynamicResource BarClaymorphismBoxShadow}" CornerRadius="12" MinWidth="256" MinHeight="256">
-		<DockPanel>
-			<StackPanel Orientation="Horizontal" DockPanel.Dock="Top">
-				<controls:JButton CornerRadius="12" Background="" x:Name="CloseBtn" Content="Close"/>
-				<TextBlock Text="Select Language" FontFamily="{DynamicResource AntonFont}" Foreground="{DynamicResource BarForeground}"/>
-			</StackPanel>
-			<ScrollViewer>
-				<StackPanel x:Name="Languages" >
+	<Grid Margin="8">
+		<controls:CustomBlurBehind CornerRadius="8"/>
+		<Border Classes="Bar Alpha Outer" MinWidth="256" MinHeight="192">
+			<DockPanel>
+				<TextBlock Text="Select Language" DockPanel.Dock="Top" Classes="h1 Bar"/>
+				<controls:JButton DockPanel.Dock="Bottom" Height="32" Classes="Bar Alpha" Content="Language preferences"/>
+				<ListBox Classes="Bar Alpha Language" x:Name="languages">
 
-				</StackPanel>
-			</ScrollViewer>
-		</DockPanel>
-	</Border>
+				</ListBox>
+			</DockPanel>
+		</Border>
+	</Grid>
 </api:IHub>

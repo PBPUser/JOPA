@@ -1,5 +1,7 @@
 using Avalonia.Controls;
+using HarfBuzzSharp;
 using JVOS.ApplicationAPI;
+using System.Collections.Generic;
 
 namespace JVOS.Hubs
 {
@@ -15,24 +17,14 @@ namespace JVOS.Hubs
 
         private void LanguageSwitcherHub_Opened(object? sender, System.EventArgs e)
         {
-            Languages.Children.Clear();
-            foreach(LanguageWorker.Language lang in LanguageWorker.Languages)
-            {
-                var btn = new Button { Content = lang.ShortName, HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Stretch };
-                btn.Click += (a, b) =>
-                {
-                    LanguageWorker.SetLanguage(lang);
-                    OnClosed(CloseReason.CloseReason);
-                };
-                Languages.Children.Add(btn);
-            }
+            languages.ItemsSource = new List<Language>();
+            languages.ItemsSource = LanguageWorker.Languages;
         }
 
         private void LanguageSwitcherHub_Closed(object? sender, CloseReason e)
         {
             if (e == CloseReason.CloseReason)
                 return;
-
         }
     }
 }

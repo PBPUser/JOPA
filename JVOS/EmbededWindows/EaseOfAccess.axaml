@@ -2,18 +2,15 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450" FontFamily="{DynamicResource
-			  AntonFont}" Foreground="{DynamicResource AccentBackground}"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450" Foreground="{DynamicResource BasicForeground}"
 			 xmlns:controls="clr-namespace:JVOS.Controls;assembly=JVOS.Controls"
+			 FontSize="12"
              x:Class="JVOS.EmbededWindows.EaseOfAccess">
 	<ScrollViewer>
-		<StackPanel Background="{DynamicResource BasicBackground}" x:Name="rootStack">
-			<TextBlock Text="Ease of Access" FontSize="20" FontWeight="Bold" Margin="8"/>
-			<CheckBox Margin="4" x:Name="useAccentTitle" Content="Use Accent Title"/>
-			<CheckBox Margin="4" x:Name="useAccentBar" Content="Use Accent Bar"/>
-			<CheckBox Margin="4" x:Name="useDarkMode" Content="Use Dark Mode"/>
-			<controls:JButton x:Name="apply" ClipToBounds="false" BoxShadows="{DynamicResource ButtonBarClaymorphismBoxShadow}" ActiveBoxShadows="{DynamicResource ButtonBarClaymorphismInnerBoxShadow}" Padding="4" Content="Apply" CornerRadius="16" Height="32" Width="100" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" VerticalAlignment="Center" Margin="4"/>
-			<Ellipse Margin="8" HorizontalAlignment="Left" Width="64" Height="64" Fill="Blue"/>
-		</StackPanel>
+		<DockPanel Background="{DynamicResource BasicBackground}" x:Name="rootStack">
+			<TextBlock DockPanel.Dock="Top" Text="Ease of Access"  FontSize="16" FontWeight="Bold" Margin="8"/>
+			
+			
+		</DockPanel>
 	</ScrollViewer>
 </UserControl>

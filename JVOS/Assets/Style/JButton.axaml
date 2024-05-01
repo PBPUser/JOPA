@@ -1,0 +1,78 @@
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+					xmlns:controls="clr-namespace:JVOS.Controls;assembly=JVOS.Controls"
+					xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+	<ControlTheme x:Key="{x:Type controls:JButton}"
+			   TargetType="controls:JButton">
+		<Setter Property="BoxShadows" Value="{DynamicResource BoxShadows_BasicOuter}"/>
+		<Setter Property="ActiveBoxShadows" Value="{DynamicResource BoxShadows_BasicInner}"/>
+		<Setter Property="Foreground" Value="{DynamicResource Foreground_BasicOuter}"/>
+		<Setter Property="ClipToBounds" Value="false" />
+		<Setter Property="Background" Value="transparent" />
+		<Setter Property="BorderThickness" Value="0" />
+		<Setter Property="HorizontalContentAlignment" Value="Center" />
+		<Setter Property="VerticalContentAlignment" Value="Center" />
+		<Setter Property="Padding" Value="4" />
+		<Setter Property="Margin" Value="4"/>
+		<Setter Property="Height" Value="32"/>
+		<Setter Property="CornerRadius" Value="16"/>
+		<Setter Property="FontSize" Value="14"/>
+		<Setter Property="Template">
+			<ControlTemplate>
+				<ContentPresenter Name="PART_ContentPresenter"
+								  Padding="{TemplateBinding Padding}"
+								  HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
+								  VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"
+								  Content="{TemplateBinding Content}"
+								  ContentTemplate="{TemplateBinding ContentTemplate}"
+								  RecognizesAccessKey="True"
+								  TextElement.Foreground="{TemplateBinding Foreground}">
+				</ContentPresenter>
+			</ControlTemplate>
+		</Setter>
+		<Style Selector="^ /template/ ContentPresenter#PART_ContentPresenter" >
+			<Setter Property="Transitions">
+				<Transitions>
+					<TransformOperationsTransition Property="RenderTransform" Duration="0:0:.125" />
+				</Transitions>
+			</Setter>
+		</Style>
+		<Setter Property="Transitions">
+			<Transitions>
+				<BoxShadowsTransition Property="BoxShadows" Duration="0:0:.125"/>
+				<BrushTransition Property="Background" Duration="0:0:.125"/>
+				<BrushTransition Property="Foreground" Duration="0:0:.125"/>
+			</Transitions>
+		</Setter>
+		<Style Selector="^.Hub">
+			<Setter Property="FontFamily" Value="Jcons"/>
+			<Setter Property="FontSize" Value="36"/>
+			<Setter Property="Width" Value="56"/>
+		</Style>
+		<Style Selector="^.Mid">
+			<Setter Property="Padding" Value="4"/>
+			<Setter Property="Width" Value="56"/>
+		</Style>
+		<Style Selector="^.Blur">
+			<Setter Property="UseBlurBehind" Value="true"/>
+			
+		</Style>
+		<Style Selector="^.Transparent">
+			<Setter Property="BoxShadows" Value="{DynamicResource NoBoxShadows}"/>
+			<Setter Property="Background" Value="{x:Null}"/>
+			<Setter Property="ActiveBoxShadows" Value="{DynamicResource BoxShadows_AlphaInner}"/>
+			<Style Selector="^:pointerover">
+				<Setter Property="BoxShadows" Value="{DynamicResource BoxShadows_AlphaOuter}"/>
+			</Style>
+		</Style>
+		<Style Selector="^.Bar">
+			<Setter Property="BoxShadows" Value="{DynamicResource NoBoxShadows}"/>
+			<Setter Property="Background" Value="{x:Null}"/>
+			<Setter Property="ActiveBoxShadows" Value="{DynamicResource BoxShadows_BarInner}"/>
+			<Setter Property="Height" Value="56"/>
+			<Setter Property="CornerRadius" Value="12"/>
+		</Style>
+		<Style Selector="^:pressed /template/ ContentPresenter#PART_ContentPresenter" >
+			<Setter Property="RenderTransform" Value="scale(0.8)" />
+		</Style>
+	</ControlTheme>
+</ResourceDictionary>

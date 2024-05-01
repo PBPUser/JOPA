@@ -7,8 +7,10 @@
              xmlns:controls="clr-namespace:JVOS.Controls;assembly=JVOS.Controls"
 			xmlns:api="clr-namespace:JVOS.ApplicationAPI;assembly=JVOS.ApplicationAPI"
 			 xmlns:local="clr-namespace:JVOS.Hubs">
-	<Border MinHeight="724" MinWidth="640" ClipToBounds="false" Background="{DynamicResource BarBackground}" BoxShadow="{DynamicResource
-			BarClaymorphismBoxShadow}" Margin="8" CornerRadius="12">
+	<api:IHub.DataContext>
+		<local:StartViewModel/>
+	</api:IHub.DataContext>
+	<Border Height="724" Width="640" Classes="Bar Alpha Outer" Margin="8" CornerRadius="12">
 		<Grid>
 			<Grid.RowDefinitions>
 				<RowDefinition/>
@@ -17,10 +19,49 @@
 			<Border Grid.Row="1" Margin="8" CornerRadius="12" BoxShadow="{DynamicResource
 			BarClaymorphismInnerBoxShadow}">
 				<StackPanel Orientation="Horizontal">
+					<controls:JButton ClipToBounds="false" Grid.Column="1" Height="32" Width="100" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Foreground="{DynamicResource BarForeground}" BoxShadows="{DynamicResource ButtonBarClaymorphismBoxShadow}" ActiveBoxShadows="{DynamicResource ButtonBarClaymorphismInnerBoxShadow}"  Margin="8, 8, 4, 8" CornerRadius="16" x:Name="_refButton" HorizontalAlignment="Stretch" Content="Refresh"/>
 					<controls:JButton ClipToBounds="false" Grid.Column="1" Height="32" Width="100" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Foreground="{DynamicResource BarForeground}" BoxShadows="{DynamicResource ButtonBarClaymorphismBoxShadow}" ActiveBoxShadows="{DynamicResource ButtonBarClaymorphismInnerBoxShadow}"  Margin="8, 8, 4, 8" CornerRadius="16" x:Name="_runButton" HorizontalAlignment="Stretch" Content="Run"/>
 					<controls:JButton ClipToBounds="false" Grid.Column="1" Height="32" Width="100" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Foreground="{DynamicResource BarForeground}" BoxShadows="{DynamicResource ButtonBarClaymorphismBoxShadow}" ActiveBoxShadows="{DynamicResource ButtonBarClaymorphismInnerBoxShadow}"  Margin="8, 8, 4, 8" CornerRadius="16" x:Name="_thmButton" HorizontalAlignment="Stretch" Content="Theme"/>
+					<controls:JButton ClipToBounds="false" Grid.Column="1" Height="32" Width="100" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Foreground="{DynamicResource BarForeground}" BoxShadows="{DynamicResource ButtonBarClaymorphismBoxShadow}" ActiveBoxShadows="{DynamicResource ButtonBarClaymorphismInnerBoxShadow}"  Margin="8, 8, 4, 8" CornerRadius="16" x:Name="_hubButton" HorizontalAlignment="Stretch" Content="Hubs"/>
 				</StackPanel>
 			</Border>
+			<Grid Margin="8" x:Name="clippyGrid" ClipToBounds="true">
+				<Grid x:Name="clippedGrid" HorizontalAlignment="Left">
+					<Grid.ColumnDefinitions>
+						<ColumnDefinition/>
+						<ColumnDefinition/>
+					</Grid.ColumnDefinitions>
+					<Grid>
+						<Grid.RowDefinitions>
+							<RowDefinition Height="48"/>
+							<RowDefinition/>
+						</Grid.RowDefinitions>
+						<TextBlock Margin="8" VerticalAlignment="Center" Text="Pinned Applications" FontWeight="Bold" FontSize="16"/>
+						<controls:JButton ClipToBounds="false" Grid.Column="1" Height="32" Width="100" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Foreground="{DynamicResource BarForeground}" BoxShadows="{DynamicResource ButtonBarClaymorphismBoxShadow}" ActiveBoxShadows="{DynamicResource ButtonBarClaymorphismInnerBoxShadow}"  Margin="8, 8, 16, 8" CornerRadius="16" x:Name="_allButton" HorizontalAlignment="Right" Content="All Apps"/>
+						<ListBox x:Name="PinnedApplications" Grid.Row="1" Margin="8" CornerRadius="8" Padding="8" Background="Transparent" BorderThickness="0" ItemsSource="{Binding PinnedPoints}">
+
+						</ListBox>
+					</Grid>
+					<Grid Grid.Column="1">
+						<Grid.RowDefinitions>
+							<RowDefinition Height="48"/>
+							<RowDefinition/>
+						</Grid.RowDefinitions>
+						<TextBlock Margin="8" VerticalAlignment="Center" Text="All Applications" FontWeight="Bold" FontSize="16"/>
+						<controls:JButton ClipToBounds="false" Grid.Column="1" Height="32" Width="100" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Foreground="{DynamicResource BarForeground}" BoxShadows="{DynamicResource ButtonBarClaymorphismBoxShadow}" ActiveBoxShadows="{DynamicResource ButtonBarClaymorphismInnerBoxShadow}"  Margin="8, 8, 16, 8" CornerRadius="16" x:Name="_pinButton" HorizontalAlignment="Right" Content="Nazad"/>
+						<ListBox x:Name="AllApplications" Grid.Row="1" Margin="8" CornerRadius="8" Padding="8" Background="Transparent" BorderThickness="0" ItemsSource="{Binding EntryPoints}">
+							<ListBox.ItemTemplate>
+								<DataTemplate>
+									<StackPanel Orientation="Horizontal">
+										<TextBlock Text="{Binding Name}" />
+										<Image Source="{Binding ImageSource}" />
+									</StackPanel>
+								</DataTemplate>
+							</ListBox.ItemTemplate>
+						</ListBox>
+					</Grid>
+				</Grid>
+			</Grid>
 		</Grid>
 	</Border>
 </api:IHub>

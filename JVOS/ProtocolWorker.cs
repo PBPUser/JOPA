@@ -1,4 +1,5 @@
 ﻿using JVOS.ApplicationAPI;
+using JVOS.Protocol;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,16 +10,18 @@ namespace JVOS
 {
     public static class ProtocolWorker
     {
-        static ProtocolWorker()
+        public static void LoadProtocolWorker()
         {
-            Communicator.ProtocolRegister += ProtocolRegistration;
+            Communicator.RegisterProtocol += ProtocolRegistration;
+            Communicator.Register(new ShellProtocol());
+            Communicator.Register(new ApplicationProtocol());
         }
 
-        public static List<(string, Action<string, string>)> Protocols = new List<(string, Action<string, string>)>();
+        public static List<IProtocol> Protocols = new List<IProtocol>();
 
-        private static void ProtocolRegistration(object? sender, (string, Action<string, string>) e)
+        private static void ProtocolRegistration(object? sender, IProtocol e)
         {
-            if(Protocols.Where(x => x.Item1 == e.Item1).Count() == 0)
+            if(Protocols.Where(x => x.Name == e.Name).Count() == 0)
                 Protocols.Add(e);
         }
     }

@@ -14,6 +14,7 @@ namespace JVOS.ApplicationAPI
         public bool AllowMinimize { get; set; }
         public int ID { get; set; }
 
+        public event EventHandler<EventArgs> Closing;
         public event EventHandler<IJWindow> ChildWindowSet;
         public void SetPosition(int x, int y)
         {
@@ -29,5 +30,7 @@ namespace JVOS.ApplicationAPI
         {
 
         }
+
+        string GetPanelId();
     }
 }

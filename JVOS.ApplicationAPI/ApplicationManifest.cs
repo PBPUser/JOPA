@@ -14,20 +14,18 @@ namespace JVOS.ApplicationAPI
         public string InternalName = "";
         public string VersionHuman = "";
         public int Version = -1;
-        public string[] Runners = new string[0];
-        public string[] RunnersHuman = new string[0];
+        public bool IsWebApplication = false;
 
         public ApplicationManifest() {
             
         }
 
-        public ApplicationManifest(string name, string internalName, string versionFamily, int version, string[] runners)
+        public ApplicationManifest(string name, string internalName, string versionFamily, int version)
         {
             Name = name;
             InternalName = internalName;
             Version = version;
             VersionHuman = versionFamily;
-            Runners = runners;
         }
     }
 }

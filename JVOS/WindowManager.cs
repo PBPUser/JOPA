@@ -39,10 +39,13 @@ namespace JVOS
             WindowSpace?.OpenWindow(window);
         }
 
-        public static void OpenInJWindow(IJWindow windowContent)
+        public static void OpenInJWindow(IJWindow windowContent, Action? whenClosed = null)
         {
             JWindow jwin = new JWindow() {  };
             OpenJWindow(jwin);
+            windowContent.WindowFrame = jwin;
+            if (whenClosed != null)
+                jwin.WindowClosing += (a, b) => whenClosed.Invoke();
             jwin.SetChild((UserControl)windowContent);
         }
 

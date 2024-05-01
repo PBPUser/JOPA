@@ -20,6 +20,9 @@ namespace JVOS.ApplicationAPI
         public Subject<Bitmap> Icon { get; set; }
         public Bitmap IconValue { get; set; }
         public IJWindowFrame WindowFrame { get; set;}
+
+        public string GetPanelId();
+
         public virtual void Closed()
         {
 

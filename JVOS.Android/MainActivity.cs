@@ -8,7 +8,12 @@ using Avalonia.ReactiveUI;
 
 namespace JVOS.Android;
 
-[Activity(Label = "JVOS.Android", Theme = "@style/MyTheme.NoActionBar", Icon = "@drawable/icon", LaunchMode = LaunchMode.SingleTop, ConfigurationChanges = ConfigChanges.Orientation | ConfigChanges.ScreenSize | ConfigChanges.UiMode)]
+[Activity(
+    Label = "JVOS.Android",
+    Theme = "@style/MyTheme.NoActionBar",
+    Icon = "@drawable/icon",
+    MainLauncher = true,
+    ConfigurationChanges = ConfigChanges.Orientation | ConfigChanges.ScreenSize | ConfigChanges.UiMode)]
 public class MainActivity : AvaloniaMainActivity<App>
 {
     protected override AppBuilder CustomizeAppBuilder(AppBuilder builder)
@@ -16,19 +21,5 @@ public class MainActivity : AvaloniaMainActivity<App>
         return base.CustomizeAppBuilder(builder)
             .WithInterFont()
             .UseReactiveUI();
-
-    }
-
-    protected override void OnCreate(Bundle? savedInstanceState)
-    {
-        base.OnCreate(savedInstanceState);
-    }
-
-    protected override void OnResume()
-    {
-        base.OnResume();
-
-
-        StartActivity(new Intent(Avalonia.Android.Platform.Application.Context, typeof(MainActivity)));
     }
 }

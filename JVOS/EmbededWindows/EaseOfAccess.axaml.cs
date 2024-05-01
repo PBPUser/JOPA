@@ -4,6 +4,7 @@ using Avalonia.Media.Imaging;
 using Avalonia.Platform;
 using JVOS.ApplicationAPI;
 using JVOS.Controls;
+using JVOS.Screens;
 using System;
 using System.Reactive.Subjects;
 
@@ -14,18 +15,15 @@ namespace JVOS.EmbededWindows
         public EaseOfAccess()
         {
             InitializeComponent();
-            apply.Click += (a, b) =>
-            {
-                ColorScheme.ApplyScheme(ColorScheme.Current, this.useDarkMode.IsChecked == true, useAccentTitle.IsChecked == true, useAccentBar.IsChecked == true);
-            };
-            rootStack.Children.Insert(1, new JVOS.Controls.DualPanelColorPicker() { Padding = new Avalonia.Thickness(8), Color = Colors.Violet, CornerRadius = new Avalonia.CornerRadius(8) });
+            
         }
+
+        public string GetPanelId() => "jvos.system:easeofaccess";
 
         public void WhenLoaded()
         {
             ((IJWindow)this).UpdateTitle("Ease of access");
             ((IJWindow)this).UpdateIcon(new Bitmap(AssetLoader.Open(new Uri("avares://JVOS/Assets/Lockscreen/easeofaccess.png"))));
-            App.SendNotification("Tess");
         }
 
         private Subject<string> _title = new Subject<string>();

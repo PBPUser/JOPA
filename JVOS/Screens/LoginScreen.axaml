@@ -1,5 +1,6 @@
 <local:ScreenBase
 		     xmlns:local="clr-namespace:JVOS.Screens;assembly=JVOS"
+		     xmlns:c="clr-namespace:JVOS.Controls;assembly=JVOS.Controls"
 			 xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -19,9 +20,7 @@
 					<TextBlock Foreground="{DynamicResource BasicForeground}" Margin="0,16" Text="{DynamicResource Username}" HorizontalAlignment="Center" DockPanel.Dock="Top" FontSize="24" FontFamily="{DynamicResource AntonFont}"/>
 					<TextBox IsVisible="false" x:Name="password_box" Foreground="{DynamicResource BasicForeground}" CornerRadius="16, 0, 0, 16" Padding="16, 0, 0, 0" SelectionBrush="{DynamicResource AccentBackground}" Background="{DynamicResource BasicBackground}" BorderThickness="2, 2, 0, 2" BorderBrush="{DynamicResource AccentBackground}" Width="160" Height="32" VerticalContentAlignment="Center"/>
 					<Button IsVisible="false" Foreground="{DynamicResource BasicForeground}" Background="{DynamicResource BasicBackground}" BorderBrush="{DynamicResource AccentBackground}" BorderThickness="0, 2, 2, 2" CornerRadius="0, 16, 16, 0" Content="->" Width="32" Height="32" />
-					<Border ClipToBounds="true" Background="{DynamicResource ButtonBarBackground}" CornerRadius="16" IsVisible="true" Width="120" Height="32" HorizontalAlignment="Center" DockPanel.Dock="Top"  BoxShadow="{DynamicResource ButtonBarClaymorphismBoxShadow}">
-						<Button x:Name="loginWithoutPasswordBtn" Content="Sign In" HorizontalContentAlignment="Center" HorizontalAlignment="Stretch" Background="Transparent" Foreground="{DynamicResource ButtonBarForeground}"/>
-					</Border>
+					<c:JButton x:Name="loginWithoutPasswordBtn" Content="Sign In" Classes="Transparent Blur"/>
 				</DockPanel>
 				<Border ClipToBounds="true" CornerRadius="32"  VerticalAlignment="Bottom" HorizontalAlignment="Right" Margin="8" BoxShadow="{DynamicResource BarClaymorphismBoxShadow}" Background="{DynamicResource BarBackground}" Height="64" x:Name="menuBorder">
 					<StackPanel Orientation="Horizontal">

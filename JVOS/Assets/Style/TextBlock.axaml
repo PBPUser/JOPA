@@ -1,0 +1,25 @@
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+	<ControlTheme x:Key="{x:Type TextBlock}" TargetType="TextBlock">
+		<Setter Property="Foreground" Value="{DynamicResource BasicForeground}"/>
+		<Setter Property="FontSize" Value="14"/>
+		<Setter Property="Transitions">
+			<Transitions>
+				<BrushTransition Property="Foreground" Duration="0:0:.125"/>
+			</Transitions>
+		</Setter>
+		<Style Selector="^.h1">
+			<Setter Property="Margin" Value="8"/>
+			<Setter Property="FontSize" Value="20"/>
+			<Setter Property="FontWeight" Value="Bold"/>
+		</Style>
+		<Style Selector="^.h2">
+			<Setter Property="Margin" Value="6"/>
+			<Setter Property="FontSize" Value="18"/>
+		</Style>
+		<Style Selector="^.h3">
+			<Setter Property="Margin" Value="4"/>
+			<Setter Property="FontSize" Value="16"/>
+		</Style>
+	</ControlTheme>
+</ResourceDictionary>

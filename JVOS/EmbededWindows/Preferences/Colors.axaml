@@ -1,0 +1,30 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+			 xmlns:controls="clr-namespace:JVOS.Controls;assembly=JVOS.Controls"
+             x:Class="JVOS.EmbededWindows.Preferences.ColorsPage">
+	<StackPanel x:Name="rootStack">
+		<Border Classes="Beta Outer" Padding="8, 4" Margin="8">
+			<StackPanel>
+				<TextBlock Text="Properties" Classes="h3"/>
+				<CheckBox Margin="4" x:Name="useDarkMode" Content="Use Dark Mode" Foreground="{DynamicResource BasicForeground}"/>
+				<CheckBox Margin="4" x:Name="useAccentTitle" Content="Use Accent Title" Foreground="{DynamicResource BasicForeground}"/>
+				<CheckBox Margin="4" x:Name="useAccentBar" Content="Use Accent Bar" Foreground="{DynamicResource BasicForeground}"/>
+			</StackPanel>
+		</Border>
+		<Border Classes="Beta Outer" Padding="8, 4" Margin="8">
+			<StackPanel>
+				<TextBlock Text="Taskbar" Classes="h3"/>
+				<CheckBox Margin="4" x:Name="hideApplicationTooltips" Content="Hide titles from taskbar icons" Foreground="{DynamicResource BasicForeground}"/>
+			</StackPanel>
+		</Border>
+		<Border DockPanel.Dock="Bottom" Grid.Row="2" Margin="8" Classes="Alpha Transparent Inner">
+			<StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="8">
+				<controls:JButton FontSize="14" x:Name="apply" Content="Apply" Width="100"/>
+				<controls:JButton FontSize="14" x:Name="applyDefault" Content="Reset" Width="100"/>
+			</StackPanel>
+		</Border>
+	</StackPanel>
+</UserControl>

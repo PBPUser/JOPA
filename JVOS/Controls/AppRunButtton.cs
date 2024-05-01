@@ -13,7 +13,7 @@ namespace JVOS.Controls
 
         protected override void OnClick()
         {
-            ApplicationManager.Run(Runner);
+
             base.OnClick();
         }
     }

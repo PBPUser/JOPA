@@ -1,11 +1,11 @@
 <Application xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              x:Class="JVOS.App"
-             RequestedThemeVariant="Default">
+             RequestedThemeVariant="Light">
              <!-- "Default" ThemeVariant follows system theme variant. "Dark" or "Light" are other available options. -->
 
     <Application.Styles>
-        <FluentTheme />
+        <SimpleTheme />
     </Application.Styles>
 	<Application.Resources>
 		<ResourceDictionary>
@@ -15,6 +15,14 @@
 			<FontFamily x:Key="BubblegumSansFont">
 				avares://JVOS/Assets/Fonts/#Anton
 			</FontFamily>
+			<ResourceDictionary.MergedDictionaries>
+				<MergeResourceInclude Source="avares://JVOS/Assets/Style/Border.axaml" />
+				<MergeResourceInclude Source="avares://JVOS/Assets/Style/CheckBox.axaml" />
+				<MergeResourceInclude Source="avares://JVOS/Assets/Style/JButton.axaml" />
+				<MergeResourceInclude Source="avares://JVOS/Assets/Style/ListBox.axaml" />
+				<MergeResourceInclude Source="avares://JVOS/Assets/Style/TextBox.axaml" />
+				<MergeResourceInclude Source="avares://JVOS/Assets/Style/TextBlock.axaml" />
+			</ResourceDictionary.MergedDictionaries>
 		</ResourceDictionary>
 	</Application.Resources>
 	
