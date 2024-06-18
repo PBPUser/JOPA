@@ -1,0 +1,4 @@
+{
+	"DllPath": "JVOS.ForkApplet.dll",
+	"ProvidenNames": ["JVOS.ForkApplet.ForkHubProvider"]
+}

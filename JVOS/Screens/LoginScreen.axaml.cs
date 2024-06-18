@@ -183,6 +183,12 @@ namespace JVOS.Screens
             UserSession.UserLogin += (a, b) =>
             {
                 MainView.SwitchScreen(b.DesktopScreen);
+                if (!b.UserOptions.Prepared)
+                {
+                    Communicator.RunCommand("app://Applications\\JVOS.OOBE nikitos");
+                    b.UserOptions.CreateProgramShortcuts();
+                    b.UserOptions.Prepared = true;
+                }
             };
             UserSession.UserLogout += (a, b) =>
             {

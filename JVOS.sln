@@ -25,7 +25,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "JVOS.Regedit", "JVOS.Regedi
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "JVOS.Xbox352Emulator", "JVOS.Xbox352Emulator\JVOS.Xbox352Emulator.csproj", "{E9C0091C-4413-4B0C-85CD-FA8975BF7A4F}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "JVisionOS", "..\..\..\DCT\JVisionOS\JVisionOS.csproj", "{D4DDBD52-559F-42A5-BFB3-AF6EE04D14C0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "JVisionOS", "C:\Users\iwuwka\source\repos\JVOS\JVisionOS\JVisionOS.csproj", "{497C7BFE-8EE3-4D77-ADAD-8E398709F9C4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -223,22 +223,22 @@ Global
 		{E9C0091C-4413-4B0C-85CD-FA8975BF7A4F}.Release|Any CPU.Build.0 = Release|Any CPU
 		{E9C0091C-4413-4B0C-85CD-FA8975BF7A4F}.Release|x64.ActiveCfg = Release|x64
 		{E9C0091C-4413-4B0C-85CD-FA8975BF7A4F}.Release|x64.Build.0 = Release|x64
-		{D4DDBD52-559F-42A5-BFB3-AF6EE04D14C0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{D4DDBD52-559F-42A5-BFB3-AF6EE04D14C0}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{D4DDBD52-559F-42A5-BFB3-AF6EE04D14C0}.Debug|x64.ActiveCfg = Debug|x64
-		{D4DDBD52-559F-42A5-BFB3-AF6EE04D14C0}.Debug|x64.Build.0 = Debug|x64
-		{D4DDBD52-559F-42A5-BFB3-AF6EE04D14C0}.ExportDebug|Any CPU.ActiveCfg = ExportDebug|Any CPU
-		{D4DDBD52-559F-42A5-BFB3-AF6EE04D14C0}.ExportDebug|Any CPU.Build.0 = ExportDebug|Any CPU
-		{D4DDBD52-559F-42A5-BFB3-AF6EE04D14C0}.ExportDebug|x64.ActiveCfg = ExportDebug|x64
-		{D4DDBD52-559F-42A5-BFB3-AF6EE04D14C0}.ExportDebug|x64.Build.0 = ExportDebug|x64
-		{D4DDBD52-559F-42A5-BFB3-AF6EE04D14C0}.ExportRelease|Any CPU.ActiveCfg = ExportRelease|Any CPU
-		{D4DDBD52-559F-42A5-BFB3-AF6EE04D14C0}.ExportRelease|Any CPU.Build.0 = ExportRelease|Any CPU
-		{D4DDBD52-559F-42A5-BFB3-AF6EE04D14C0}.ExportRelease|x64.ActiveCfg = ExportRelease|x64
-		{D4DDBD52-559F-42A5-BFB3-AF6EE04D14C0}.ExportRelease|x64.Build.0 = ExportRelease|x64
-		{D4DDBD52-559F-42A5-BFB3-AF6EE04D14C0}.Release|Any CPU.ActiveCfg = ExportRelease|Any CPU
-		{D4DDBD52-559F-42A5-BFB3-AF6EE04D14C0}.Release|Any CPU.Build.0 = ExportRelease|Any CPU
-		{D4DDBD52-559F-42A5-BFB3-AF6EE04D14C0}.Release|x64.ActiveCfg = ExportRelease|x64
-		{D4DDBD52-559F-42A5-BFB3-AF6EE04D14C0}.Release|x64.Build.0 = ExportRelease|x64
+		{497C7BFE-8EE3-4D77-ADAD-8E398709F9C4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{497C7BFE-8EE3-4D77-ADAD-8E398709F9C4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{497C7BFE-8EE3-4D77-ADAD-8E398709F9C4}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{497C7BFE-8EE3-4D77-ADAD-8E398709F9C4}.Debug|x64.Build.0 = Debug|Any CPU
+		{497C7BFE-8EE3-4D77-ADAD-8E398709F9C4}.ExportDebug|Any CPU.ActiveCfg = ExportDebug|Any CPU
+		{497C7BFE-8EE3-4D77-ADAD-8E398709F9C4}.ExportDebug|Any CPU.Build.0 = ExportDebug|Any CPU
+		{497C7BFE-8EE3-4D77-ADAD-8E398709F9C4}.ExportDebug|x64.ActiveCfg = ExportDebug|Any CPU
+		{497C7BFE-8EE3-4D77-ADAD-8E398709F9C4}.ExportDebug|x64.Build.0 = ExportDebug|Any CPU
+		{497C7BFE-8EE3-4D77-ADAD-8E398709F9C4}.ExportRelease|Any CPU.ActiveCfg = ExportRelease|Any CPU
+		{497C7BFE-8EE3-4D77-ADAD-8E398709F9C4}.ExportRelease|Any CPU.Build.0 = ExportRelease|Any CPU
+		{497C7BFE-8EE3-4D77-ADAD-8E398709F9C4}.ExportRelease|x64.ActiveCfg = ExportRelease|Any CPU
+		{497C7BFE-8EE3-4D77-ADAD-8E398709F9C4}.ExportRelease|x64.Build.0 = ExportRelease|Any CPU
+		{497C7BFE-8EE3-4D77-ADAD-8E398709F9C4}.Release|Any CPU.ActiveCfg = ExportRelease|Any CPU
+		{497C7BFE-8EE3-4D77-ADAD-8E398709F9C4}.Release|Any CPU.Build.0 = ExportRelease|Any CPU
+		{497C7BFE-8EE3-4D77-ADAD-8E398709F9C4}.Release|x64.ActiveCfg = ExportRelease|Any CPU
+		{497C7BFE-8EE3-4D77-ADAD-8E398709F9C4}.Release|x64.Build.0 = ExportRelease|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

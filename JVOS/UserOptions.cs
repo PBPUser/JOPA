@@ -6,6 +6,7 @@ using Avalonia.Platform;
 using JVOS.ApplicationAPI;
 using JVOS.ApplicationAPI.App;
 using JVOS.Controls;
+using JVOS.DataModel;
 using JVOS.Screens;
 using JVOS.Views;
 using Newtonsoft.Json;
@@ -35,6 +36,7 @@ namespace JVOS
         public string MenuDirectory;
         [JsonIgnore]
         public string UserDirectory;
+        public bool Prepared = false;
 
         #region PRIVATE_UTILITY
         private static void CreateIfIsntExsits(string dir)
@@ -292,6 +294,43 @@ namespace JVOS
         public string GetPath(string v)
         {
             return UserDirectory + "\\" + v;
+        }
+
+        public string GetShortPath(string v)
+        {
+            return UserDirectory.Replace(Directory.GetCurrentDirectory(), "") + "\\" + v;
+        }
+
+        internal void CreateProgramShortcuts()
+        {
+            string path = GetPath("AppData\\StartMenu\\All");
+            if(!Directory.Exists(path))
+                Directory.CreateDirectory(path);
+            foreach(var dir in Directory.GetDirectories("Applications"))
+            {
+                var f = $"{dir}\\manifest.json";
+                if (File.Exists(f))
+                {
+                    AppManifest? manifest = JsonConvert.DeserializeObject<AppManifest>(f);
+                    if (manifest == null)
+                        continue;
+                    if(manifest.Activities.Length == 1)
+                    {
+                        File.WriteAllText(path + "\\" + manifest.Name + ".jnk", JsonConvert.SerializeObject(new Shortcut($"app://Applications\\{dir.Split('\\').Where(x => !String.IsNullOrEmpty(x)).Last()} {manifest.Activities[0]}", "", "")));
+                    }
+                    else
+                    {
+                        foreach(var activity in manifest.Activities)
+                        {
+                            File.WriteAllText(path + "\\" + manifest.Name + " [" + activity  + "].jnk", JsonConvert.SerializeObject(new Shortcut($"app://Applications\\{dir.Split('\\').Where(x => !String.IsNullOrEmpty(x)).Last()} {activity}", "", "")));
+                        }
+                    }
+                }
+            }
+            File.WriteAllText($"{path}\\Ease of Access.jnk", JsonConvert.SerializeObject(new Shortcut("shell://embeded JVOS.EmbededWindows.EaseOfAccess", ImageToBase64(new Bitmap(AssetLoader.Open(new Uri("avares://JVOS/Assets/Lockscreen/easeofaccess.png")))), "Access for everyone!")));
+            File.WriteAllText($"{path}\\Files.jnk", JsonConvert.SerializeObject(new Shortcut("shell://embeded JVOS.EmbededWindows.FileBrowser", ImageToBase64(new Bitmap(AssetLoader.Open(new Uri("avares://JVOS/Assets/Shell/folder.png")))), "With ZHABA Support!")));
+            File.WriteAllText($"{path}\\Run.jnk", JsonConvert.SerializeObject(new Shortcut("shell://embeded JVOS.EmbededWindows.RunDialog", ImageToBase64(new Bitmap(AssetLoader.Open(new Uri("avares://JVOS/Assets/Shell/run.png")))), "AMOGUS")));
+            File.WriteAllText($"{path}\\Settings.jnk", JsonConvert.SerializeObject(new Shortcut("shell://embeded JVOS.EmbededWindows.Preferences.PreferencesHub", ImageToBase64(new Bitmap(AssetLoader.Open(new Uri("avares://JVOS/Assets/Shell/preferences.png")))), "PERSOANALIZE JOPA LIKE GOD!")));
         }
 
         public string? Username {

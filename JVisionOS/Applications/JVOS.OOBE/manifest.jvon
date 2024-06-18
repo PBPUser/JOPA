@@ -1,0 +1,5 @@
+{
+	"Name": "JVOS OOBE",
+	"DllName": "JVOS.OOBE.dll",
+	"Activities": ["main", "oobe", "nikitos"]
+}	
