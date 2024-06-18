@@ -3,6 +3,8 @@ using Avalonia.Controls;
 using Avalonia.Media;
 using Avalonia.Threading;
 using JVOS.ApplicationAPI;
+using JVOS.ApplicationAPI.Hub;
+using JVOS.ApplicationAPI.Windows;
 using JVOS.EmbededWindows;
 using JVOS.Hubs;
 using JVOS.Views;
@@ -14,7 +16,7 @@ using System.Threading;
 
 namespace JVOS.Screens
 {
-    public partial class LoginScreen : ScreenBase
+    public partial class LoginScreen : ScreenBase, IWindowSpace
     {
         public LoginScreen()
         {
@@ -22,6 +24,8 @@ namespace JVOS.Screens
             InitializeLockscreen();
             InitializeLoginscreen();
             InitializeUserSessions();
+            WindowManager.SetCurrentWindowSpace(this);
+
         }
 
         ScaleTransform? LoginTranslate;
@@ -29,9 +33,15 @@ namespace JVOS.Screens
         TranslateTransform? LockscreenTranslate;
         TranslateTransform? HubTranslate;
         LanguageSwitcherHub? LanguageHub;
-        IHub? CurrentOpenedHub;
+        HubWindow? CurrentOpenedHub;
 
-        public void OpenHub(IHub Hub)
+        public override void ScreenShown()
+        {
+            WindowManager.SetCurrentWindowSpace(this);
+            base.ScreenShown();
+        }
+
+        public void OpenHub(HubWindow Hub)
         {
             if (!(Hub is UserControl))
                 return;
@@ -46,7 +56,7 @@ namespace JVOS.Screens
             CurrentOpenedHub.OnOpened(EventArgs.Empty);
             CurrentOpenedHub.Closed += (a, b) =>
             {
-                if (b == IHub.CloseReason.CloseReason)
+                if (b == HubWindow.CloseReason.CloseReason)
                     CloseHub();
             };
         }
@@ -55,7 +65,7 @@ namespace JVOS.Screens
         {
             if (CurrentOpenedHub == null)
                 return;
-            CurrentOpenedHub.OnClosed(IHub.CloseReason.Hide);
+            CurrentOpenedHub.OnClosed(HubWindow.CloseReason.Hide);
             HubTranslate.Y = menuChildHoster.Bounds.Height + 8;
             new Thread(() =>
             {
@@ -149,7 +159,7 @@ namespace JVOS.Screens
             };
             this.easeOfAccessBtn.Click += (a, b) =>
             {
-                WindowManager.OpenInJWindow(new EaseOfAccess());
+                WindowManager.OpenInWindow(new EaseOfAccess());
             };
             loginWithoutPasswordBtn.Click += (a, b) =>
             {
@@ -222,6 +232,46 @@ namespace JVOS.Screens
                 }).Start();
             }
 
+        }
+
+        int currentID = 2;
+        int currentZIndex = 2;
+        WindowFrameBase? TopWindow;
+
+        public void OpenWindow(WindowFrameBase window)
+        {
+            this.rootGrid.Children.Add(window);
+            window.Margin = new Avalonia.Thickness(16, 16);
+            window.ID = currentID++;
+            window.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left;
+            window.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Top;
+            window.Loaded += (a,b) => BringToFront(window);
+        }
+
+        public void MinimizeWindow(WindowFrameBase window)
+        {
+
+        }
+
+        public void CloseWindow(WindowFrameBase window)
+        {
+            this.rootGrid.Children.Remove(window);
+        }
+
+        public void BringToFront(WindowFrameBase window)
+        {
+            if (window == TopWindow)
+                return;
+            if(TopWindow != null)
+            TopWindow.IsActivated = false;
+            TopWindow = window;
+            TopWindow.IsActivated = true;
+            TopWindow.ZIndex = currentZIndex++;
+        }
+
+        public void CloseAllHubs()
+        {
+            throw new NotImplementedException();
         }
     }
 }

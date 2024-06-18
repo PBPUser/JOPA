@@ -1,6 +1,9 @@
 ﻿using Avalonia.Controls;
 using Avalonia.Media.Imaging;
 using JVOS.ApplicationAPI;
+using JVOS.ApplicationAPI.App;
+using JVOS.ApplicationAPI.Hub;
+using JVOS.Views;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Newtonsoft.Json;
 using ReactiveUI;
@@ -11,6 +14,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
+using System.Runtime.Loader;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -28,7 +32,7 @@ namespace JVOS
 
         public static List<Application> Apps = new List<Application>();
         public static List<IEntryPoint> EntryPoints = new List<IEntryPoint>();
-        public static List<IHubProvider> HubProviders = new List<IHubProvider>();
+        public static List<HubProvider> HubProviders = new List<HubProvider>();
 
         public static void Load()
         {
@@ -89,7 +93,6 @@ namespace JVOS
             Apps.Add(app);
         }
 
-
         private static void LoadLib(string file)
         {
             
@@ -134,7 +137,7 @@ namespace JVOS
             Communicator.RegisterExternalhub += RegisterExtenalHub;
         }
 
-        private static void RegisterExtenalHub(object? sender, IHubProvider e)
+        private static void RegisterExtenalHub(object? sender, HubProvider e)
         {
             HubProviders.Add(e);
         }
@@ -149,4 +152,70 @@ namespace JVOS
             PreloadApp(e);
         }
     }
+
+    public class AppLoader : IAppLoader
+    {
+        private static Type APP_TYPE = typeof(JVOS.ApplicationAPI.App.App);
+
+        public bool LoadApp(string path, object[]? args, out JVOS.ApplicationAPI.App.App? app)
+        {
+            app = null;
+                if (!Directory.Exists(path))
+                    return false;
+                if (!File.Exists(path + "\\manifest.jvon"))
+                    return false;
+
+                var manifest = JsonConvert.DeserializeObject<AppManifest>(File.ReadAllText(path + "\\manifest.jvon"));
+                if (manifest == null)
+                    return false;
+
+                if (!File.Exists(path + $"\\{manifest.DllName}"))
+                {
+                    Communicator.ShowMessageDialog(new MessageDialog("App loader", $"Dll not exists {manifest.DllName} not exists"));
+                    return false;
+                }
+
+                Debug.WriteLine(APP_TYPE.FullName);
+
+                Debug.WriteLine(" ");
+
+                var appContext = new AssemblyLoadContext($"domain_{manifest.Name}_{DateTime.Now.ToBinary()}", true);
+                appContext.Resolving += (a, b) =>
+                {
+                    return AssemblyLoadContext.GetLoadContext(Assembly.GetExecutingAssembly()).Assemblies.Where(x => x.FullName == b.FullName).FirstOrDefault();
+                };
+                Assembly assembly;
+
+                using (var fs = new FileStream(path + $"\\{manifest.DllName}", FileMode.Open))
+                {
+                    assembly = appContext.LoadFromStream(fs);
+                }
+                foreach (var xz in assembly.GetTypes())
+                {
+                    var type = xz.BaseType;
+                    string st = "";
+                    while (type != null)
+                    {
+                        st += ":" + type.FullName;
+                        type = type.BaseType;
+                    }
+                    Debug.WriteLine(xz.FullName + st);
+                }
+
+                Type[] appTypes = assembly.GetTypes().Where(x => APP_TYPE.IsAssignableFrom(x) && x.IsClass).ToArray();
+
+                AppCommunicator appCommunicator = new AppCommunicator();
+                appCommunicator.assembly = assembly;
+                appCommunicator.assemblyContext = appContext;
+                appCommunicator.manifest = manifest;
+
+                app = (JVOS.ApplicationAPI.App.App)(appTypes[0].GetConstructors()[0].Invoke(new object[] { appCommunicator }));
+                appCommunicator.app = app;
+                app.Communicator = appCommunicator;
+
+                return true;
+        }
+
+    }
+
 }

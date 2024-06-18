@@ -1,5 +1,6 @@
 using Avalonia.Controls;
 using JVOS.ApplicationAPI;
+using JVOS.ApplicationAPI.Windows;
 
 namespace JVOS.Controls
 {
@@ -15,6 +16,6 @@ namespace JVOS.Controls
             };
         }
 
-        public IJWindowFrame jWindowFrame;
+        public WindowFrameBase jWindowFrame;
     }
 }

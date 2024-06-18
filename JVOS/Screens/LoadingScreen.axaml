@@ -1,9 +1,10 @@
-<local:ScreenBase
+<api:ScreenBase
 		     xmlns:local="clr-namespace:JVOS.Screens;assembly=JVOS"
 			 xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+		     xmlns:api="clr-namespace:JVOS.ApplicationAPI;assembly=JVOS.ApplicationAPI"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="JVOS.Screens.LoadingScreen">
 	<Grid>
@@ -24,4 +25,4 @@
 		<TextBlock Foreground="#284C64" x:Name="loadtext2" Grid.RowSpan="3" Margin="16" Text="Loading..." FontFamily="{DynamicResource AntonFont}" HorizontalAlignment="Right" VerticalAlignment="Bottom" FontSize="20"/>
 		<Image Width="128" Height="128" VerticalAlignment="Center" HorizontalAlignment="Center" Source="../Assets/sugar.png"/>
 	</Grid>
-</local:ScreenBase>
+</api:ScreenBase>

@@ -1,24 +1,25 @@
-		<local:ScreenBase 
-		     xmlns:local="clr-namespace:JVOS.Screens;assembly=JVOS"
-			 xmlns="https://github.com/avaloniaui"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:controls="clr-namespace:JVOS.Controls;assembly=JVOS.Controls"
-             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-             x:Class="JVOS.Screens.DesktopScreen">
+<api:ScreenBase
+	 xmlns:local="clr-namespace:JVOS.Screens;assembly=JVOS"
+	 xmlns="https://github.com/avaloniaui"
+	 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	 xmlns:api="clr-namespace:JVOS.ApplicationAPI;assembly=JVOS.ApplicationAPI"
+	 xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+	 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	 xmlns:controls="clr-namespace:JVOS.Controls;assembly=JVOS.Controls"
+	 mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+	 x:Class="JVOS.Screens.DesktopScreen">
 	<Grid Background="Black" x:Name="baseGrid">
 		<Grid ZIndex="-4" x:Name="backgroundImageHoster">
-			<Image x:Name="bg" Source="{DynamicResource DesktopImage}"/>
+			<Image x:Name="bg" Source="{DynamicResource DesktopImage}" Stretch="{DynamicResource DesktopStretch}"/>
 		</Grid>
 		<Grid ZIndex="-3" x:Name="desktopCanvasHoster">
-			
+
 		</Grid>
 		<Border x:Name="topBarBorder" IsVisible="false" ZIndex="999999" VerticalAlignment="Top" Height="24" Background="{DynamicResource TopShadow}">
 			<Grid>
 				<TextBlock Margin="8, 0" VerticalAlignment="Center" HorizontalAlignment="Left"/>
 				<StackPanel HorizontalAlignment="Right" Orientation="Horizontal">
-					
+
 				</StackPanel>
 			</Grid>
 		</Border>
@@ -43,32 +44,17 @@
 				<Border HorizontalAlignment="Right" Margin="4" Classes="Bar Transparent Inner">
 					<ScrollViewer >
 						<StackPanel x:Name="rightStack" Orientation="Horizontal" >
-							<StackPanel Orientation="Horizontal" x:Name="externalStack"/>
 							<controls:JButton Content="7" x:Name="keyBtn" Classes="Bar Hub"/>
-							<controls:JButton FontWeight="Bold" FontFamily="{DynamicResource AntonFont}" Content="{DynamicResource LangShortName}" FontSize="14" x:Name="langBtn" Classes="Bar Hub"/>
-							<controls:JButton FontWeight="Bold" FontFamily="{DynamicResource AntonFont}" Content="{DynamicResource CurrentTime}" Width="128" FontSize="24" x:Name="clockBtn" Classes="Bar Hub"/>
-							<controls:JButton Content="=" Classes="Bar Hub" x:Name="notifBtn"/>
 						</StackPanel>
 					</ScrollViewer>
 				</Border>
 				<Border HorizontalAlignment="Center" x:Name="appsPlace" Classes="Transparent" ClipToBounds="False">
 					<ScrollViewer ClipToBounds="False" >
 						<StackPanel Orientation="Horizontal" ClipToBounds="False">
-							<controls:JButton x:Name="startBtn" Classes="Bar Mid">
-								<Image Source="../Assets/Taskbar/start.png"/>
-							</controls:JButton>
-							<controls:JButton x:Name="searchBtn" Classes="Bar Mid">
-								<Image Source="../Assets/Taskbar/search.png"/>
-							</controls:JButton>
-							<controls:JButton x:Name="deskBtn" Classes="Bar Mid">
-								<Image Source="../Assets/Taskbar/desktopSwitch.png"/>
-							</controls:JButton>
+							<StackPanel x:Name="centerStack" Orientation="Horizontal"/>
 							<Grid x:Name="widgetsBtnPlace" ClipToBounds="False">
-
+								
 							</Grid>
-							<controls:JButton x:Name="assistBtn" Classes="Bar Mid">
-								<Image Source="../Assets/Taskbar/assistent.png"/>
-							</controls:JButton>
 							<StackPanel x:Name="runnedApps" Orientation="Horizontal">
 
 							</StackPanel>
@@ -78,4 +64,4 @@
 			</Grid>
 		</Border>
 	</Grid>
-</local:ScreenBase>
+</api:ScreenBase>

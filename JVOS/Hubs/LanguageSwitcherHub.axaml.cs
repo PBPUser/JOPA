@@ -1,11 +1,12 @@
 using Avalonia.Controls;
 using HarfBuzzSharp;
 using JVOS.ApplicationAPI;
+using JVOS.ApplicationAPI.Hub;
 using System.Collections.Generic;
 
 namespace JVOS.Hubs
 {
-    public partial class LanguageSwitcherHub : IHub
+    public partial class LanguageSwitcherHub : HubWindow
     {
 
         public LanguageSwitcherHub()

@@ -2,8 +2,8 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 	<ControlTheme x:Key="{x:Type TextBox}" TargetType="TextBox">
 		<Setter Property="CornerRadius" Value="12"/>
-		<Setter Property="Background" Value="{DynamicResource TextBoxBackground}"/>
-		<Setter Property="Foreground" Value="{DynamicResource TextBoxForeground}"/>
+		<Setter Property="Background" Value="{DynamicResource Background_BasicInner}"/>
+		<Setter Property="Foreground" Value="{DynamicResource Foreground_BasicInner}"/>
 		<Setter Property="Padding" Value="12, 8"/>
 		<Setter Property="FontSize" Value="14"/>
 		<Setter Property="Template">
@@ -36,7 +36,7 @@
 		</Setter>
 		<Style Selector="^:focus">
 			<Style Selector="^ /template/ Border#PART_BorderElement">
-				<Setter Property="BoxShadow" Value="{DynamicResource TextBoxBoxShadowsInner}"/>
+				<Setter Property="BoxShadow" Value="{DynamicResource BoxShadow_BasicInner}"/>
 			</Style>
 		</Style>
 	</ControlTheme>

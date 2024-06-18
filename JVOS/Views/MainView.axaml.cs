@@ -21,6 +21,7 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 using JVOS.Controls;
 using Avalonia.Animation.Easings;
 using System.Linq.Expressions;
+using JVOS.ApplicationAPI.Windows;
 
 namespace JVOS.Views
 {
@@ -46,6 +47,8 @@ namespace JVOS.Views
 #if DEBUG
             sleep /= 20;
 #endif
+            if (!Directory.Exists(PlatformSpecifixController.GetLocalFilePath("Hubs")))
+                Directory.CreateDirectory(PlatformSpecifixController.GetLocalFilePath("Hubs"));
             LanguageWorker.Test();
             UserOptions.Test();
             ColorScheme.ApplyScheme(ColorScheme.Current, false, true, false);
@@ -57,14 +60,15 @@ namespace JVOS.Views
                 if(IsMobile != isMobile)
                 {
                     IsMobile = isMobile;
+                    Communicator.SetInMobileMode(isMobile);
                     if(CurrentScreen != null)
                         CurrentScreen.MobileModeStateSwitch(IsMobile);
                 }
-                JWindowGridController.UpdateSubjectsHWhenDesktopResized(b.NewSize.Width, b.NewSize.Height);
+                WindowGridController.UpdateSubjectsHWhenDesktopResized(b.NewSize.Width, b.NewSize.Height);
             };
             Loaded += (a, b) =>
             {
-                JWindowGridController.UpdateSubjectsHWhenDesktopResized(Bounds.Width, Bounds.Height);
+                WindowGridController.UpdateSubjectsHWhenDesktopResized(Bounds.Width, Bounds.Height);
                 switchScreen(Loading);
                 new Thread(() =>
                 {
@@ -233,16 +237,14 @@ namespace JVOS.Views
             //cancel_appinstall.IsEnabled = ok_appinstall.IsEnabled = false;
         }
 
-        public void OpenWindow(IJWindowFrame jWindow)
+        public void OpenWindow(WindowFrameBase jWindow)
         {
-            jWindow.AllowMinimize = false;
             this.basegrid.Children.Add(jWindow as Control);
             (jWindow as Control).ZIndex = ZIndex++;
-            //jWindow.ZIndex = ScreenIndex++;
             jWindow.ID = IDIndex++;
             jWindow.WindowSpace = this;
         }
-        public void CloseWindow(IJWindowFrame jWindow)
+        public void CloseWindow(WindowFrameBase jWindow)
         {
             jWindow.Close(() =>
             {
@@ -250,12 +252,17 @@ namespace JVOS.Views
             });
         }
 
-        public void BringToFront(IJWindowFrame window)
+        public void BringToFront(WindowFrameBase window)
         {
 
         }
 
         public void CloseAllHubs()
+        {
+
+        }
+
+        public void MinimizeWindow(WindowFrameBase window)
         {
             throw new NotImplementedException();
         }

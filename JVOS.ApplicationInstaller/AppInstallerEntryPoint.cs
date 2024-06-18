@@ -1,19 +1,21 @@
-﻿using JVOS.ApplicationAPI;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using JVOS.ApplicationAPI.App;
 
 namespace JVOS.ApplicationInstaller
 {
-    public class AppInstallerEntryPoint : IEntryPoint
+    public class ApplicationInstallerEntryPoint : App
     {
-        public string Name => "appinstaller";
-
-        public void Run(string[] args)
+        public ApplicationInstallerEntryPoint(AppCommunicator communicator) : base(communicator)
         {
-            Communicator.OpenWindow(new AppInstallerWindow());
+        }
+
+        public override void OnActivity(string name, object[] args)
+        {
+            switch (name)
+            {
+                case "main":
+                    Communicator.OpenJWindow(new AppInstallerWindow());
+                    return;
+            }
         }
     }
 }

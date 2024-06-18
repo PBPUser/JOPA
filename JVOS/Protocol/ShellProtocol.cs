@@ -1,13 +1,16 @@
 ﻿using Avalonia.Controls;
 using JVOS.ApplicationAPI;
+using JVOS.ApplicationAPI.Windows;
 using JVOS.DataModel;
 using JVOS.EmbededWindows;
 using Newtonsoft.Json;
+using SharpCompress;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using static System.Runtime.InteropServices.JavaScript.JSType;
@@ -23,7 +26,31 @@ namespace JVOS.Protocol
             switch (args[0])
             {
                 case "run":
-                    WindowManager.OpenInJWindow(new RunDialog());
+                    WindowManager.OpenInWindow(new RunDialog());
+                    return true;
+                case "embeded":
+                    if (args.Length != 2)
+                    {
+                        string s = "";
+                        Assembly.GetExecutingAssembly().GetTypes().Where(x => x.IsAssignableTo(typeof(WindowContentBase))).ForEach(x => s += x.FullName + "\n");
+                        Communicator.ShowMessageDialog(new MessageDialog("Shell", s));
+                        return true;
+                    }
+                    var a = Assembly.GetExecutingAssembly().GetTypes().Where(x => x.IsAssignableTo(typeof(WindowContentBase))).Where(x => x.FullName.Equals(args[1])).FirstOrDefault();
+                    if(a == null)
+                    {
+                        Communicator.ShowMessageDialog(new MessageDialog("Shell", $"Class {args[1]} not found in assembly."));
+                        return false;
+                    }
+                    var c = a.GetConstructors().Where(x => x.GetParameters().Where(x=>!x.IsOptional).Count() == 0).FirstOrDefault();
+                    if(c == null)
+                    {
+                        Communicator.ShowMessageDialog(new MessageDialog("Shell", $"Class {args[1]} dosen't contain empty constructor."));
+                        return false;
+                    }
+                    int count = c.GetParameters().Count();
+                    var d = (WindowContentBase)c.Invoke(new object[count]);
+                    Communicator.OpenWindow(d);
                     return true;
                 case "setres":
                 case "setresource":
@@ -58,14 +85,41 @@ namespace JVOS.Protocol
                         Communicator.ShowMessageDialog(new MessageDialog("Shell", "This feature is not implemented on your platform."));
                         return false;
                     }
-                    var toplevel = TopLevel.GetTopLevel(App.MainWindowInstance);
-                    var files = toplevel.StorageProvider.OpenFilePickerAsync(new Avalonia.Platform.Storage.FilePickerOpenOptions() {
+                    Communicator.BrowseFile(a =>
+                    {
+                        UserSession.CurrentUser.UserOptions.SetDesktopImage(new(Path.GetFullPath(a)));
+                    });
+                    return true;
+                case "profile":
+                    if (OperatingSystem.IsAndroid())
+                    {
+                        Communicator.ShowMessageDialog(new MessageDialog("Shell", "This feature is not implemented on your platform."));
+                        return false;
+                    }
+                    var toplevel2 = TopLevel.GetTopLevel(App.MainWindowInstance);
+                    var files2 = toplevel2.StorageProvider.OpenFilePickerAsync(new Avalonia.Platform.Storage.FilePickerOpenOptions()
+                    {
                         AllowMultiple = false
                     }).GetAwaiter().GetResult();
-                    if(files.Count >= 1)
+                    if (files2.Count >= 1)
+                        UserSession.CurrentUser.UserOptions.SetProfileImage(new(files2[0].Path.AbsolutePath));
+                    return true;
+                case "runtimeinfo":
+
+                    return true;
+                case "lockscreenimage":
+                    if (OperatingSystem.IsAndroid())
                     {
-                        UserSession.CurrentUser.UserOptions.SetWallpaper(files[0].Path.AbsolutePath);
+                        Communicator.ShowMessageDialog(new MessageDialog("Shell", "This feature is not implemented on your platform."));
+                        return false;
                     }
+                    var toplevel3 = TopLevel.GetTopLevel(App.MainWindowInstance);
+                    var files3 = toplevel3.StorageProvider.OpenFilePickerAsync(new Avalonia.Platform.Storage.FilePickerOpenOptions()
+                    {
+                        AllowMultiple = false
+                    }).GetAwaiter().GetResult();
+                    if (files3.Count >= 1)
+                        UserSession.CurrentUser.UserOptions.SetProfileImage(new(files3[0].Path.AbsolutePath));
                     return true;
                 case "addappshort":
                     if(args.Length >= 3)

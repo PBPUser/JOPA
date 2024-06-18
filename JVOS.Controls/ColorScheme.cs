@@ -46,6 +46,40 @@ namespace JVOS
             return hsv with { Value = dark ? darkBrightness : 100 - darkBrightness };
         }
 
+        public ColorHSV WithHue(double hue)
+        {
+            return this with { Hue = hue };
+        }
+
+        public ColorHSV WithValue(double value)
+        {
+            return this with { Value = value };
+        }
+        public ColorHSV WithAlpha(byte alpha)
+        {
+            return this with { Alpha = alpha };
+        }
+
+        public ColorHSV WithSaturation(double saturation)
+        {
+            return this with { Saturation = saturation };
+        }
+
+        public ColorHSV AddHue(double hue)
+        {
+            return this with { Hue = Math.Clamp(this.Hue + hue, 0, 360) };
+        }
+
+        public ColorHSV AddValue(double value)
+        {
+            return this with { Value = this.Value + value };
+        }
+
+        public ColorHSV AddSaturation(double saturation)
+        {
+            return this with { Saturation = this.Saturation + saturation };
+        }
+
         public static ColorHSV RgbToHsv(Color RGB)
         {
             double r = ((double)RGB.R) / 255;
@@ -244,11 +278,12 @@ namespace JVOS
 
         public Brush Background;
         public BoxShadows BoxShadows;
+        public BoxShadows ButtonBoxShadows;
 
         public bool Dark;
         public bool Inner;
 
-        ClaymorphismLayer(ColorHSV colorHSV, bool dark, bool inner)
+        ClaymorphismLayer(ColorHSV colorHSV, bool dark, bool inner, bool bwbg = false)
         {
             Dark = dark;
             Inner = inner;
@@ -256,18 +291,18 @@ namespace JVOS
 
             Foreground = dark ? Colors.White : Colors.Black;
 
-            TopGradient = ColorHSV.HsvToRgb(colorHSV with { Hue = ClampHue(colorHSV.Hue - 10) });
-            BottomGradient = ColorHSV.HsvToRgb(colorHSV with { Hue = ClampHue(colorHSV.Hue + 10) });
+            TopGradient = ColorHSV.HsvToRgb(colorHSV.AddHue(-10).WithValue(bwbg ? (dark ? 10: 90) : colorHSV.Value).WithSaturation(bwbg ? 0 : colorHSV.Saturation));
+            BottomGradient = ColorHSV.HsvToRgb(colorHSV.AddHue(10).WithValue(bwbg ? (dark ? 5 : 80) : colorHSV.Value).WithSaturation(bwbg ? 5 : colorHSV.Saturation));
             if (!inner)
             {
-                TopInsetShadow = ColorHSV.HsvToRgb(colorHSV with { Value = colorHSV.Value + 10 });
-                BottomInsetShadow = ColorHSV.HsvToRgb(colorHSV with { Value = colorHSV.Value - 10 });
-                BottomShadow = ColorHSV.HsvToRgb(colorHSV with { Value = colorHSV.Value - 15, Alpha = (byte)(colorHSV.Alpha * 0.75) });
+                TopInsetShadow = ColorHSV.HsvToRgb(colorHSV.AddValue(10).WithSaturation(bwbg?0:colorHSV.Saturation).WithAlpha(bwbg ? (byte)(colorHSV.Alpha / 4) : (byte)(colorHSV.Alpha / 2)));
+                BottomInsetShadow = ColorHSV.HsvToRgb(colorHSV.AddValue(-10).WithAlpha(bwbg ? (byte)(colorHSV.Alpha / 4) : (byte)(colorHSV.Alpha / 2)));
+                BottomShadow = ColorHSV.HsvToRgb(colorHSV with { Value = colorHSV.Value - 15, Alpha = (byte)(colorHSV.Alpha * 0.5) });
             }
             else
             {
                 TopInsetShadow = ColorHSV.HsvToRgb(colorHSV with { Value = colorHSV.Value - 10 });
-                BottomInsetShadow = ColorHSV.HsvToRgb(colorHSV with { Value = colorHSV.Value + 10 });
+                BottomInsetShadow = ColorHSV.HsvToRgb(colorHSV.AddValue(10).WithSaturation(bwbg?0:colorHSV.Saturation).WithAlpha(bwbg?(byte)(colorHSV.Alpha/4):(byte)(colorHSV.Alpha/2)));
                 BottomShadow = Colors.Transparent;
             }
 
@@ -302,9 +337,38 @@ namespace JVOS
                     },
                     new BoxShadow()
                     {
-                        Blur = ColorScheme.BLUR_RADIUS_CLAYMORPHISM,
-                        OffsetX = ColorScheme.BLUR_RADIUS_CLAYMORPHISM / 3,
-                        OffsetY = ColorScheme.BLUR_RADIUS_CLAYMORPHISM / 1.5,
+                        Blur = ColorScheme.BLUR_RADIUS_CLAYMORPHISM /2,
+                        OffsetX = ColorScheme.BLUR_RADIUS_CLAYMORPHISM / 6,
+                        OffsetY = ColorScheme.BLUR_RADIUS_CLAYMORPHISM / 3,
+                        IsInset = false,
+                        Color = BottomShadow
+                    }
+                }
+                );
+
+            ButtonBoxShadows = new BoxShadows(
+                new BoxShadow()
+                {
+                    Blur = ColorScheme.BLUR_RADIUS_CLAYMORPHISM / 4,
+                    OffsetX = ColorScheme.BLUR_RADIUS_CLAYMORPHISM / 8,
+                    OffsetY = ColorScheme.BLUR_RADIUS_CLAYMORPHISM / 8,
+                    IsInset = true,
+                    Color = TopInsetShadow
+                },
+                new BoxShadow[] {
+                    new BoxShadow()
+                    {
+                        Blur = ColorScheme.BLUR_RADIUS_CLAYMORPHISM / 4,
+                        OffsetX = -ColorScheme.BLUR_RADIUS_CLAYMORPHISM / 8,
+                        OffsetY = -ColorScheme.BLUR_RADIUS_CLAYMORPHISM / 8,
+                        IsInset = true,
+                        Color = BottomInsetShadow
+                    },
+                    new BoxShadow()
+                    {
+                        Blur = ColorScheme.BLUR_RADIUS_CLAYMORPHISM / 4,
+                        OffsetX = ColorScheme.BLUR_RADIUS_CLAYMORPHISM / 8,
+                        OffsetY = ColorScheme.BLUR_RADIUS_CLAYMORPHISM / 4,
                         IsInset = false,
                         Color = BottomShadow
                     }
@@ -326,7 +390,7 @@ namespace JVOS
 
         public static double ClampHue(double value) => ClampMod(value, 0, 360);
 
-        public static void GenerateClaymorphismLayer(ColorHSV BaseColor, bool IsInner, out ClaymorphismLayer LightLayer, out ClaymorphismLayer DarkLayer)
+        public static void GenerateClaymorphismLayer(ColorHSV BaseColor, bool IsInner, out ClaymorphismLayer LightLayer, out ClaymorphismLayer DarkLayer, bool? bwbg = null)
         {
             BaseColor.Saturation = Math.Min(BaseColor.Saturation, 90);
             BaseColor.Value = Math.Clamp(BaseColor.Value, 15, 90);
@@ -335,8 +399,8 @@ namespace JVOS
 
             GetLightDarkColors(BaseColor, out LightColor, out DarkColor);
 
-            LightLayer = new ClaymorphismLayer(LightColor, false, IsInner);
-            DarkLayer = new ClaymorphismLayer(DarkColor, false, IsInner);
+            LightLayer = new ClaymorphismLayer(LightColor, false, IsInner, bwbg == true);
+            DarkLayer = new ClaymorphismLayer(DarkColor, true, IsInner, bwbg == true);
         }
     }
 
@@ -482,7 +546,23 @@ namespace JVOS
         public bool AccentBar = false;
         public bool UseBlur = true;
 
-        internal const double BLUR_RADIUS_CLAYMORPHISM = 16;
+        internal const double BLUR_RADIUS_CLAYMORPHISM = 32;
+
+        private static void ApplyClaymorhismLayer(bool useDark, ClaymorphismLayer light, ClaymorphismLayer dark, string postfix)
+        {
+            ResourceBunch.SetResource("ButtonShadows_" + postfix, !useDark ? light.ButtonBoxShadows : dark.ButtonBoxShadows);
+            ResourceBunch.SetResource("BoxShadows_" + postfix, !useDark ? light.BoxShadows : dark.BoxShadows);
+            ResourceBunch.SetResource("Foreground_" + postfix, !useDark ? light.Foreground : dark.Foreground);
+            ResourceBunch.SetResource("Background_" + postfix, !useDark ? light.Background : dark.Background);
+        }
+
+        private static void ApplyClaymorhismLayer(bool accent, string basicPostfix, string accentPostfix, string postfix)
+        {
+            ResourceBunch.SetResource($"ButtonShadows_{postfix}", !accent ? ResourceBunch.GetResource<BoxShadows>($"ButtonShadows_{basicPostfix}") : ResourceBunch.GetResource<BoxShadows>($"ButtonShadows_{accentPostfix}"));
+            ResourceBunch.SetResource($"BoxShadows_{postfix}", !accent ? ResourceBunch.GetResource<BoxShadows>($"BoxShadows_{basicPostfix}") : ResourceBunch.GetResource<BoxShadows>($"BoxShadows_{accentPostfix}"));
+            ResourceBunch.SetResource($"Foreground_{postfix}", !accent ? ResourceBunch.GetResource<Brush>($"Foreground_{basicPostfix}") : ResourceBunch.GetResource<Brush>($"Foreground_{accentPostfix}"));
+            ResourceBunch.SetResource($"Background_{postfix}", !accent ? ResourceBunch.GetResource<Brush>($"Background_{basicPostfix}") : ResourceBunch.GetResource<Brush>($"Background_{accentPostfix}"));
+        }
 
         public static void ApplyScheme(ColorScheme scheme, bool? UseDarkScheme = null, bool? AccentTitle = null, bool? AccentBar = null, bool? UseBlur = null)
         {
@@ -505,70 +585,42 @@ namespace JVOS
                 Current = scheme;
             }
 
+
+
             ResourceBunch.SetResource("TopShadow", new LinearGradientBrush() { StartPoint = new RelativePoint(0, 0, RelativeUnit.Relative), EndPoint = new RelativePoint(0, 1, RelativeUnit.Relative), GradientStops = new GradientStops() { new GradientStop(Colors.Black, 0), new GradientStop(new Color(0, 0, 0, 0), 1) } });
 
-            ResourceBunch.SetResource("BoxShadows_BasicInner", !useDark ? scheme.BasicLightInner.BoxShadows : scheme.BasicDarkInner.BoxShadows);
-            ResourceBunch.SetResource("Foreground_BasicInner", !useDark ? scheme.BasicLightInner.Foreground : scheme.BasicDarkInner.Foreground);
-            ResourceBunch.SetResource("Background_BasicInner", !useDark ? scheme.BasicLightInner.Background : scheme.BasicDarkInner.Background);
-            ResourceBunch.SetResource("BoxShadows_BasicOuter", !useDark ? scheme.BasicLightOuter.BoxShadows : scheme.BasicDarkOuter.BoxShadows);
-            ResourceBunch.SetResource("Foreground_BasicOuter", !useDark ? scheme.BasicLightOuter.Foreground : scheme.BasicDarkOuter.Foreground);
-            ResourceBunch.SetResource("Background_BasicOuter", !useDark ? scheme.BasicLightOuter.Background : scheme.BasicDarkOuter.Background);
+            ApplyClaymorhismLayer(useDark, scheme.AlphaLightInner, scheme.AlphaDarkInner, "AlphaInner");
+            ApplyClaymorhismLayer(useDark, scheme.AlphaLightOuter, scheme.AlphaDarkOuter, "AlphaOuter");
 
-            ResourceBunch.SetResource("BoxShadows_AlphaInner", !useDark ? scheme.AlphaLightInner.BoxShadows : scheme.AlphaDarkInner.BoxShadows);
-            ResourceBunch.SetResource("Foreground_AlphaInner", !useDark ? scheme.AlphaLightInner.Foreground : scheme.AlphaDarkInner.Foreground);
-            ResourceBunch.SetResource("Background_AlphaInner", !useDark ? scheme.AlphaLightInner.Background : scheme.AlphaDarkInner.Background);
-            ResourceBunch.SetResource("BoxShadows_AlphaOuter", !useDark ? scheme.AlphaLightOuter.BoxShadows : scheme.AlphaDarkOuter.BoxShadows);
-            ResourceBunch.SetResource("Foreground_AlphaOuter", !useDark ? scheme.AlphaLightOuter.Foreground : scheme.AlphaDarkOuter.Foreground);
-            ResourceBunch.SetResource("Background_AlphaOuter", !useDark ? scheme.AlphaLightOuter.Background : scheme.AlphaDarkOuter.Background);
+            ApplyClaymorhismLayer(useDark, scheme.BettaLightInner, scheme.BettaDarkInner, "BetaInner");
+            ApplyClaymorhismLayer(useDark, scheme.BettaLightOuter, scheme.BettaDarkOuter, "BetaOuter");
 
-            ResourceBunch.SetResource("BoxShadows_BetaInner", !useDark ? scheme.BettaLightInner.BoxShadows : scheme.BettaDarkInner.BoxShadows);
-            ResourceBunch.SetResource("Foreground_BetaInner", !useDark ? scheme.BettaLightInner.Foreground : scheme.BettaDarkInner.Foreground);
-            ResourceBunch.SetResource("Background_BetaInner", !useDark ? scheme.BettaLightInner.Background : scheme.BettaDarkInner.Background);
-            ResourceBunch.SetResource("BoxShadows_BetaOuter", !useDark ? scheme.BettaLightOuter.BoxShadows : scheme.BettaDarkOuter.BoxShadows);
-            ResourceBunch.SetResource("Foreground_BetaOuter", !useDark ? scheme.BettaLightOuter.Foreground : scheme.BettaDarkOuter.Foreground);
-            ResourceBunch.SetResource("Background_BetaOuter", !useDark ? scheme.BettaLightOuter.Background : scheme.BettaDarkOuter.Background);
+            ApplyClaymorhismLayer(useDark, scheme.BasicLightInner, scheme.BasicDarkInner, "BasicInner");
+            ApplyClaymorhismLayer(useDark, scheme.BasicLightOuter, scheme.BasicDarkOuter, "BasicOuter");
 
-            ResourceBunch.SetResource("BoxShadows_LayerInner", !useDark ? scheme.LayerLightInner.BoxShadows : scheme.LayerDarkInner.BoxShadows);
-            ResourceBunch.SetResource("Foreground_LayerInner", !useDark ? scheme.LayerLightInner.Foreground : scheme.LayerDarkInner.Foreground);
-            ResourceBunch.SetResource("Background_LayerInner", !useDark ? scheme.LayerLightInner.Background : scheme.LayerDarkInner.Background);
-            ResourceBunch.SetResource("BoxShadows_LayerOuter", !useDark ? scheme.LayerLightOuter.BoxShadows : scheme.LayerDarkOuter.BoxShadows);
-            ResourceBunch.SetResource("Foreground_LayerOuter", !useDark ? scheme.LayerLightOuter.Foreground : scheme.LayerDarkOuter.Foreground);
-            ResourceBunch.SetResource("Background_LayerOuter", !useDark ? scheme.LayerLightOuter.Background : scheme.LayerDarkOuter.Background);
+            ApplyClaymorhismLayer(useDark, scheme.LayerLightInner, scheme.LayerDarkInner, "LayerInner");
+            ApplyClaymorhismLayer(useDark, scheme.LayerLightOuter, scheme.LayerDarkOuter, "LayerOuter");
 
-            ResourceBunch.SetResource("BoxShadows_DemiInner", !useDark ? scheme.DemiiLightInner.BoxShadows : scheme.DemiiDarkInner.BoxShadows);
-            ResourceBunch.SetResource("Foreground_DemiInner", !useDark ? scheme.DemiiLightInner.Foreground : scheme.DemiiDarkInner.Foreground);
-            ResourceBunch.SetResource("Background_DemiInner", !useDark ? scheme.DemiiLightInner.Background : scheme.DemiiDarkInner.Background);
-            ResourceBunch.SetResource("BoxShadows_DemiOuter", !useDark ? scheme.DemiiLightOuter.BoxShadows : scheme.DemiiDarkOuter.BoxShadows);
-            ResourceBunch.SetResource("Foreground_DemiOuter", !useDark ? scheme.DemiiLightOuter.Foreground : scheme.DemiiDarkOuter.Foreground);
-            ResourceBunch.SetResource("Background_DemiOuter", !useDark ? scheme.DemiiLightOuter.Background : scheme.DemiiDarkOuter.Background);
+            ApplyClaymorhismLayer(useDark, scheme.DemiiLightInner, scheme.DemiiDarkInner, "DemiInner");
+            ApplyClaymorhismLayer(useDark, scheme.DemiiLightOuter, scheme.DemiiDarkOuter, "DemiOuter");
 
-            ResourceBunch.SetResource("BoxShadows_AccentInner", !useDark ? scheme.AcentLightInner.BoxShadows : scheme.AcentDarkInner.BoxShadows);
-            ResourceBunch.SetResource("Foreground_AccentInner", !useDark ? scheme.AcentLightInner.Foreground : scheme.AcentDarkInner.Foreground);
-            ResourceBunch.SetResource("Background_AccentInner", !useDark ? scheme.AcentLightInner.Background : scheme.AcentDarkInner.Background);
-            ResourceBunch.SetResource("BoxShadows_AccentOuter", !useDark ? scheme.AcentLightOuter.BoxShadows : scheme.AcentDarkOuter.BoxShadows);
-            ResourceBunch.SetResource("Foreground_AccentOuter", !useDark ? scheme.AcentLightOuter.Foreground : scheme.AcentDarkOuter.Foreground);
-            ResourceBunch.SetResource("Background_AccentOuter", !useDark ? scheme.AcentLightOuter.Background : scheme.AcentDarkOuter.Background);
+            ApplyClaymorhismLayer(useDark, scheme.AcentLightInner, scheme.AcentDarkInner, "AccentInner");
+            ApplyClaymorhismLayer(useDark, scheme.AcentLightOuter, scheme.AcentDarkOuter, "AccentOuter");
 
-            ResourceBunch.SetResource("BoxShadows_BarInner", !accentBar ? ResourceBunch.GetResource<BoxShadows>("BoxShadows_AlphaInner") : ResourceBunch.GetResource<BoxShadows>("BoxShadows_BetaInner"));
-            ResourceBunch.SetResource("Foreground_BarInner", !accentBar ? ResourceBunch.GetResource<Brush>("Foreground_AlphaInner") : ResourceBunch.GetResource<Brush>("Foreground_BetaInner"));
-            ResourceBunch.SetResource("Background_BarInner", !accentBar ? ResourceBunch.GetResource<Brush>("Background_AlphaInner") : ResourceBunch.GetResource<Brush>("Background_BetaInner"));
-            ResourceBunch.SetResource("BoxShadows_BarOuter", !accentBar ? ResourceBunch.GetResource<BoxShadows>("BoxShadows_AlphaOuter") : ResourceBunch.GetResource<BoxShadows>("BoxShadows_BetaOuter"));
-            ResourceBunch.SetResource("Foreground_BarOuter", !accentBar ? ResourceBunch.GetResource<Brush>("Foreground_AlphaOuter") : ResourceBunch.GetResource<Brush>("Foreground_BetaOuter"));
-            ResourceBunch.SetResource("Background_BarOuter", !accentBar ? ResourceBunch.GetResource<Brush>("Background_AlphaOuter") : ResourceBunch.GetResource<Brush>("Background_BetaOuter"));
+            ApplyClaymorhismLayer(accentBar, "AlphaInner", "BetaInner", "BarInner");
+            ApplyClaymorhismLayer(accentBar, "AlphaOuter", "BetaOuter", "BarOuter");
 
-            ResourceBunch.SetResource("BoxShadows_BarLayer1Inner", !accentBar ? ResourceBunch.GetResource<BoxShadows>("BoxShadows_BasicInner") : ResourceBunch.GetResource<BoxShadows>("BoxShadows_DemiInner"));
-            ResourceBunch.SetResource("Foreground_BarLayer1Inner", !accentBar ? ResourceBunch.GetResource<Brush>("Foreground_BasicInner") : ResourceBunch.GetResource<Brush>("Foreground_DemiInner"));
-            ResourceBunch.SetResource("Background_BarLayer1Inner", !accentBar ? ResourceBunch.GetResource<Brush>("Background_BasicInner") : ResourceBunch.GetResource<Brush>("Background_DemiInner"));
-            ResourceBunch.SetResource("BoxShadows_BarLayer1Outer", !accentBar ? ResourceBunch.GetResource<BoxShadows>("BoxShadows_BasicOuter") : ResourceBunch.GetResource<BoxShadows>("BoxShadows_DemiOuter"));
-            ResourceBunch.SetResource("Foreground_BarLayer1Outer", !accentBar ? ResourceBunch.GetResource<Brush>("Foreground_BasicOuter") : ResourceBunch.GetResource<Brush>("BoxShadows_DemiOuter"));
-            ResourceBunch.SetResource("Background_BarLayer1Outer", !accentBar ? ResourceBunch.GetResource<Brush>("Background_BasicOuter") : ResourceBunch.GetResource<Brush>("BoxShadows_DemiOuter"));
+            ApplyClaymorhismLayer(accentBar, "BasicInner", "DemiInner", "BarLayer1Inner");
+            ApplyClaymorhismLayer(accentBar, "BasicOuter", "DemiOuter", "BarLayer1Outer");
 
-            ResourceBunch.SetResource("BoxShadows_BarLayer2Inner", !accentBar ? ResourceBunch.GetResource<BoxShadows>("BoxShadows_LayerInner") : ResourceBunch.GetResource<BoxShadows>("BoxShadows_AccentInner"));
-            ResourceBunch.SetResource("Foreground_BarLayer2Inner", !accentBar ? ResourceBunch.GetResource<Brush>("Foreground_LayerInner") : ResourceBunch.GetResource<Brush>("Foreground_AccentInner"));
-            ResourceBunch.SetResource("Background_BarLayer2Inner", !accentBar ? ResourceBunch.GetResource<Brush>("Background_LayerInner") : ResourceBunch.GetResource<Brush>("Background_AccentInner"));
-            ResourceBunch.SetResource("BoxShadows_BarLayer2Outer", !accentBar ? ResourceBunch.GetResource<BoxShadows>("BoxShadows_LayerOuter") : ResourceBunch.GetResource<BoxShadows>("BoxShadows_AccentOuter"));
-            ResourceBunch.SetResource("Foreground_BarLayer2Outer", !accentBar ? ResourceBunch.GetResource<Brush>("Foreground_LayerOuter") : ResourceBunch.GetResource<Brush>("BoxShadows_AccentOuter"));
-            ResourceBunch.SetResource("Background_BarLayer2Outer", !accentBar ? ResourceBunch.GetResource<Brush>("Background_LayerOuter") : ResourceBunch.GetResource<Brush>("BoxShadows_AccentOuter"));
+            ApplyClaymorhismLayer(accentBar, "LayerInner", "AccentInner", "BarLayer2Inner");
+            ApplyClaymorhismLayer(accentBar, "LayerOuter", "AccentInner", "BarLayer2Outer");
+
+            ApplyClaymorhismLayer(accentTitle, "DemiInner", "AccentInner", "TitleInner");
+            ApplyClaymorhismLayer(accentTitle, "DemiOuter", "AccentOuter", "TitleOuter");
+
+            ApplyClaymorhismLayer(accentTitle, "BasicInner", "BasicInner", "InactiveTitleInner");
+            ApplyClaymorhismLayer(accentTitle, "BasicOuter", "BasicOuter", "InactiveTitleOuter");
 
             OnUpdated(scheme);
 
@@ -627,12 +679,12 @@ namespace JVOS
 
             scheme.BasicColor = ColorHSV.HsvToRgb(BaseColor);
 
-            ClaymorphismLayer.GenerateClaymorphismLayer(BaseColor with { Saturation = 20, Alpha = 192 }, true, out scheme.AlphaLightInner, out scheme.AlphaDarkInner);
-            ClaymorphismLayer.GenerateClaymorphismLayer(BaseColor with { Saturation = 20, Alpha = 192 }, false, out scheme.AlphaLightOuter, out scheme.AlphaDarkOuter);
+            ClaymorphismLayer.GenerateClaymorphismLayer(BaseColor with { Saturation = 20, Alpha = 192 }, true, out scheme.AlphaLightInner, out scheme.AlphaDarkInner, true);
+            ClaymorphismLayer.GenerateClaymorphismLayer(BaseColor with { Saturation = 20, Alpha = 192 }, false, out scheme.AlphaLightOuter, out scheme.AlphaDarkOuter, true);
             ClaymorphismLayer.GenerateClaymorphismLayer(BaseColor with { Saturation = 50, Alpha = 192 }, true, out scheme.BettaLightInner, out scheme.BettaDarkInner);
             ClaymorphismLayer.GenerateClaymorphismLayer(BaseColor with { Saturation = 50, Alpha = 192 }, false, out scheme.BettaLightOuter, out scheme.BettaDarkOuter);
-            ClaymorphismLayer.GenerateClaymorphismLayer(BaseColor with { Saturation = 20 }, true, out scheme.BasicLightInner, out scheme.BasicDarkInner);
-            ClaymorphismLayer.GenerateClaymorphismLayer(BaseColor with { Saturation = 20 }, false, out scheme.BasicLightOuter, out scheme.BasicDarkOuter);
+            ClaymorphismLayer.GenerateClaymorphismLayer(BaseColor with { Saturation = 20 }, true, out scheme.BasicLightInner, out scheme.BasicDarkInner, true);
+            ClaymorphismLayer.GenerateClaymorphismLayer(BaseColor with { Saturation = 20 }, false, out scheme.BasicLightOuter, out scheme.BasicDarkOuter, true);
             ClaymorphismLayer.GenerateClaymorphismLayer(BaseColor with { Saturation = 40 }, true, out scheme.LayerLightInner, out scheme.LayerDarkInner);
             ClaymorphismLayer.GenerateClaymorphismLayer(BaseColor with { Saturation = 40 }, false, out scheme.LayerLightOuter, out scheme.LayerDarkOuter);
             ClaymorphismLayer.GenerateClaymorphismLayer(BaseColor with { Saturation = 60 }, true, out scheme.DemiiLightInner, out scheme.DemiiDarkInner);

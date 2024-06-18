@@ -17,10 +17,10 @@ namespace JVOS.Controls
         private static Brush TransparentA1 = new SolidColorBrush(Color.FromArgb(1, 0, 0, 0), 1);
         static JWindowResizeThumb()
         {
-            ParentWindowProperty = AvaloniaProperty.RegisterAttached<JWindowResizeThumb, Thumb, JWindow>("ParentWindow");
+            ParentWindowProperty = AvaloniaProperty.RegisterAttached<JWindowResizeThumb, Thumb, SystemWindowFrame>("ParentWindow");
         }
 
-        public JWindow ParentWindow
+        public SystemWindowFrame ParentWindow
         {
             get => GetValue(ParentWindowProperty);
             set => SetValue(ParentWindowProperty, value);
@@ -42,7 +42,7 @@ namespace JVOS.Controls
                     break;
                 case Avalonia.Layout.VerticalAlignment.Top:
                     deltaVertical = Math.Min(e.Vector.Y, ParentWindow.Bounds.Height - ParentWindow.MinHeight);
-                    ParentWindow.WindowPositionTransform.Y -= deltaVertical;
+                    //ParentWindow.WindowPositionTransform.Y -= deltaVertical;
                     ParentWindow.Height = Math.Max(32, ParentWindow.Bounds.Height - deltaVertical);
                     break;
                 default:
@@ -53,7 +53,7 @@ namespace JVOS.Controls
             {
                 case Avalonia.Layout.HorizontalAlignment.Left:
                     deltaHorizontal = Math.Min(e.Vector.X, ParentWindow.Bounds.Width - ParentWindow.MinWidth);
-                    ParentWindow.WindowPositionTransform.X -= e.Vector.X;
+                    //ParentWindow.WindowPositionTransform.X -= e.Vector.X;
                     ParentWindow.Width = Math.Max(32, ParentWindow.Bounds.Width - deltaHorizontal);
                     break;
                 case Avalonia.Layout.HorizontalAlignment.Right:
@@ -70,6 +70,6 @@ namespace JVOS.Controls
             context.FillRectangle(TransparentA1, new Rect(Bounds.Size));
         }
 
-        public static readonly AttachedProperty<JWindow> ParentWindowProperty;
+        public static readonly AttachedProperty<SystemWindowFrame> ParentWindowProperty;
     }
 }

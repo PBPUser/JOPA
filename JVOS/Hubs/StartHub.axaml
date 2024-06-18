@@ -1,15 +1,12 @@
-<api:IHub xmlns="https://github.com/avaloniaui"
+<api:HubWindow xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d" d:DesignWidth="640" d:DesignHeight="724"
              x:Class="JVOS.Hubs.StartHub"
              xmlns:controls="clr-namespace:JVOS.Controls;assembly=JVOS.Controls"
-			xmlns:api="clr-namespace:JVOS.ApplicationAPI;assembly=JVOS.ApplicationAPI"
+			xmlns:api="clr-namespace:JVOS.ApplicationAPI.Hub;assembly=JVOS.ApplicationAPI"
 			 xmlns:local="clr-namespace:JVOS.Hubs">
-	<api:IHub.DataContext>
-		<local:StartViewModel/>
-	</api:IHub.DataContext>
 	<Border Height="724" Width="640" Classes="Bar Alpha Outer" Margin="8" CornerRadius="12">
 		<Grid>
 			<Grid.RowDefinitions>
@@ -35,11 +32,22 @@
 						<Grid.RowDefinitions>
 							<RowDefinition Height="48"/>
 							<RowDefinition/>
+							<RowDefinition Height="48"/>
+							<RowDefinition/>
 						</Grid.RowDefinitions>
 						<TextBlock Margin="8" VerticalAlignment="Center" Text="Pinned Applications" FontWeight="Bold" FontSize="16"/>
-						<controls:JButton ClipToBounds="false" Grid.Column="1" Height="32" Width="100" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Foreground="{DynamicResource BarForeground}" BoxShadows="{DynamicResource ButtonBarClaymorphismBoxShadow}" ActiveBoxShadows="{DynamicResource ButtonBarClaymorphismInnerBoxShadow}"  Margin="8, 8, 16, 8" CornerRadius="16" x:Name="_allButton" HorizontalAlignment="Right" Content="All Apps"/>
+						<controls:JButton ClipToBounds="false" Grid.Column="1" Height="32" Width="100" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Margin="8, 8, 16, 8" CornerRadius="16" x:Name="_allButton" HorizontalAlignment="Right" Content="All Apps"/>
 						<ListBox x:Name="PinnedApplications" Grid.Row="1" Margin="8" CornerRadius="8" Padding="8" Background="Transparent" BorderThickness="0" ItemsSource="{Binding PinnedPoints}">
 
+						</ListBox>
+						<TextBlock Grid.Row="2" Margin="8" VerticalAlignment="Center" Text="Recommended" FontWeight="Bold" FontSize="16"/>
+						<controls:JButton ClipToBounds="false" Grid.Row="2" Grid.Column="1" Height="32" Width="100" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Margin="8, 8, 16, 8" CornerRadius="16" x:Name="_moreButton" HorizontalAlignment="Right" Content="More"/>
+						<ListBox x:Name="RecomendedApplications" Grid.Row="3" Margin="8" CornerRadius="8" Padding="8" Background="Transparent" BorderThickness="0" ItemsSource="{Binding ListRecommended}">
+							<ListBox.ItemsPanel>
+								<ItemsPanelTemplate>
+									<UniformGrid Columns="2"/>
+								</ItemsPanelTemplate>
+							</ListBox.ItemsPanel>
 						</ListBox>
 					</Grid>
 					<Grid Grid.Column="1">
@@ -49,19 +57,11 @@
 						</Grid.RowDefinitions>
 						<TextBlock Margin="8" VerticalAlignment="Center" Text="All Applications" FontWeight="Bold" FontSize="16"/>
 						<controls:JButton ClipToBounds="false" Grid.Column="1" Height="32" Width="100" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Foreground="{DynamicResource BarForeground}" BoxShadows="{DynamicResource ButtonBarClaymorphismBoxShadow}" ActiveBoxShadows="{DynamicResource ButtonBarClaymorphismInnerBoxShadow}"  Margin="8, 8, 16, 8" CornerRadius="16" x:Name="_pinButton" HorizontalAlignment="Right" Content="Nazad"/>
-						<ListBox x:Name="AllApplications" Grid.Row="1" Margin="8" CornerRadius="8" Padding="8" Background="Transparent" BorderThickness="0" ItemsSource="{Binding EntryPoints}">
-							<ListBox.ItemTemplate>
-								<DataTemplate>
-									<StackPanel Orientation="Horizontal">
-										<TextBlock Text="{Binding Name}" />
-										<Image Source="{Binding ImageSource}" />
-									</StackPanel>
-								</DataTemplate>
-							</ListBox.ItemTemplate>
+						<ListBox Background="Transparent" x:Name="AllApplications" Grid.Row="1" Margin="8" CornerRadius="8" Padding="8" BorderThickness="0" ItemsSource="{Binding ListAll}">
 						</ListBox>
 					</Grid>
 				</Grid>
 			</Grid>
 		</Grid>
 	</Border>
-</api:IHub>
+</api:HubWindow>

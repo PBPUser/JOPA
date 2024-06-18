@@ -1,0 +1,34 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net7.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="Assets\fork.png" />
+    <None Remove="Assets\Icon.png" />
+    <None Remove="Assets\Nikitos.png" />
+    <None Remove="Assets\OOBE.txt" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <AvaloniaResource Include="Assets\Fork.png" />
+    <AvaloniaResource Include="Assets\Icon.png" />
+    <AvaloniaResource Include="Assets\Nikitos.png" />
+    <AvaloniaResource Include="Assets\OOBE.txt" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\JVOS.ApplicationAPI\JVOS.ApplicationAPI.csproj" />
+    <ProjectReference Include="..\JVOS.Controls\JVOS.Controls.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Nikitos.axaml.cs">
+      <DependentUpon>Nikitos.axaml</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+</Project>

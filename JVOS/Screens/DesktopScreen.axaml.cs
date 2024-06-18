@@ -10,8 +10,11 @@ using Avalonia.Media.Fonts;
 using Avalonia.Media.Imaging;
 using Avalonia.Threading;
 using JVOS.ApplicationAPI;
+using JVOS.ApplicationAPI.Windows;
+using JVOS.ApplicationAPI.Hub;
 using JVOS.Controls;
 using JVOS.DataModel;
+using JVOS.EmbededWindows;
 using JVOS.Hubs;
 using JVOS.Views;
 using Newtonsoft.Json;
@@ -25,6 +28,10 @@ using System.Reactive.Subjects;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Threading.Tasks.Sources;
+using System.Reflection;
+using System.Runtime.Loader;
+using DynamicData;
+using SharpCompress;
 
 namespace JVOS.Screens
 {
@@ -35,19 +42,22 @@ namespace JVOS.Screens
         public DesktopScreen()
         {
             InitializeComponent();
-            AttachHandlers();
             AddWindowHub(new DesktopHub() { ParentScreen = this });
             OHubXTransition = new DoubleTransition() { Property = TranslateTransform.XProperty, Duration = TimeSpan.FromMilliseconds(500), Easing = new CubicEaseOut() };
             OHubYTransition = new DoubleTransition() { Property = TranslateTransform.YProperty, Duration = TimeSpan.FromMilliseconds(500), Easing = new CubicEaseOut() };
             CHubXTransition = new DoubleTransition() { Property = TranslateTransform.XProperty, Duration = TimeSpan.FromMilliseconds(500), Easing = new CubicEaseIn() };
             CHubYTransition = new DoubleTransition() { Property = TranslateTransform.YProperty, Duration = TimeSpan.FromMilliseconds(500), Easing = new CubicEaseIn() };
-            LanguageSwitcher = (LanguageSwitcherHub)AttachHub(new LanguageSwitcherHub(), VerticalAlignment.Bottom, HorizontalAlignment.Right, Orientation.Vertical);
-            Clock = (ClockHub)AttachHub(new ClockHub(), VerticalAlignment.Bottom, HorizontalAlignment.Right, Orientation.Vertical);
-            Panorama = (PanoramaHub)AttachHub(new PanoramaHub(), VerticalAlignment.Stretch, HorizontalAlignment.Left, Orientation.Horizontal);
-            LanguageSwitcher = (LanguageSwitcherHub)AttachHub(new LanguageSwitcherHub(), VerticalAlignment.Bottom, HorizontalAlignment.Right, Orientation.Vertical);
-            Start = (StartHub)AttachHub(new StartHub(), VerticalAlignment.Bottom, HorizontalAlignment.Center, Orientation.Vertical);
-            Clock._setLeft.Click += (a, b) => SetBarAlign(HorizontalAlignment.Left);
-            Clock._setCenter.Click += (a, b) => SetBarAlign(HorizontalAlignment.Center);
+            
+            
+            //LanguageSwitcher = (LanguageSwitcherHub)AttachHub(new LanguageSwitcherHub(), VerticalAlignment.Bottom, HorizontalAlignment.Right, Orientation.Vertical);
+            
+            
+            //Clock = (ClockHub)AttachHub(new ClockHub(), VerticalAlignment.Bottom, HorizontalAlignment.Right, Orientation.Vertical);
+            //Panorama = (PanoramaHub)AttachHub(new PanoramaHub(), VerticalAlignment.Stretch, HorizontalAlignment.Left, Orientation.Horizontal);
+            //LanguageSwitcher = (LanguageSwitcherHub)AttachHub(new LanguageSwitcherHub(), VerticalAlignment.Bottom, HorizontalAlignment.Right, Orientation.Vertical);
+            //Start = (StartHub)AttachHub(new StartHub(), VerticalAlignment.Bottom, HorizontalAlignment.Center, Orientation.Vertical);
+            //Clock._setLeft.Click += (a, b) => SetBarAlign(HorizontalAlignment.Left);
+            //Clock._setCenter.Click += (a, b) => SetBarAlign(HorizontalAlignment.Center);
             appsPlace.RenderTransform = AppsBarTransform;
             widgetsBtn.RenderTransform = BtnBarTransform;
             AppsBarTransform.Transitions = new Transitions();
@@ -62,8 +72,9 @@ namespace JVOS.Screens
             CHubTransitions.Add(CHubXTransition);
             CHubTransitions.Add(CHubYTransition);
             keyBtn.Click += (a, b) => MainView.GLOBAL.SwitchAdaptiveControllerState();
+            Loaded += (a, b) => Communicator.OpenWindow(new DesktopWindow());
             CurrentDesktop = this;
-            LoadExternalHubs();
+            LoadHubs();
         }
 
         DoubleTransition WidgetPlaceTransition = new DoubleTransition() { Duration = TimeSpan.FromMilliseconds(500), Property = WidthProperty, Easing = new SineEaseIn() };
@@ -88,6 +99,7 @@ namespace JVOS.Screens
         PanoramaHub Panorama;
         ClockHub Clock;
         StartHub Start;
+        Subject<HorizontalAlignment> HorizontalBarSubjectAlignment = new();
 
 
         HorizontalAlignment BarAlignment = HorizontalAlignment.Center;
@@ -95,6 +107,7 @@ namespace JVOS.Screens
         private void SetBarAlign(HorizontalAlignment horizontalAlignment)
         {
             if (horizontalAlignment == HorizontalAlignment.Stretch || horizontalAlignment == HorizontalAlignment.Right || horizontalAlignment == BarAlignment) return;
+            HorizontalBarSubjectAlignment.OnNext(horizontalAlignment);
             BarAlignment = horizontalAlignment;
             double xAppsPos = appsPlace.PointToScreen(new Point(0, 0)).X - Bounds.Left - 8;
             double xWidgetPos = widgetsBtn.PointToScreen(new Point(0, 0)).X - Bounds.Left - 8;
@@ -146,23 +159,14 @@ namespace JVOS.Screens
         {
             new Thread(() =>
             {
-                var client = new System.Net.Http.HttpClient();
-                var task = client.GetStringAsync("https://random-word-api.herokuapp.com/word");
-                task.Wait(3000);
-                string str = task.Result;
-                if (String.IsNullOrEmpty(str))
-                    str = "mjssjngno";
-                else
-                    str = str.Replace("\"", "").Replace("[", "").Replace("]", "").Replace("i", "j");
-                Dispatcher.UIThread.Invoke(() => @event.Invoke(null, (string)str));
             }).Start();
         }
 
-        public Dictionary<IJWindowFrame, BarRunningInstance> RunningApplicationInstances = new();
+        public Dictionary<WindowFrameBase, BarRunningInstance> RunningApplicationInstances = new();
 
-        public void AttachBarApplication(IJWindowFrame jWindowFrame)
+        public void AttachBarApplication(WindowFrameBase jWindowFrame)
         {
-            jWindowFrame.ChildWindowSet += (a, b) =>
+            jWindowFrame.WindowLoaded += (a, b) =>
             {
                 foreach(var x in RunningApplicationInstances)
                 {
@@ -173,20 +177,38 @@ namespace JVOS.Screens
                     }
                 }
                 var bt = new BarTooltip() { 
-                    Icon = jWindowFrame.ChildWindow.IconValue, 
+                    Icon = jWindowFrame.WindowContent.Icon, 
                     ClipToBounds = false, 
                     Margin = new Thickness(4), 
                     VerticalAlignment = VerticalAlignment.Center, 
                     Height = 56, 
                     Width = 0, 
-                    Title = jWindowFrame.ChildWindow.TitleValue
+                    Title = jWindowFrame.WindowContent.Title
                 };
                 BarRunningInstance barRunningInstance = new BarRunningInstance(bt, bt.Bind(WidthProperty, RunningAppWidthSubject));
                 ColorScheme.Updated += barRunningInstance.SchemeUpdate;
-                bt.Transitions = new Transitions { new DoubleTransition { Property = WidthProperty, Duration = TimeSpan.FromMilliseconds(175) }, new DoubleTransition { Property = BarTooltip.ShadowPosProperty, Duration = TimeSpan.FromMilliseconds(175) }, new DoubleTransition { Property = BarTooltip.ScaleProperty, Duration = TimeSpan.FromMilliseconds(175) }, bt.DeltaTransition, new DoubleTransition { Duration = TimeSpan.FromMilliseconds(2000), Property = BarTooltip.StartAnimationProperty } };
+                bt.Transitions = new Transitions { 
+                    new DoubleTransition { 
+                        Property = WidthProperty, 
+                        Duration = TimeSpan.FromMilliseconds(175)
+                    }, 
+                    new DoubleTransition { 
+                        Property = BarTooltip.ShadowPosProperty, 
+                        Duration = TimeSpan.FromMilliseconds(175) 
+                    }, 
+                    new DoubleTransition { 
+                        Property = BarTooltip.ScaleProperty, 
+                        Duration = TimeSpan.FromMilliseconds(175) 
+                    }, 
+                    bt.DeltaTransition, 
+                    new DoubleTransition { 
+                        Duration = TimeSpan.FromMilliseconds(2000), 
+                        Property = BarTooltip.StartAnimationProperty 
+                    } 
+                };
                 bt.AddJWindowFrame(jWindowFrame);
-                runnedApps.Children.Add(bt);
-
+                if(jWindowFrame.WindowContent.ShowOnTaskbar)
+                    runnedApps.Children.Add(bt);
                 bt.Width = RunningAppWidth;
                 RunningApplicationInstances.Add(jWindowFrame, barRunningInstance);
                 bt.AllWindowsClosed += (a, b) =>
@@ -196,7 +218,7 @@ namespace JVOS.Screens
             };
         }
 
-        public void DeattachBarApplication(IJWindowFrame jWindowFrame)
+        public void DeattachBarApplication(WindowFrameBase jWindowFrame)
         {
             BarRunningInstance x;
             if (RunningApplicationInstances.TryGetValue(jWindowFrame, out x))
@@ -220,50 +242,6 @@ namespace JVOS.Screens
             }).Start();
         }
 
-        private void AttachHandlers()
-        {
-            widgetsBtn.Click += (a, b) =>
-            {
-                ToggleHub(Panorama);
-                widgetsBtn.DoGlare();
-            };
-            clockBtn.Click += (a, b) =>
-            {
-                ToggleHub(Clock);
-            };
-            langBtn.Click += (a, b) =>
-            {
-                ToggleHub(LanguageSwitcher);
-            };
-            startBtn.Click += (a, b) =>
-            {
-                ToggleHub(Start);
-            };
-        }
-
-
-        public void SaveExternalHubsList()
-        {
-            using var file = File.CreateText(UserOptions.Current.GetPath("\\Appdata\\externalItems"));
-            ExternalHubsList.ForEach((a) =>
-            {
-                file.WriteLine(a);
-            });
-        }
-
-        public void LoadExternalHubs()
-        {
-            if (File.Exists(UserOptions.Current.GetPath("\\Appdata\\externalItems"))) {
-                ExternalHubsList = File.ReadAllLines(UserOptions.Current.GetPath("\\Appdata\\externalItems")).ToList();
-            }
-            ExternalHubsList.ForEach(a =>
-            {
-                var s = ApplicationManager.HubProviders.Where(x => x.InternalName == a).FirstOrDefault();
-                if(s != null)
-                    AddExternalHub(s,true);
-            });
-        }
-
         public override void MobileModeStateSwitch(bool enabled)
         {
             runnedApps.IsVisible = !enabled;
@@ -272,7 +250,7 @@ namespace JVOS.Screens
 
         private int TopHub = 3;
 
-        public void ToggleHub(IHub hub, bool? forced = null)
+        public void ToggleHub(HubWindow hub, bool? forced = null)
         {
             if (forced != null)
                 hub.IsOpen = forced.Value;
@@ -283,8 +261,9 @@ namespace JVOS.Screens
                 hub.OnOpened(EventArgs.Empty);
                 (hub.RenderTransform as TranslateTransform).Transitions = OHubTransitions;
                 hub.ZIndex = TopHub++;
-                foreach (IHub xHub in Hubs)
+                foreach (var Hubinfo in HubMan.LeftDesktopHubs)
                 {
+                    var xHub = Hubinfo.RuntimeHubInformation == null ? Hubinfo.InternalHubInformation.Value.Window : Hubinfo.RuntimeHubInformation.Value.Window;
                     if (xHub.IsOpen == false)
                         continue;
                     if (xHub == hub)
@@ -299,7 +278,7 @@ namespace JVOS.Screens
             }
             else
             {
-                hub.OnClosed(IHub.CloseReason.Hide);
+                hub.OnClosed(HubWindow.CloseReason.Hide);
                 (hub.RenderTransform as TranslateTransform).Transitions = CHubTransitions;
                 if (hub.AnimationOrientation == Orientation.Horizontal)
                     (hub.RenderTransform as TranslateTransform).X = hub.HorizontalAlignment == HorizontalAlignment.Left ? -hub.Bounds.Width : hub.Bounds.Width;
@@ -330,7 +309,7 @@ namespace JVOS.Screens
             base.ScreenShown();
         }
 
-        public void CloseWindow(IJWindowFrame window)
+        public void CloseWindow(WindowFrameBase window)
         {
             _currentWindowSpace?.CloseWindow(window);
         }
@@ -369,9 +348,14 @@ namespace JVOS.Screens
             });
         }
 
-        public void OpenWindow(IJWindowFrame window)
+        public void OpenWindow(WindowFrameBase window)
         {
             _currentWindowSpace?.OpenWindow(window);
+        }
+
+        public void MinimizeWindow(WindowFrameBase window)
+        {
+            _currentWindowSpace?.MinimizeWindow(window);
         }
 
         private IWindowSpace? _currentWindowSpace;
@@ -394,68 +378,87 @@ namespace JVOS.Screens
             WindowManager.SetCurrentWindowSpace(_currentWindowSpace);
         }
 
-        private List<IHub> Hubs = new List<IHub>();
-        public List<string> ExternalHubsList = new();
-
-        public IHub AttachHub(IHub hub, VerticalAlignment vAlign, HorizontalAlignment hAlign, Orientation AnimationOrientation = Orientation.Vertical)
+        private void LoadHubs()
         {
-            hub.VerticalAlignment = vAlign;
-            hub.HorizontalAlignment = hAlign;
-            hub.Margin = new Avalonia.Thickness(0, 0, 0, 88);
-            hub.AnimationOrientation = AnimationOrientation;
-            TranslateTransform Transform = new TranslateTransform();
-            hub.RenderTransform = Transform;
-            baseGrid.Children.Add(hub);
-            hub.Loaded += (a, b) =>
+            HubMan = new(this);
+
+            HubMan.Config.Left.ForEach(x => LoadHub(x, HorizontalAlignment.Left));
+            HubMan.Config.Center.ForEach(x => LoadHub(x, HorizontalAlignment.Center));
+            HubMan.Config.Right.ForEach(x => LoadHub(x, HorizontalAlignment.Right));
+        }
+
+        public void MoveHub(HubManager.DesktopHubInfo hubInfo, HubManager.HubConfig.HubConfigurationStructure structure, HorizontalAlignment newPlacement, int index)
+        {
+            HubMan.MoveHub(ref hubInfo, newPlacement, index);
+            HubMan.Config.MoveHub(ref structure, newPlacement, index);
+        }
+
+        public void AddHub(HubManager.HubConfig.HubConfigurationStructure config, HorizontalAlignment placement)
+        {
+            LoadHub(config, placement);
+            HubMan.Config.AddHub(config, placement);
+        }
+
+        public void RemoveHub(HubManager.HubConfig.HubConfigurationStructure config, HubManager.DesktopHubInfo info)
+        {
+            HubMan.DeattachHub(ref info);
+            HubMan.Config.RemHub(ref config);
+        }
+
+        public void LoadHub(HubManager.HubConfig.HubConfigurationStructure config, HorizontalAlignment placement)
+        {
+            Assembly assembly;
+            ConstructorInfo? constctuctor;
+            bool internalAssembly = String.IsNullOrEmpty(config.Path);
+            if (internalAssembly)
             {
-                if(AnimationOrientation == Orientation.Horizontal)
+
+                assembly = Assembly.GetExecutingAssembly();
+                constctuctor = assembly.GetTypes().Where(x => x.IsAssignableTo(typeof(HubProvider)))
+                    .Where(x => x.ToString().Equals(config.HubName))
+                    .SelectMany(x => x.GetConstructors().Where(x => x.GetParameters().Length == 0))
+                    .FirstOrDefault();
+                
+                if(constctuctor == null)
                 {
-                    if(hAlign == HorizontalAlignment.Left)
-                        Transform.X = -hub.Bounds.Width;
-                    else
-                        Transform.X = hub.Bounds.Width;
+                    Communicator.ShowMessageDialog(new MessageDialog(config.HubName, "Hub not found"));
+                    return;
                 }
-                else
+                var hubProvider = (HubProvider)constctuctor.Invoke(null);
+                HubMan.AttachHub(new HubManager.DesktopHubInfo()
                 {
-                    if (vAlign == VerticalAlignment.Top)
-                        Transform.Y = -hub.Bounds.Height;
-                    else
-                        Transform.Y = hub.Bounds.Height + 88;
+                    InternalHubInformation = new HubManager.InternalHubInformation(hubProvider)
+                }, 
+                placement);
+            }
+            else
+            {
+                RuntimeHubInformation? hubInfo;
+                string? s;
+                if(!JVOS.ApplicationAPI.Hub.HubManager.LoadHub(config.Path, config.HubName, out hubInfo, out s))
+                {
+#if DEBUG
+                    throw new Exception(s);
+#endif
+                    return;
                 }
-                hub.SizeChanged += (a, b) =>
+                HubMan.AttachHub(new HubManager.DesktopHubInfo()
                 {
-                    Transform.Transitions = CHubTransitions;
-                    if (b.PreviousSize.Width != b.NewSize.Width && !hub.IsOpen && Orientation.Horizontal == AnimationOrientation)
-                    {
-                        if (hAlign == HorizontalAlignment.Left)
-                            Transform.X = -hub.Bounds.Width;
-                        else
-                            Transform.X = hub.Bounds.Width;
-                    }
-                    else if (b.PreviousSize.Height != b.NewSize.Height && !hub.IsOpen && Orientation.Vertical == AnimationOrientation)
-                    {
-                        if (vAlign == VerticalAlignment.Top)
-                            Transform.Y = -hub.Bounds.Height;
-                        else
-                            Transform.Y = hub.Bounds.Height + 88;
-                    }
-                };
-            };
-            Hubs.Add(hub);
-            return hub;
+                    RuntimeHubInformation = hubInfo
+                }, placement);
+            }
         }
 
         private static int TopZIndex = 0;
 
-        public void BringToFront(IJWindowFrame window)
+        public void BringToFront(WindowFrameBase window)
         {
             ((Control)window).ZIndex = TopZIndex++;
         }
 
         public void CloseAllHubs()
         {
-            foreach (var hub in Hubs)
-                ToggleHub(hub, false);
+
         }
 
         public static Subject<double> RunningAppWidthSubject = new Subject<double>();
@@ -467,55 +470,342 @@ namespace JVOS.Screens
             RunningAppWidthSubject.OnNext(RunningAppWidth);
         }
 
-        public List<JButton> HubButtons = new();
-        public List<IHub> ExHubs = new();
 
-        public void AddExternalHub(IHubProvider hubp, bool isLoading = false)
+        public HubManager HubMan;
+
+        public class HubManager
         {
-            object s;
-            var hub = hubp.Create(out s);
-            var btn = new JButton()
+            public HubConfig Config;
+            DesktopScreen Parent;
+
+            public HubManager(DesktopScreen parent)
             {
-                Content = s,
-                FontFamily = new FontFamily(hubp.ButtonFont)
-            };
-            btn.Classes.Add("Hub");
-            btn.Classes.Add("Bar");
-            btn.Click += (a, b) =>
+                Parent = parent;
+                Config = HubConfig.Load(this);
+                if (!File.Exists(UserOptions.Current.GetPath("Appdata\\HubsConfig.jvon")))
+                    Config.Save();
+            }
+
+            public class HubConfig
             {
-                ToggleHub(hub);
-            };
-            ExHubs.Add(hub);
-            if(!isLoading)
-                ExternalHubsList.Add(hubp.InternalName);
-            AttachHub(hub, VerticalAlignment.Bottom, HorizontalAlignment.Right, Orientation.Vertical);
-            externalStack.Children.Add(btn);
-            HubButtons.Add(btn);
-            SaveExternalHubsList();
-        }
+                [JsonIgnore]
+                public HubManager? Parent;
 
-        public void MoveHub(int from, int to)
-        {
-            externalStack.Children.Move(from, to);
-            var btn = HubButtons[from];
-            HubButtons.RemoveAt(from);
-            HubButtons.Insert(to, btn);
-            var s = ExternalHubsList[from];
-            var e = ExHubs[from];
-            ExternalHubsList.RemoveAt(from);
-            ExternalHubsList.Insert(to, s);
-            ExHubs.RemoveAt(from);
-            ExHubs.Insert(to, e);
-            SaveExternalHubsList();
-        }
+                public HubConfig()
+                {
 
-        public void RemoveHub(int index)
-        {
-            ExHubs.RemoveAt(index);
-            ExternalHubsList.RemoveAt(index);
-            HubButtons.RemoveAt(index);
-            externalStack.Children.RemoveAt(index);
-            SaveExternalHubsList();
+                }
+
+                private static HubConfig GetDefault(HubManager parent)
+                {
+                    return new HubConfig()
+                    {
+                        Center = new List<HubConfigurationStructure>() {
+                            new HubConfigurationStructure()
+                            {
+                                HubName = typeof(StartHubProvider).ToString()
+                            }
+                        },
+                        Right = new List<HubConfigurationStructure>()
+                        {
+                            new HubConfigurationStructure()
+                            {
+                                HubName = typeof(ClockHubProvider).ToString()
+                            }
+                        },
+                        Parent = parent
+                        
+                    };
+                }
+
+                public List<HubConfigurationStructure> Left = new();
+                public List<HubConfigurationStructure> Center = new();
+                public List<HubConfigurationStructure> Right = new();
+
+                public void AddHub(HubConfigurationStructure hubConfigurationStructure, HorizontalAlignment placement)
+                {
+                    switch (placement) {
+                        case HorizontalAlignment.Left:
+                            Left.Add(hubConfigurationStructure);
+                            break;
+                        case HorizontalAlignment.Center:
+                            Center.Add(hubConfigurationStructure);
+                            break;
+                        case HorizontalAlignment.Right:
+                            Right.Add(hubConfigurationStructure);
+                            break;
+                    }
+                    Save();
+                }
+
+                public void RemHub(ref HubConfigurationStructure hubConfigurationStructure)
+                {
+                    Left.Remove(hubConfigurationStructure);
+                    Center.Remove(hubConfigurationStructure);
+                    Right.Remove(hubConfigurationStructure);
+                    Save();
+                }
+
+                public void MoveHub(ref HubConfigurationStructure hubConfigurationStructure, HorizontalAlignment placement, int index)
+                {
+                    RemHub(ref hubConfigurationStructure);
+                    if(index != -1)
+                    {
+                        switch (placement) {
+                            case HorizontalAlignment.Left: Left.Insert(index, hubConfigurationStructure); break;
+                            case HorizontalAlignment.Center: Center.Insert(index, hubConfigurationStructure); break;
+                            case HorizontalAlignment.Right: Right.Insert(index, hubConfigurationStructure); break;
+                        }
+                        Save();
+                    }
+                    else
+                    {
+                        AddHub(hubConfigurationStructure, placement);
+                    }
+                }
+
+                public void Save()
+                {
+                    string path = UserOptions.Current.GetPath("AppData\\HubsConfig.jvon");
+                    File.WriteAllText(path, JsonConvert.SerializeObject(this));
+                }
+
+                public static HubConfig Load(HubManager parent)
+                {
+                    string path = UserOptions.Current.GetPath("AppData\\HubsConfig.jvon");
+                    if (File.Exists(path))
+                    {
+                        HubConfig? s = JsonConvert.DeserializeObject<HubConfig>(File.ReadAllText(path));
+                        if(s == null)
+                            return GetDefault(parent);
+                        s.Parent = parent;
+                        return s;
+                    }
+                    
+                    return GetDefault(parent);
+                }
+
+                public struct HubConfigurationStructure
+                {
+                    public HubConfigurationStructure(string path, string hubname)
+                    {
+                        Path = path;
+                        HubName = hubname;
+                    }
+
+                    public HubConfigurationStructure()
+                    {
+                        Path = "";
+                        HubName = "";
+                    }
+
+                    public override string ToString()
+                    {
+                        return HubName;
+                    }
+
+                    public string Path = "";
+                    public string HubName = "";
+                }
+            }
+
+            public List<DesktopHubInfo> LeftDesktopHubs = new();
+            public List<DesktopHubInfo> CenterDesktopHubs = new();
+            public List<DesktopHubInfo> RightDesktopHubs = new();
+
+            public struct DesktopHubInfo
+            {
+                public RuntimeHubInformation? RuntimeHubInformation;
+                public InternalHubInformation? InternalHubInformation;
+                public JButton Button;
+                public IDisposable? CenterHubHorizontalSubscription;
+
+                public override string ToString()
+                {
+                    return RuntimeHubInformation == null ?
+                        InternalHubInformation.Value.Provider.ToString() :
+                        RuntimeHubInformation.Value.Provider.ToString();
+                }
+            }
+
+            public struct InternalHubInformation {
+                public InternalHubInformation(HubProvider provider)
+                {
+                    Provider = provider;
+                    Window = provider.CreateHub();
+                }
+
+                public HubProvider Provider;
+                public HubWindow Window;
+            }
+
+            public void LoadAndAddExternalHub(string path, string hubInternalName, HorizontalAlignment placement)
+            {
+                RuntimeHubInformation? runtimeHubInformation;
+                string? error;
+
+                if (!JVOS.ApplicationAPI.Hub.HubManager.LoadHub(path, hubInternalName, out runtimeHubInformation, out error))
+                {
+                    Communicator.ShowMessageDialog(new MessageDialog($"{hubInternalName}@{path}", error));
+                    return;
+                }
+                DesktopHubInfo info = new() { RuntimeHubInformation = runtimeHubInformation.Value };
+                AttachHub(info, placement);
+            }
+
+            public void RefreshHubs()
+            {
+                LeftDesktopHubs.ForEach(x => RefreshHub(x));
+                CenterDesktopHubs.ForEach(x => RefreshHub(x));
+                RightDesktopHubs.ForEach(x => RefreshHub(x));
+            }
+
+            public void RefreshHub(DesktopHubInfo info)
+            {
+                var hubProvider = info.InternalHubInformation != null ? info.InternalHubInformation.Value.Provider : info.RuntimeHubInformation.Value.Provider;
+                hubProvider.UpdateButtonContent(ref info.Button);
+            }
+
+            public void AttachHub(DesktopHubInfo info, HorizontalAlignment placement)
+            {
+                var hubProvider = info.InternalHubInformation != null ? info.InternalHubInformation.Value.Provider : info.RuntimeHubInformation.Value.Provider;
+                var hubWindow = info.InternalHubInformation != null ? info.InternalHubInformation.Value.Window : info.RuntimeHubInformation.Value.Window;
+                info.Button = new();
+                hubProvider.CreateButtonContent(ref info.Button);
+                
+                hubWindow.VerticalAlignment = hubWindow.GetDefaultVerticalAlignment();
+                if (placement == HorizontalAlignment.Center)
+                    info.CenterHubHorizontalSubscription = hubWindow.Bind(HorizontalAlignmentProperty, Parent.HorizontalBarSubjectAlignment);
+                else
+                    hubWindow.HorizontalAlignment = placement;
+
+
+                TranslateTransform Transform = new();
+                hubWindow.RenderTransform = Transform;
+                hubWindow.Margin = new Thickness(0, 0, 0, 88);
+
+                hubWindow.Loaded += (a, b) =>
+                {
+                    if (hubWindow.AnimationOrientation == Orientation.Horizontal)
+                    {
+                        if (hubWindow.HorizontalAlignment == HorizontalAlignment.Left)
+                            Transform.X = -hubWindow.Bounds.Width;
+                        else
+                            Transform.X = hubWindow.Bounds.Width;
+                    }
+                    else
+                    {
+                        if (hubWindow.GetDefaultVerticalAlignment() == VerticalAlignment.Top)
+                            Transform.Y = -hubWindow.Bounds.Height;
+                        else
+                            Transform.Y = hubWindow.Bounds.Height + 88;
+                    }
+                    hubWindow.SizeChanged += (a, b) =>
+                    {
+                        Transform.Transitions = Parent.CHubTransitions;
+                        if (b.PreviousSize.Width != b.NewSize.Width && !hubWindow.IsOpen && Orientation.Horizontal == hubWindow.AnimationOrientation)
+                        {
+                            if (hubWindow.HorizontalAlignment == HorizontalAlignment.Left)
+                                Transform.X = -hubWindow.Bounds.Width;
+                            else
+                                Transform.X = hubWindow.Bounds.Width;
+                        }
+                        else if (b.PreviousSize.Height != b.NewSize.Height && !hubWindow.IsOpen && Orientation.Vertical == hubWindow.AnimationOrientation)
+                        {
+                            if (hubWindow.VerticalAlignment == VerticalAlignment.Top)
+                                Transform.Y = -hubWindow.Bounds.Height;
+                            else
+                                Transform.Y = hubWindow.Bounds.Height + 88;
+                        }
+                    };
+                };
+
+                info.Button.Click += (a, b) => Parent.ToggleHub(hubWindow);
+                info.Button.Classes.AddRange(new string[] { "Bar", placement == HorizontalAlignment.Right ? "Hub" : "Mid" });
+                AddHubToPanelAndList(ref info, placement);
+                Parent.baseGrid.Children.Add(hubWindow);
+            }
+
+            public void MoveHub(ref DesktopHubInfo info, HorizontalAlignment newPlacement, int newIndex = -1)
+            {
+                RemoveHubFromPanelAndList(ref info);
+                AddHubToPanelAndList(ref info, newPlacement, newIndex);
+                info.CenterHubHorizontalSubscription?.Dispose();
+                var hubWindow = info.InternalHubInformation != null ? info.InternalHubInformation.Value.Window : info.RuntimeHubInformation.Value.Window;
+                if (newPlacement == HorizontalAlignment.Center)
+                    info.CenterHubHorizontalSubscription = hubWindow.Bind(HorizontalAlignmentProperty, Parent.HorizontalBarSubjectAlignment);
+                else
+                    hubWindow.HorizontalAlignment = newPlacement;
+            }
+
+            private void AddHubToPanelAndList(ref DesktopHubInfo desktopHubInfo, HorizontalAlignment placement, int index = -1)
+            {
+                if(index == -1)
+                {
+                    switch (placement)
+                    {
+                        case HorizontalAlignment.Center:
+                            CenterDesktopHubs.Add(desktopHubInfo);
+                            Parent.centerStack.Children.Add(desktopHubInfo.Button);
+                            break;
+                        case HorizontalAlignment.Right:
+                            RightDesktopHubs.Add(desktopHubInfo);
+                            Parent.rightStack.Children.Add(desktopHubInfo.Button);
+                            break;
+                        case HorizontalAlignment.Left:
+                            LeftDesktopHubs.Add(desktopHubInfo);
+                            Parent.leftStack.Children.Add(desktopHubInfo.Button);
+                            break;
+                    }
+                }
+                else
+                {
+                    switch (placement)
+                    {
+                        case HorizontalAlignment.Center:
+                            CenterDesktopHubs.Insert(index,desktopHubInfo);
+                            Parent.centerStack.Children.Insert(index+1, desktopHubInfo.Button);
+                            break;
+                        case HorizontalAlignment.Right:
+                            RightDesktopHubs.Insert(index, desktopHubInfo);
+                            Parent.rightStack.Children.Insert(index + 1, desktopHubInfo.Button);
+                            break;
+                        case HorizontalAlignment.Left:
+                            LeftDesktopHubs.Insert(index, desktopHubInfo);
+                            Parent.leftStack.Children.Insert(index + 1, desktopHubInfo.Button);
+                            break;
+                    }
+                }
+            }
+
+            private void RemoveHubFromPanelAndList(ref DesktopHubInfo desktopHubInfo)
+            {
+                if (LeftDesktopHubs.Contains(desktopHubInfo))
+                {
+                    LeftDesktopHubs.Remove(desktopHubInfo);
+                    Parent.leftStack.Children.Remove(desktopHubInfo.Button);
+                }
+                else if (CenterDesktopHubs.Contains(desktopHubInfo))
+                {
+                    CenterDesktopHubs.Remove(desktopHubInfo);
+                    Parent.centerStack.Children.Remove(desktopHubInfo.Button);
+                }
+                else
+                {
+                    RightDesktopHubs.Remove(desktopHubInfo);
+                    Parent.rightStack.Children.Remove(desktopHubInfo.Button);
+                }
+            }
+
+            public void DeattachHub(ref DesktopHubInfo info)
+            {
+                var hubWindow = info.InternalHubInformation != null ? info.InternalHubInformation.Value.Window : info.RuntimeHubInformation.Value.Window;
+                RemoveHubFromPanelAndList(ref info);
+                info.CenterHubHorizontalSubscription?.Dispose();
+                Parent.baseGrid.Children.Remove(hubWindow);
+                if(info.RuntimeHubInformation != null)
+                    JVOS.ApplicationAPI.Hub.HubManager.UnloadHub(info.RuntimeHubInformation.Value);
+            }
         }
     }
 }

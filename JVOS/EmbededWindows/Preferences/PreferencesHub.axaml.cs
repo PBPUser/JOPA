@@ -5,26 +5,40 @@ using JVOS.ApplicationAPI;
 using System.Reactive.Subjects;
 using System;
 using JVOS.Controls;
+using JVOS.ApplicationAPI.Windows;
+using System.Collections.Generic;
+using ReactiveUI;
+using System.Linq;
+using System.Runtime.InteropServices;
 
 namespace JVOS.EmbededWindows.Preferences
 {
-    public partial class PreferencesHub : UserControl, IJWindow
+    public partial class PreferencesHub : WindowContentBase
     {
-        public PreferencesHub()
+        public PreferencesHub(string? page = null)
         {
             InitializeComponent();
             AttachPages();
+            ISettingsPage? ipage = pages.FindAll(x => x.InternalLink == page).FirstOrDefault();
+            if (ipage == null)
+                ipage = pages[0];
+            Loaded += (a,b) => OpenPage(ipage);
+            Title = "Settings";
+            Icon = new Bitmap(AssetLoader.Open(new Uri("avares://JVOS/Assets/Shell/preferences.png")));
         }
-        public string GetPanelId() => "jvos.system:perfs";
+        public override string GetPanelId() => "jvos:settings";
 
-        void AttachPages()
-        {
+        List<ISettingsPage> pages = new List<ISettingsPage>();
+
+        void AttachPages() {
+            AttachPage(new DesktopPage());
             AttachPage(new ColorsPage());
+            AttachPage(new DisplayPage());
             AttachPage(new HubsAdd());
+            AttachPage(new Applications());
         }
 
-        void AttachPage(ISettingsPage page)
-        {
+        void AttachPage(ISettingsPage page) {
             var stack = new StackPanel()
             {
                 Orientation = Avalonia.Layout.Orientation.Horizontal
@@ -38,34 +52,15 @@ namespace JVOS.EmbededWindows.Preferences
             };
             button.Click += (a, b) => OpenPage(page);
             settingsColumns.Children.Add(button);
+            pages.Add(page);
         }
 
-        void OpenPage(ISettingsPage page)
-        {
+        void OpenPage(ISettingsPage page) {
             if(!(page is Control))
                 return;
             var pagec = page as Control;
             settingsViewr.Content = pagec;
             SettingsTitle.Text = page.Title;
         }
-
-        public void WhenLoaded()
-        {
-            ((IJWindow)this).UpdateTitle("Preferences");
-            ((IJWindow)this).UpdateIcon(new Bitmap(AssetLoader.Open(new Uri("avares://JVOS/Assets/Shell/preferences.png"))));
-        }
-
-        private Subject<string> _title = new Subject<string>();
-        private Subject<Bitmap> _icon = new Subject<Bitmap>();
-        private string _titleValue = "";
-        private Bitmap _iconValue;
-        private IJWindowFrame JWindowFrame;
-
-        public IJWindow.WindowStartupLocation StartupLocation { get => IJWindow.WindowStartupLocation.Center; }
-        public Subject<string> Title { get => _title; set => _title = value; }
-        public Subject<Bitmap> Icon { get => _icon; set => _icon = value; }
-        public string TitleValue { get => _titleValue; set => _titleValue = value; }
-        public Bitmap IconValue { get => _iconValue; set => _iconValue = value; }
-        public IJWindowFrame WindowFrame { get => JWindowFrame; set => JWindowFrame = value; }
     }
 }

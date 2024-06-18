@@ -1,16 +1,22 @@
-<UserControl xmlns="https://github.com/avaloniaui"
+<appapi:WindowContentBase xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450" Foreground="{DynamicResource BasicForeground}"
 			 xmlns:controls="clr-namespace:JVOS.Controls;assembly=JVOS.Controls"
-			 FontSize="12"
+			 FontSize="12" MinWidth="384" MinHeight="512"
+			 xmlns:appapi="clr-namespace:JVOS.ApplicationAPI.Windows;assembly=JVOS.ApplicationAPI"
              x:Class="JVOS.EmbededWindows.EaseOfAccess">
-	<ScrollViewer>
-		<DockPanel Background="{DynamicResource BasicBackground}" x:Name="rootStack">
-			<TextBlock DockPanel.Dock="Top" Text="Ease of Access"  FontSize="16" FontWeight="Bold" Margin="8"/>
-			
-			
-		</DockPanel>
-	</ScrollViewer>
-</UserControl>
+	<Grid>
+		<controls:CustomBlurBehind CornerRadius="12"/>
+		<StackPanel>
+			<Image Width="384" Height="192" x:Name="img"/>
+			<TextBox x:Name="tx"/>
+			<StackPanel Orientation="Horizontal">
+				<controls:JButton x:Name="browse" Content="Browse..." Width="100"/>
+				<controls:JButton x:Name="textToImage" Content="Text to Image" Width="100"/>
+				<controls:JButton x:Name="imageToText" Content="Image to Text" Width="100"/>
+			</StackPanel>
+		</StackPanel>
+	</Grid>
+</appapi:WindowContentBase>

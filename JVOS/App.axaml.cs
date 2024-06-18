@@ -2,21 +2,29 @@
 using Avalonia.Animation;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
+using Avalonia.Layout;
 using Avalonia.Markup.Xaml;
 using Avalonia.Media;
 using Avalonia.Themes.Simple;
 using Avalonia.Threading;
 using JVOS.ApplicationAPI;
+using JVOS.ApplicationAPI.App;
 using JVOS.Controls;
+using JVOS.DataModel;
 using JVOS.EmbededWindows;
 using JVOS.Protocol;
 using JVOS.ViewModels;
 using JVOS.Views;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Net.Http.Headers;
+using System.Reactive.Subjects;
+using System.Reflection;
 using System.Threading;
+using static System.Net.Mime.MediaTypeNames;
 using Application = Avalonia.Application;
 
 namespace JVOS;
@@ -24,6 +32,8 @@ namespace JVOS;
 public partial class App : Application
 {
     public static MainWindow MainWindowInstance;
+
+    public bool IsGodot = false;
 
     public static void SendNotification(string message, double time = 3000,bool isDebug = true)
     {
@@ -79,12 +89,65 @@ public partial class App : Application
     public override void Initialize()
     {
         AvaloniaXamlLoader.Load(this);
+        Preload();
+    }
+
+    public void Preload()
+    {
+        Communicator.BrowsePathRequest += Browse;
         Communicator.CommandRun += CommandRun;
         Communicator.ShowDialog += ShowDialogCommunicate;
+        Communicator.PathRun += PathRun;
+        Communicator.AppLoader = new AppLoader();
         ApplicationManager.AppsLoaded += AppsLoaoded;
         ProtocolWorker.LoadProtocolWorker();
 
         ApplicationManager.Load();
+    }
+
+    private void Browse(object? sender, BrowseEventArgs e)
+    {
+        Communicator.OpenWindow(new FileBrowser(e.IsDirectory ? FileBrowser.SelectMode.Directory : FileBrowser.SelectMode.File, e.OnSuccess, e.Filter));
+    }
+
+    private void PathRun(object? sender, string e)
+    {
+        if (File.Exists(e))
+        {
+            string[] pext = e.Split("\\").Last().Split(".");
+            if (pext.Length == 1)
+                return;
+            string ext = pext.Last();
+            if(ext == "jnk")
+            {
+                Shortcut? s = Shortcut.Load(e);
+                if(s == null)
+                {
+                    Communicator.ShowMessageDialog(new MessageDialog("Error", "Shotcut has invalid data."));
+                }
+                else
+                {
+                    Communicator.RunCommand(s.Command);
+                }
+                return;
+            }
+            string fext = UserOptions.Current.GetPath($"AppData\\JVOS\\FileAssociation\\{ext}");
+            if (File.Exists(fext))
+            {
+                string[] s = File.ReadAllText(fext).Split(":-:");
+                if(!AppCommunicator.OpenApplication(s[0], s[1], new object[]
+                {
+                    e
+                }))
+                    Communicator.ShowMessageDialog(new MessageDialog("App protocol", "Failed to run application " + s[0]));
+            }
+            else
+                Communicator.ShowMessageDialog(new MessageDialog(e, $"Association to open {ext} file type not found."));
+        }
+        else if (Directory.Exists(e))
+        {
+            Communicator.OpenWindow(new FileBrowser(path: e));
+        }
     }
 
     private void AppsLoaoded(object? sender, EventArgs e)
@@ -109,12 +172,10 @@ public partial class App : Application
         if(dialog.Buttons.Count == 0)
         {
             var btn = new JButton() { Content = "OK", Width = 100 };
-            btn.Click += (a, b) => WindowManager.CloseJWindow(jMessage.WindowFrame);
+            btn.Click += (a, b) => WindowManager.CloseWindowFrame(jMessage.Frame);
             jMessage.buttonStack.Children.Add(btn);
         }
-        WindowManager.OpenInJWindow(jMessage, new Action(() =>
-        {
-        }));
+        WindowManager.OpenInWindow(jMessage);
     }
 
     private void CommandRun(object? sender, string e)

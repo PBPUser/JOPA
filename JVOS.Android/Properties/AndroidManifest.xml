@@ -2,5 +2,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android" android:installLocation="preferExternal" package="com.jvos" android:versionCode="1" android:versionName="12">
 	<uses-permission android:name="android.permission.INTERNET" />
 	<application android:label="JOPA" />
-	<uses-sdk android:minSdkVersion="4" android:targetSdkVersion="34" />
+	<uses-sdk android:minSdkVersion="21" android:targetSdkVersion="34" />
 </manifest>

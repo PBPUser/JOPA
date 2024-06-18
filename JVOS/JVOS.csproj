@@ -34,14 +34,22 @@
     <None Remove="Assets\Fonts\Anton.ttf" />
     <None Remove="Assets\Fonts\Chilanka-Regular.ttf" />
     <None Remove="Assets\Fonts\BubbleGumSans\BubblegumSans-Regular.ttf" />
+    <None Remove="Assets\Fonts\Jcons\JIcons.ttf" />
     <None Remove="Assets\infojv.png" />
     <None Remove="Assets\Lockscreen\q.png" />
     <None Remove="Assets\question.png" />
     <None Remove="Assets\Resources.xml" />
+    <None Remove="Assets\Shell\add.png" />
+    <None Remove="Assets\Shell\app.png" />
     <None Remove="Assets\Shell\colors.png" />
+    <None Remove="Assets\Shell\desktop.png" />
+    <None Remove="Assets\Shell\file.png" />
+    <None Remove="Assets\Shell\folder.png" />
     <None Remove="Assets\Shell\message.png" />
+    <None Remove="Assets\Shell\monitor.png" />
     <None Remove="Assets\Shell\preferences.png" />
     <None Remove="Assets\Shell\run.png" />
+    <None Remove="Assets\Sounds\error.wav" />
     <None Remove="Assets\sugar.png" />
     <None Remove="Assets\Taskbar\assistent.png" />
     <None Remove="Assets\Taskbar\desktopSwitch.png" />
@@ -103,17 +111,32 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Update="EmbededWindows\FileBrowser.axaml.cs">
+      <DependentUpon>FileBrowser.axaml</DependentUpon>
+    </Compile>
+    <Compile Update="EmbededWindows\Desktop\CreateShortcut.axaml.cs">
+      <DependentUpon>CreateShortcut.axaml</DependentUpon>
+    </Compile>
+    <Compile Update="EmbededWindows\Preferences\Applications.axaml.cs">
+      <DependentUpon>Applications.axaml</DependentUpon>
+    </Compile>
+    <Compile Update="EmbededWindows\Preferences\Desktop.axaml.cs">
+      <DependentUpon>Desktop.axaml</DependentUpon>
+    </Compile>
+    <Compile Update="EmbededWindows\Preferences\Display.axaml.cs">
+      <DependentUpon>Display.axaml</DependentUpon>
+    </Compile>
     <Compile Update="EmbededWindows\Preferences\PreferencesHub.axaml.cs">
       <DependentUpon>PreferencesHub.axaml</DependentUpon>
     </Compile>
     <Compile Update="EmbededWindows\Preferences\HubsAdd.axaml.cs">
       <DependentUpon>HubsAdd.axaml</DependentUpon>
     </Compile>
+    <Compile Update="Hubs\VolumeHub.axaml.cs">
+      <DependentUpon>VolumeHub.axaml</DependentUpon>
+    </Compile>
     <Compile Update="Screens\LoginScreen.axaml.cs">
       <DependentUpon>LoginScreen.axaml</DependentUpon>
-    </Compile>
-    <Compile Update="JWindow.axaml.cs">
-      <DependentUpon>JWindow.axaml</DependentUpon>
     </Compile>
   </ItemGroup>
 
@@ -122,4 +145,6 @@
       <SubType>Designer</SubType>
     </AvaloniaXaml>
   </ItemGroup>
+	
+	
 </Project>

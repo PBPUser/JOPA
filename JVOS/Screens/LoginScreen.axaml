@@ -1,14 +1,15 @@
-<local:ScreenBase
+<api:ScreenBase
 		     xmlns:local="clr-namespace:JVOS.Screens;assembly=JVOS"
 		     xmlns:c="clr-namespace:JVOS.Controls;assembly=JVOS.Controls"
+		     xmlns:api="clr-namespace:JVOS.ApplicationAPI;assembly=JVOS.ApplicationAPI"
 			 xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="JVOS.Screens.LoginScreen" >
-	<Grid>
-		<Image x:Name="loginImage" Stretch="Fill" Source="../Assets/background_light.png">
+	<Grid x:Name="rootGrid">
+		<Image x:Name="loginImage" Stretch="Fill" Source="../Assets/Wallpapers/background_light.png">
 		</Image>
 		<Grid x:Name="subsign_page">
 			<Border Background="{DynamicResource BasicBackground}" Opacity="0.3"/>
@@ -63,4 +64,4 @@
 		</Grid>
 		<Image x:Name="wellcumimg" IsVisible="false" Source="/Assets/wellcum.png" Stretch="Fill"/>
 	</Grid>
-</local:ScreenBase>
+</api:ScreenBase>

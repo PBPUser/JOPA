@@ -1,4 +1,5 @@
-﻿using System;
+﻿using JVOS.ApplicationAPI.Windows;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,9 +9,10 @@ namespace JVOS.ApplicationAPI
 {
     public interface IWindowSpace
     {
-        public void OpenWindow(IJWindowFrame window);
-        public void CloseWindow(IJWindowFrame window);
-        public void BringToFront(IJWindowFrame window);
+        public void OpenWindow(WindowFrameBase window);
+        public void MinimizeWindow(WindowFrameBase window);
+        public void CloseWindow(WindowFrameBase window);
+        public void BringToFront(WindowFrameBase window);
         public void CloseAllHubs();
     }
 }

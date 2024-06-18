@@ -1,0 +1,26 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net7.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <Platforms>AnyCPU;x64</Platforms>
+  </PropertyGroup>
+
+	<ItemGroup>
+		<None Remove="Assets\Icon.png" />
+		<None Remove="Assets\Regedit.png" />
+		<None Remove="Assets\Registry.png" />
+	</ItemGroup>
+
+  <ItemGroup>
+    <AvaloniaResource Include="Assets\Icon.png" />
+    <AvaloniaResource Include="Assets\Registry.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\JVOS.ApplicationAPI\JVOS.ApplicationAPI.csproj" />
+    <ProjectReference Include="..\JVOS.Controls\JVOS.Controls.csproj" />
+  </ItemGroup>
+
+</Project>

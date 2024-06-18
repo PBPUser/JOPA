@@ -2,12 +2,13 @@ using Avalonia.Controls;
 using Avalonia.Media.Imaging;
 using Avalonia.Platform;
 using JVOS.ApplicationAPI;
+using JVOS.ApplicationAPI.Windows;
 using System.Reactive.Subjects;
 using ZstdSharp.Unsafe;
 
 namespace JVOS.ApplicationInstaller
 {
-    public partial class AppInstallerWindow : UserControl, IJWindow
+    public partial class AppInstallerWindow : WindowContentBase
     {
         public AppInstallerWindow()
         {
@@ -28,31 +29,12 @@ namespace JVOS.ApplicationInstaller
                     installBtn.IsVisible = false;
                 }
             };
+            Title = "Application Installer";
+            Icon = new Bitmap(AssetLoader.Open(new Uri("avares://JVOS.ApplicationInstaller/Assets/icon.png")));
         }
 
-        public IJWindow.WindowStartupLocation StartupLocation => IJWindow.WindowStartupLocation.Center;
 
-        private Subject<string> _title = new Subject<string>();
-        private Subject<Bitmap> _icon = new Subject<Bitmap>();
-
-        private string title = "Installer";
-        private Bitmap icon;
-
-        private IJWindowFrame _frame;
-
-        public Subject<string> Title { get => _title; set => _title = value; }
-        public string TitleValue { get => title; set => throw new NotImplementedException(); }
-        public Subject<Bitmap> Icon { get => _icon; set => throw new NotImplementedException(); }
-        public Bitmap IconValue { get => icon; set { Icon.OnNext(icon); icon = value; } }
-        public IJWindowFrame WindowFrame { get => _frame; set => _frame = value; }
-
-        public void WhenLoaded()
-        {
-            ((IJWindow)this).UpdateTitle("Application Installer");
-            ((IJWindow)this).UpdateIcon(new Bitmap(AssetLoader.Open(new Uri("avares://JVOS.ApplicationInstaller/Assets/icon.png"))));
-        }
-
-        public string GetPanelId()
+        public override string GetPanelId()
         {
             return "jvos.appinstaller:mainwindow";
         }

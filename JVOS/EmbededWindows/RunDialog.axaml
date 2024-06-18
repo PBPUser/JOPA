@@ -1,10 +1,11 @@
-<UserControl xmlns="https://github.com/avaloniaui"
+<appapi:WindowContentBase xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450" Foreground="{DynamicResource BarForeground}"
              xmlns:controls="clr-namespace:JVOS.Controls;assembly=JVOS.Controls"
-             x:Class="JVOS.EmbededWindows.RunDialog">
+             x:Class="JVOS.EmbededWindows.RunDialog"
+			 xmlns:appapi="clr-namespace:JVOS.ApplicationAPI.Windows;assembly=JVOS.ApplicationAPI">
 	<Grid>
 		<controls:CustomBlurBehind/>
 		<Border Classes="Alpha">
@@ -30,14 +31,12 @@
 					</Grid>
 					<TextBox x:Name="promptTb" Margin="8, 4, 8, 4"/>
 				</StackPanel>
-				<Border Grid.Row="2" Margin="8" Classes="Inner Alpha Transparent">
-					<StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="16, 8">
-						<controls:JButton x:Name="okBtn" Width="100" Content="OK"/>
-						<controls:JButton x:Name="cnBtn" Width="100" Content="Cancel"/>
-						<controls:JButton x:Name="brBtn" Width="100" Content="Browse..."/>
-					</StackPanel>
-				</Border>
+				<StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right" Margin="16, 8">
+					<controls:JButton x:Name="okBtn" Width="100" Content="OK" Classes="Accent"/>
+					<controls:JButton x:Name="cnBtn" Width="100" Content="Cancel"/>
+					<controls:JButton x:Name="brBtn" Width="100" Content="Browse..."/>
+				</StackPanel>
 			</Grid>
 		</Border>
 	</Grid>
-</UserControl>
+</appapi:WindowContentBase>

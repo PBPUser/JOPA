@@ -1,4 +1,7 @@
 ﻿using Avalonia.Media.Imaging;
+using JVOS.ApplicationAPI.App;
+using JVOS.ApplicationAPI.Hub;
+using JVOS.ApplicationAPI.Windows;
 using ReactiveUI;
 using System;
 using System.Collections.Generic;
@@ -8,11 +11,27 @@ using System.Threading.Tasks;
 
 namespace JVOS.ApplicationAPI
 {
+    public class BrowseEventArgs
+    {
+        public BrowseEventArgs(bool isDir, Action<string> success, string filter = "*")
+        {
+            IsDirectory = isDir;
+            OnSuccess = success;
+            Filter = filter;
+        }
+
+        public bool IsDirectory;
+        public Action<string> OnSuccess;
+        public string Filter;
+    }
+
     public static class Communicator
     {
-        public static event EventHandler<IJWindow>? WindowOpenRequest;
-        public static event EventHandler<IJWindowFrame>? WindowCloseRequest;
-        public static event EventHandler<IHubProvider>? RegisterExternalhub;
+        public static event EventHandler<WindowContentBase>? WindowOpenRequest;
+        public static event EventHandler<WindowFrameBase>? FrameOpenRequest;
+        public static event EventHandler<WindowFrameBase>? WindowCloseRequest;
+        public static event EventHandler<WindowOpenRequest>? WindowOpen;
+        public static event EventHandler<HubProvider>? RegisterExternalhub;
         public static event EventHandler<IEntryPoint>? RegisterEntrypoint;
         public static event EventHandler<IEntryPoint>? UnregisterEntrypoint;
         public static event EventHandler<IProtocol>? RegisterProtocol;
@@ -21,13 +40,39 @@ namespace JVOS.ApplicationAPI
         public static event EventHandler<(Bitmap?, string, string)>? NotificationShown;
         public static event EventHandler<string>? RegisterApp;
         public static event EventHandler<string>? CommandRun;
+        public static event EventHandler<string>? PathRun;
+        public static event EventHandler<BrowseEventArgs>? BrowsePathRequest;
 
-        public static void OpenWindow(IJWindow window)
+        public static IAppLoader AppLoader;
+
+        public static void OpenWindow(WindowContentBase window)
         {
             if (WindowOpenRequest != null)
                 WindowOpenRequest.Invoke(null, window);
         }
-        public static void CloseWindow(IJWindowFrame window)
+        public static void BrowseDirectory(Action<string> success)
+        {
+            if (BrowsePathRequest != null)
+                BrowsePathRequest.Invoke(null, new BrowseEventArgs(true, success));
+        }
+        public static void BrowseFile(Action<string> success, string filter = "*")
+        {
+            if (BrowsePathRequest != null)
+                BrowsePathRequest.Invoke(null, new BrowseEventArgs(true, success, filter));
+        }
+
+        public static void OpenWindow(WindowOpenRequest request)
+        {
+            if (WindowOpen != null)
+                WindowOpen.Invoke(null, request);
+        }
+        public static void OpenFrame(WindowFrameBase frame)
+        {
+            if(FrameOpenRequest != null)
+                FrameOpenRequest.Invoke(null, frame);
+        }
+
+        public static void CloseWindow(WindowFrameBase window)
         {
             if (WindowCloseRequest != null)
                 WindowCloseRequest.Invoke(null, window);
@@ -35,8 +80,13 @@ namespace JVOS.ApplicationAPI
 
         public static void RegisterApplication(string path)
         {
-            if(RegisterApp != null)
+            if (RegisterApp != null)
                 RegisterApp.Invoke(null, path);
+        }
+        public static void RunPath(string path)
+        {
+            if (PathRun != null)
+                PathRun.Invoke(null, path);
         }
 
         public static void ShowNotification((Bitmap?, string, string) notification)
@@ -71,7 +121,7 @@ namespace JVOS.ApplicationAPI
             if (UnregisterEntrypoint != null)
                 UnregisterEntrypoint.Invoke(null, entryPoint);
         }
-        private static void OnRegisterHub(IHubProvider hubProvider)
+        private static void OnRegisterHub(HubProvider hubProvider)
         {
             if(RegisterExternalhub != null)
                 RegisterExternalhub(null, hubProvider);
@@ -85,7 +135,7 @@ namespace JVOS.ApplicationAPI
         {
             OnRegisterEntryPoint(entryPoint);
         }
-        public static void Register(IHubProvider hubprov)
+        public static void Register(HubProvider hubprov)
         {
             OnRegisterHub(hubprov);
         }
@@ -105,5 +155,26 @@ namespace JVOS.ApplicationAPI
                 CommandRun.Invoke(null, direction);
         }
 
+        private static bool isMobileMode = false;
+
+        public static bool IsGodot { get; internal set; }
+
+        public static bool IsInMobileMode()
+        {
+            return isMobileMode;
+        }
+
+        public static void SetInMobileMode(bool value)
+        {
+            isMobileMode = value;
+        }
+
+        public static bool LoadApp(string path, object[]? args, out App.App? app)
+        {
+            if (AppLoader != null)
+                return AppLoader.LoadApp(path, args, out app);
+            app = null;
+            return false;
+        }
     }
 }

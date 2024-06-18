@@ -1,0 +1,19 @@
+<a:WindowContentBase xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+			 xmlns:c="clr-namespace:JVOS.Controls;assembly=JVOS.Controls"
+			 xmlns:a="clr-namespace:JVOS.ApplicationAPI.Windows;assembly=JVOS.ApplicationAPI"
+             x:Class="JVOS.EmbededWindows.Desktop.CreateDirectoryWindow">
+	<Border Classes="Alpha">
+		<StackPanel>
+			<TextBlock Text="Create Directory" Classes="h1"/>
+			<TextBox Margin="4" x:Name="tb" MinWidth="256"/>
+			<StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+				<c:JButton Content="OK" x:Name="okBtn" Width="100"/>
+				<c:JButton Content="Cancel" x:Name="cancelBtn" Width="100"/>
+			</StackPanel>
+		</StackPanel>
+	</Border>
+</a:WindowContentBase>

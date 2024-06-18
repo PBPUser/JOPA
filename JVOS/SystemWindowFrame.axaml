@@ -1,0 +1,37 @@
+<appapi:WindowFrameBase xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:appapi="clr-namespace:JVOS.ApplicationAPI.Windows;assembly=JVOS.ApplicationAPI"
+             xmlns:ic="clr-namespace:JVOS.Controls;assembly=JVOS"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="JVOS.SystemWindowFrame" ClipToBounds="False">
+	<Grid x:Name="baseGrid">
+		<DockPanel ClipToBounds="False">
+			<Grid DockPanel.Dock="Top" ClipToBounds="False" x:Name="TopBorder">
+				<Border x:Name="BorderTitle" Classes="Title Outer" HorizontalAlignment="Center">
+					<TextBlock Margin="4" VerticalAlignment="Center" x:Name="TitleControl"/>
+				</Border>
+				<Border x:Name="BorderIcon" Classes="Title Outer" HorizontalAlignment="Right">
+					<Image Margin="4" x:Name="IconControl" Width="16" Height="16"/>
+				</Border>
+				<ic:WindowMoveThumb x:Name="ThumbMove"/>
+				<Border x:Name="BorderWindowActions" Classes="Title Outer" HorizontalAlignment="Left">
+					<StackPanel Orientation="Horizontal">
+						<Rectangle Width="4"/>
+						<Rectangle RadiusX="8" RadiusY="8" Width="16" Height="16" Fill="Red" x:Name="CloseButtonRect"/>
+						<Rectangle Width="4"/>
+						<Rectangle RadiusX="8" RadiusY="8" Width="16" Height="16" Fill="Yellow" x:Name="MinimizeButtonRect"/>
+						<Rectangle Width="4"/>
+						<Rectangle RadiusX="8" RadiusY="8" Width="16" Height="16" Fill="Green" x:Name="RestoreButtonRect"/>
+						<Rectangle Width="4"/>
+					</StackPanel>
+				</Border>
+			</Grid>
+			<Border Background="Transparent" x:Name="ChildHost" CornerRadius="12" ClipToBounds="True">
+
+			</Border>
+		</DockPanel>
+	    <Border Margin="0, 24, 0, 0" x:Name="InactiveBorder" Background="#01000001"/>
+	</Grid>
+</appapi:WindowFrameBase>

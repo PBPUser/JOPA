@@ -1,0 +1,25 @@
+<a:WindowContentBase xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+			 xmlns:c="clr-namespace:JVOS.Controls;assembly=JVOS.Controls"
+			 xmlns:a="clr-namespace:JVOS.ApplicationAPI.Windows;assembly=JVOS.ApplicationAPI"
+             x:Class="JVOS.EmbededWindows.Desktop.CreateShortcutWindow">
+	<Border Classes="Alpha">
+		<StackPanel>
+			<TextBlock Text="Create Shortcut Wizard" Classes="h1"/>
+			<TextBlock Text="Name: " Classes="h3"/>
+			<TextBox Margin="4" x:Name="tb" MinWidth="256"/>
+			<TextBlock Text="Command: " Classes="h3"/>
+			<TextBox Margin="4" x:Name="tx" MinWidth="256"/>
+			<TextBlock Text="Icon: " Classes="h3"/>
+			<Image x:Name="img" Width="96" Height="96" HorizontalAlignment="Center"/>
+			<c:JButton Content="Browse..." x:Name="browse" Width="100" HorizontalAlignment="Right"/>
+			<StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+				<c:JButton Content="OK" x:Name="okBtn" Width="100"/>
+				<c:JButton Content="Cancel" x:Name="cancelBtn" Width="100"/>
+			</StackPanel>
+		</StackPanel>
+	</Border>
+</a:WindowContentBase>

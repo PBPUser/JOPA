@@ -9,7 +9,7 @@ namespace JVOS.Protocol
 {
     public class ApplicationProtocol : IProtocol
     {
-        public string Name => "app";
+        public string Name => "application";
 
         public bool Execute(string[] args)
         {

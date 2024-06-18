@@ -8,6 +8,7 @@ using Avalonia.Media.Imaging;
 using Avalonia.Rendering.Composition;
 using Avalonia.Threading;
 using JVOS.ApplicationAPI;
+using JVOS.ApplicationAPI.Windows;
 using JVOS.Screens;
 using System;
 using System.Collections.Generic;
@@ -61,17 +62,17 @@ namespace JVOS.Controls
         public static readonly AttachedProperty<double> ShadowPosProperty;
         public static readonly AttachedProperty<double> StartAnimationProperty;
 
-        private List<IJWindowFrame> JWindowFrames = new List<IJWindowFrame>();
+        private List<WindowFrameBase> JWindowFrames = new List<WindowFrameBase>();
 
         public string PanelID = "";
 
-        public void AddJWindowFrame(IJWindowFrame jWindow)
+        public void AddJWindowFrame(WindowFrameBase jWindow)
         {
             JWindowFrames.Add(jWindow);
             PanelID = jWindow.GetPanelId();
         }
 
-        public void RemoveJWindowFrame(IJWindowFrame jWindow)
+        public void RemoveJWindowFrame(WindowFrameBase jWindow)
         {
             JWindowFrames.Remove(jWindow);
             if(JWindowFrames.Count == 0)
@@ -182,6 +183,8 @@ namespace JVOS.Controls
 
         protected override void OnPointerPressed(PointerPressedEventArgs e)
         {
+            if (!e.Pointer.IsPrimary)
+                return;
             Scale = 1;
             startDeltaX = Bounds.X;
             ShadowPos = 1;
@@ -190,7 +193,14 @@ namespace JVOS.Controls
             DeltaTransition.Duration = TimeSpan.Zero;
             if(JWindowFrames.Count == 1)
             {
-                JWindowFrames[0].BringToFront();
+                if (JWindowFrames[0].IsActivated)
+                {
+                    JWindowFrames[0].ToggleVisibilityState();
+                }
+                else
+                {
+                    JWindowFrames[0].BringToFront();
+                }
             }
             else
             {
@@ -198,7 +208,7 @@ namespace JVOS.Controls
                 Popup popup = new Popup() { Child = panel };
                 foreach(var x in JWindowFrames)
                 {
-                    Button b = new Button() { Content = x.ChildWindow.TitleValue };
+                    Button b = new Button() { Content = x.WindowContent.Title };
                     b.Click += (a, c) => x.BringToFront();
                     b.Click += (a, c) => popup.Close();
                     panel.Children.Add(b);

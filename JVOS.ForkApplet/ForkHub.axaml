@@ -1,4 +1,4 @@
-<api:IHub xmlns="https://github.com/avaloniaui"
+<api:HubWindow xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -6,10 +6,11 @@
              xmlns:controls="clr-namespace:JVOS.Controls;assembly=JVOS.Controls"
              x:Class="JVOS.ForkApplet.ForkHub" ClipToBounds="false"
 			 xmlns:local="clr-namespace:JVOS.ForkApplet"
-			xmlns:api="clr-namespace:JVOS.ApplicationAPI;assembly=JVOS.ApplicationAPI">
-	<Border Background="{DynamicResource BarBackground}" BoxShadow="{DynamicResource
-			BarClaymorphismBoxShadow}" Margin="8" CornerRadius="12" Height="384">
-		<Image Source="fork.png" x:Name="fork"/>
-
-	</Border>
-</api:IHub>
+			xmlns:api="clr-namespace:JVOS.ApplicationAPI.Hub;assembly=JVOS.ApplicationAPI">
+	<Grid>
+		<controls:CustomBlurBehind CornerRadius="16"/>
+		<Border Classes="Bar Alpha Outer" Margin="8" CornerRadius="16" Height="384">
+			<Image Source="fork.png" x:Name="fork"/>
+		</Border>
+	</Grid>
+</api:HubWindow>

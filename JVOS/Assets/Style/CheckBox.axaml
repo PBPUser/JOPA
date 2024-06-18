@@ -2,7 +2,7 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 	<ControlTheme x:Key="{x:Type CheckBox}"
 				TargetType="CheckBox">
-		<Setter Property="Foreground" Value="{DynamicResource BasicForeground}"/>
+		<Setter Property="Foreground" Value="{DynamicResource Foreground_BasicInner}"/>
 		<Setter Property="VerticalContentAlignment" Value="Center"/>
 		<Setter Property="ClipToBounds" Value="false"/>
 		<Setter Property="Template">
@@ -11,13 +11,14 @@
 					<Grid ColumnDefinitions="32, *">
 						<Border 
 							x:Name="PART_Border" CornerRadius="6" 
-							BoxShadow="{DynamicResource BasicCheckBoxOuterBoxShadow}"
+							BoxShadow="{DynamicResource ButtonShadow_BasicOuter}"
 							Width="24" Height="24" Margin="4">
-							<TextBlock Opacity="0" Foreground="{DynamicResource AccentForeground}" x:Name="PART_TextBlock" Text="+" FontSize="24" FontWeight="Bold" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+							<TextBlock Opacity="0" Foreground="{DynamicResource Foreground_BasicInner}" x:Name="PART_TextBlock" Text="+" FontSize="24" FontWeight="Bold" VerticalAlignment="Center" HorizontalAlignment="Center"/>
 						</Border>
 						<ContentPresenter
 							Grid.Column="1" 
 							x:Name="PART_ContentPresenter"
+							Foreground="{TemplateBinding Foreground}"
                           ContentTemplate="{TemplateBinding ContentTemplate}"
                           Content="{TemplateBinding Content}"
                           Margin="{TemplateBinding Padding}"
@@ -50,20 +51,20 @@
 				<Setter Property="RenderTransform" Value="scale(0.8)"/>
 			</Style>
 			<Style Selector="^ /template/ Border#PART_Border">
-				<Setter Property="BoxShadow" Value="{DynamicResource BasicCheckBoxInnerBoxShadow}"/>
+				<Setter Property="BoxShadow" Value="{DynamicResource ButtonShadow_BasicInner}"/>
 			</Style>
 		</Style>
 		<Style Selector="^:checked">
 			<Style Selector="^ /template/ Border#PART_Border">
-				<Setter Property="Background" Value="{DynamicResource AccentBackground}"/>
-				<Setter Property="BoxShadow" Value="{DynamicResource AccentCheckBoxOuterBoxShadow}"/>
+				<Setter Property="Background" Value="{DynamicResource Background_AccentOuter}"/>
+				<Setter Property="BoxShadow" Value="{DynamicResource ButtonShadow_AccentOuter}"/>
 			</Style>
 			<Style Selector="^ /template/ TextBlock#PART_TextBlock">
 				<Setter Property="Opacity" Value="1"/>
 			</Style>
 			<Style Selector="^:pressed">
 				<Style Selector="^ /template/ Border#PART_Border">
-					<Setter Property="BoxShadow" Value="{DynamicResource AccentCheckBoxInnerBoxShadow}"/>
+					<Setter Property="BoxShadow" Value="{DynamicResource ButtonShadow_AccentInner}"/>
 				</Style>
 			</Style>
 		</Style>

@@ -1,4 +1,4 @@
-<api:IHub xmlns="https://github.com/avaloniaui"
+<api:HubWindow xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -6,7 +6,7 @@
              xmlns:controls="clr-namespace:JVOS.Controls;assembly=JVOS.Controls"
              x:Class="JVOS.Hubs.ClockHub" ClipToBounds="false"
 			 xmlns:local="clr-namespace:JVOS.Hubs"
-			xmlns:api="clr-namespace:JVOS.ApplicationAPI;assembly=JVOS.ApplicationAPI">
+			xmlns:api="clr-namespace:JVOS.ApplicationAPI.Hub;assembly=JVOS.ApplicationAPI">
 	<Grid Margin="8">
 		<controls:CustomBlurBehind CornerRadius="12"/>
 		<Border Classes="Bar Alpha Outer">
@@ -25,4 +25,4 @@
 			</StackPanel>
 		</Border>
 	</Grid>
-</api:IHub>
+</api:HubWindow>

@@ -3,8 +3,8 @@
 					xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 	<ControlTheme x:Key="{x:Type controls:JButton}"
 			   TargetType="controls:JButton">
-		<Setter Property="BoxShadows" Value="{DynamicResource BoxShadows_BasicOuter}"/>
-		<Setter Property="ActiveBoxShadows" Value="{DynamicResource BoxShadows_BasicInner}"/>
+		<Setter Property="BoxShadows" Value="{DynamicResource ButtonShadows_BasicOuter}"/>
+		<Setter Property="ActiveBoxShadows" Value="{DynamicResource ButtonShadows_BasicInner}"/>
 		<Setter Property="Foreground" Value="{DynamicResource Foreground_BasicOuter}"/>
 		<Setter Property="ClipToBounds" Value="false" />
 		<Setter Property="Background" Value="transparent" />
@@ -59,17 +59,27 @@
 		<Style Selector="^.Transparent">
 			<Setter Property="BoxShadows" Value="{DynamicResource NoBoxShadows}"/>
 			<Setter Property="Background" Value="{x:Null}"/>
-			<Setter Property="ActiveBoxShadows" Value="{DynamicResource BoxShadows_AlphaInner}"/>
+			<Setter Property="ActiveBoxShadows" Value="{DynamicResource ButtonShadows_AlphaInner}"/>
 			<Style Selector="^:pointerover">
-				<Setter Property="BoxShadows" Value="{DynamicResource BoxShadows_AlphaOuter}"/>
+				<Setter Property="BoxShadows" Value="{DynamicResource ButtonShadows_AlphaOuter}"/>
 			</Style>
 		</Style>
 		<Style Selector="^.Bar">
 			<Setter Property="BoxShadows" Value="{DynamicResource NoBoxShadows}"/>
 			<Setter Property="Background" Value="{x:Null}"/>
-			<Setter Property="ActiveBoxShadows" Value="{DynamicResource BoxShadows_BarInner}"/>
+			<Setter Property="ActiveBoxShadows" Value="{DynamicResource ButtonShadows_BarInner}"/>
 			<Setter Property="Height" Value="56"/>
 			<Setter Property="CornerRadius" Value="12"/>
+		</Style>
+		<Style Selector="^.Accent">
+			<Setter Property="BoxShadows" Value="{DynamicResource ButtonShadows_AccentOuter}"/>
+			<Setter Property="Background" Value="{DynamicResource Background_AccentInner}"/>
+			<Setter Property="ActiveBoxShadows" Value="{DynamicResource ButtonShadows_AccentInner}"/>
+		</Style>
+		<Style Selector="^.Border">
+			<Setter Property="BoxShadows" Value="{DynamicResource NoBoxShadows}"/>
+			<Setter Property="Background" Value="{x:Null}"/>
+			<Setter Property="ActiveBoxShadows" Value="{DynamicResource ButtonShadows_BarInner}"/>
 		</Style>
 		<Style Selector="^:pressed /template/ ContentPresenter#PART_ContentPresenter" >
 			<Setter Property="RenderTransform" Value="scale(0.8)" />

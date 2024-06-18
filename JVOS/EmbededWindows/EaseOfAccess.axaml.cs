@@ -2,7 +2,9 @@ using Avalonia.Controls;
 using Avalonia.Media;
 using Avalonia.Media.Imaging;
 using Avalonia.Platform;
+using Avalonia.Platform.Storage;
 using JVOS.ApplicationAPI;
+using JVOS.ApplicationAPI.Windows;
 using JVOS.Controls;
 using JVOS.Screens;
 using System;
@@ -10,33 +12,52 @@ using System.Reactive.Subjects;
 
 namespace JVOS.EmbededWindows
 {
-    public partial class EaseOfAccess : UserControl, IJWindow
+    public partial class EaseOfAccess : WindowContentBase
     {
         public EaseOfAccess()
         {
             InitializeComponent();
-            
+
+            textToImage.Click += TextToImage;
+            imageToText.Click += ImageToText;
+            browse.Click += Browse;
+
+            Title = "Ease of access";
+            Icon = new Bitmap(AssetLoader.Open(new Uri("avares://JVOS/Assets/Lockscreen/easeofaccess.png")));
         }
 
-        public string GetPanelId() => "jvos.system:easeofaccess";
+        Bitmap? image;
 
-        public void WhenLoaded()
+        private void Browse(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
         {
-            ((IJWindow)this).UpdateTitle("Ease of access");
-            ((IJWindow)this).UpdateIcon(new Bitmap(AssetLoader.Open(new Uri("avares://JVOS/Assets/Lockscreen/easeofaccess.png"))));
+            var files = TopLevel.GetTopLevel(this).StorageProvider.OpenFilePickerAsync(new FilePickerOpenOptions()
+            {
+            }).GetAwaiter().GetResult();
+            if (files.Count != 1)
+                return;
+            try
+            {
+                using var fs = files[0].OpenReadAsync().GetAwaiter().GetResult();
+                image = new Bitmap(fs);
+                img.Source = image;
+            }
+            catch
+            {
+                Communicator.ShowMessageDialog(new MessageDialog("Error", "Bitmap failed to load"));
+                return;
+            }
         }
 
-        private Subject<string> _title = new Subject<string>();
-        private Subject<Bitmap> _icon = new Subject<Bitmap>();
-        private string _titleValue = "";
-        private Bitmap _iconValue;
-        private IJWindowFrame JWindowFrame;
+        private void ImageToText(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
+        {
+            if(image != null)
+            tx.Text = UserOptions.ImageToBase64(image);
+        }
 
-        public IJWindow.WindowStartupLocation StartupLocation { get => IJWindow.WindowStartupLocation.Center; }
-        public Subject<string> Title { get => _title; set => _title = value; }
-        public Subject<Bitmap> Icon { get => _icon; set => _icon = value; }
-        public string TitleValue { get => _titleValue; set => _titleValue = value; }
-        public Bitmap IconValue { get => _iconValue; set => _iconValue = value; }
-        public IJWindowFrame WindowFrame { get => JWindowFrame; set => JWindowFrame = value; }
+        private void TextToImage(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
+        {
+            image = UserOptions.Base64ToImage(tx.Text);
+            img.Source = image;
+        }
     }
 }

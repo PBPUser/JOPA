@@ -1,0 +1,30 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:c="clr-namespace:JVOS.Controls;assembly=JVOS"
+             xmlns:local="clr-namespace:JVOS.EmbededWindows;assembly=JVOS"
+             xmlns:dc="clr-namespace:JVOS.EmbededWindows.Desktop.Commands;assembly=JVOS"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+			xmlns:System="clr-namespace:System;assembly=mscorlib"
+             x:Class="JVOS.EmbededWindows.DesktopWindow"
+             x:DataType="local:DesktopVM">
+	<ItemsControl  x:Name="lbDesktop" ScrollViewer.IsScrollChainingEnabled="False" ScrollViewer.VerticalScrollBarVisibility="Disabled" ItemsSource="{Binding Elements}" BorderThickness="0" Background="Transparent">
+		<ItemsControl.ItemsPanel>
+			<ItemsPanelTemplate>
+				<Grid />
+			</ItemsPanelTemplate>
+		</ItemsControl.ItemsPanel>
+		<ItemsControl.ContextMenu>
+			<ContextMenu>
+				<MenuItem Header="Refresh" Command="{x:Static dc:RefreshCommand.Instance}"/>
+				<MenuItem Header="Create">
+					<MenuItem Header="Directory" Command="{x:Static dc:CreateDirectoryCommand.Instance}"/>
+					<MenuItem Header="Shortcut" Command="{x:Static dc:CreateShortcutCommand.Instance}"/>
+				</MenuItem>
+				<MenuItem Header="Display" Command="{x:Static dc:CreateDirectoryCommand.Instance}"/>
+				<MenuItem Header="Persoanalization" Command="{x:Static dc:CreateDirectoryCommand.Instance}"/>
+			</ContextMenu>
+		</ItemsControl.ContextMenu>
+	</ItemsControl >
+</UserControl>

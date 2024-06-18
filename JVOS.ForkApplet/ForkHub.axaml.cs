@@ -2,10 +2,11 @@ using Avalonia.Animation;
 using Avalonia.Controls;
 using Avalonia.Media;
 using JVOS.ApplicationAPI;
+using JVOS.ApplicationAPI.Hub;
 
 namespace JVOS.ForkApplet
 {
-    public partial class ForkHub : IHub
+    public partial class ForkHub : HubWindow
     {
         public ForkHub()
         {
@@ -35,11 +36,6 @@ namespace JVOS.ForkApplet
         private void Remove(object? sender, object e)
         {
 
-        }
-
-        public override void Render(DrawingContext context)
-        {
-            base.Render(context);
         }
     }
 }

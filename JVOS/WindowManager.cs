@@ -1,5 +1,8 @@
 ﻿using Avalonia.Controls;
 using JVOS.ApplicationAPI;
+using JVOS.ApplicationAPI.Windows;
+using JVOS.Screens;
+using JVOS.Views;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,44 +15,60 @@ namespace JVOS
     {
         static bool isInitialized = false;
 
+        static WindowManager()
+        {
+            Initialize();
+        }
+
         public static void Initialize()
         {
             if (isInitialized)
                 return;
             isInitialized = true;
-            Communicator.WindowCloseRequest += (a, b) =>
-            {
-                CloseJWindow(b);
-            };
-            Communicator.WindowOpenRequest += (a, b) =>
-            {
-                OpenInJWindow(b);
-            };
+            Communicator.WindowCloseRequest += (a, b) => CloseWindowFrame(b);
+            Communicator.WindowOpenRequest += (a, b) => OpenInWindow(b);
+            Communicator.FrameOpenRequest += (a, b) => OpenWindow(b);
+            Communicator.WindowOpen += (a, b) => OpenInWindow(b);
         }
 
         public static IWindowSpace? WindowSpace;
-         
+
+        static List<WindowFrameBase> FramesQueue = new();
+
         public static void SetCurrentWindowSpace(IWindowSpace windowSpace)
         {
             WindowSpace = windowSpace;
+            while(FramesQueue.Count > 0)
+            {
+                FramesQueue[0].WindowSpace = windowSpace;
+                OpenWindow(FramesQueue[0]);
+                FramesQueue.RemoveAt(0);
+            }
         }
 
-        public static void OpenJWindow(JWindow window)
+        public static void OpenWindow(WindowFrameBase window)
         {
+            if(WindowSpace == null)
+            {
+                FramesQueue.Add(window);
+                return;
+            }
             WindowSpace?.OpenWindow(window);
         }
 
-        public static void OpenInJWindow(IJWindow windowContent, Action? whenClosed = null)
+        public static SystemWindowFrame OpenInWindow(WindowContentBase windowContent, Action? whenClosed = null)
         {
-            JWindow jwin = new JWindow() {  };
-            OpenJWindow(jwin);
-            windowContent.WindowFrame = jwin;
-            if (whenClosed != null)
-                jwin.WindowClosing += (a, b) => whenClosed.Invoke();
-            jwin.SetChild((UserControl)windowContent);
+            SystemWindowFrame jwin = new SystemWindowFrame(windowContent, WindowSpace) { };
+            return jwin;
         }
 
-        public static void CloseJWindow(IJWindowFrame window)
+        public static SystemWindowFrame OpenInWindow(WindowOpenRequest request, Action? whenClosed = null)
+        {
+            SystemWindowFrame jwin = new SystemWindowFrame(request, WindowSpace) { };
+            return jwin;
+        }
+
+        public static void CloseWindowFrame(WindowFrameBase window)
         {
             WindowSpace?.CloseWindow(window);
         }

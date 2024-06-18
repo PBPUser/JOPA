@@ -1,0 +1,38 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:c="clr-namespace:JVOS.Controls;assembly=JVOS"
+             xmlns:ec="clr-namespace:JVOS.Controls;assembly=JVOS.Controls"
+             xmlns:local="clr-namespace:JVOS.EmbededWindows;assembly=JVOS"
+             xmlns:dc="clr-namespace:JVOS.EmbededWindows.Desktop.Commands;assembly=JVOS"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+			xmlns:System="clr-namespace:System;assembly=mscorlib"
+             x:Class="JVOS.EmbededWindows.FileBrowser"
+             x:DataType="local:DesktopVM">
+	<Grid>
+		<ec:CustomBlurBehind/>
+		<Border Classes="Alpha">
+			<DockPanel>
+				<StackPanel IsVisible="False" Orientation="Horizontal" HorizontalAlignment="Right" x:Name="BrowsePanel" DockPanel.Dock="Bottom">
+					<ec:JButton x:Name="cancel" Content="Cancel" Width="100"/>
+					<ec:JButton x:Name="ok" Content="OK" Width="100"/>
+				</StackPanel>
+				<Grid ColumnDefinitions="256, *">
+					<Grid RowDefinitions="32, *">
+						<ec:JButton x:Name="upbtn" DockPanel.Dock="Right" Content="^"/>
+						<ListBox Grid.Row="1" x:Name="listTree" ItemsSource="{Binding Tree}"/>
+					</Grid>
+					<Grid RowDefinitions="32, *" Grid.Column="1">
+						<DockPanel>
+							<ec:JButton x:Name="gobtn" DockPanel.Dock="Right" Content="@>"/>
+							<TextBox x:Name="tb" Text="{Binding Path, Mode=OneWay}"/>
+						</DockPanel>
+						<ListBox x:Name="listFiles" Grid.Row="1" ItemsSource="{Binding Elements}"/>
+					</Grid>
+				</Grid>
+			</DockPanel>
+		</Border>
+	</Grid>
+
+</UserControl>

@@ -14,6 +14,7 @@ namespace JVOS
         {
             Communicator.RegisterProtocol += ProtocolRegistration;
             Communicator.Register(new ShellProtocol());
+            Communicator.Register(new AppProtocol());
             Communicator.Register(new ApplicationProtocol());
         }
 

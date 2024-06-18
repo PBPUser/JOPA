@@ -1,17 +1,22 @@
 ﻿using Avalonia;
+using Avalonia.Controls.Shapes;
 using Avalonia.Media;
 using Avalonia.Media.Imaging;
 using Avalonia.Platform;
 using JVOS.ApplicationAPI;
+using JVOS.ApplicationAPI.App;
+using JVOS.Controls;
 using JVOS.Screens;
 using JVOS.Views;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Path = System.IO.Path;
 
 namespace JVOS
 {
@@ -20,6 +25,9 @@ namespace JVOS
         static string UsersLocation;
         public static UserOptions? Current;
         public static List<UserOptions> Users;
+
+        private Dictionary<string, object> _userValues;
+        
         public Theme Theme;
         [JsonIgnore]
         public Bitmap? DesktopBitmap;
@@ -46,7 +54,7 @@ namespace JVOS
             }
         }
 
-        public static Bitmap Base64ToImage(string base64String)
+        public static Bitmap? Base64ToImage(string base64String)
         {
             try
             {
@@ -56,9 +64,10 @@ namespace JVOS
             }
             catch (Exception e)
             {
-                App.SendNotification($"{e.Message}");
-                App.SendNotification($"{e.StackTrace}");
-                App.SendNotification($"{e.Source}");
+                Debug.WriteLine(base64String);
+                Debug.WriteLine($"{e.Message}");
+                Debug.WriteLine($"{e.StackTrace}");
+                Debug.WriteLine($"{e.Source}");
                 return null;
             }
 
@@ -88,13 +97,24 @@ namespace JVOS
                 return;
             App.Current.Resources["Username"] = userOptions.Username;
             App.Current.Resources["Userimage"] = Base64ToImage(userOptions.Base64Avatar??"");
-            if (userOptions.DesktopImage != null)
-                userOptions.DesktopBitmap = userOptions.DesktopImage.EndsWith("default://") ? LoadImage(userOptions.DesktopImage ?? "") : Base64ToImage(userOptions.DesktopImage ?? "");
+            var desktopImage = PlatformSpecifixController.GetLocalFilePath($"Users\\{userOptions.Username}\\AppData\\JVOS\\desktop.png");
+            var profileImage = PlatformSpecifixController.GetLocalFilePath($"Users\\{userOptions.Username}\\AppData\\JVOS\\profile.png");
+            var lockscreenImage = PlatformSpecifixController.GetLocalFilePath($"Users\\{userOptions.Username}\\AppData\\JVOS\\lockscreen.png");
+            if (!File.Exists(desktopImage))
+                userOptions.SetDesktopImage(new Bitmap(AssetLoader.Open(new Uri("avares://JVOS/Assets/Wallpapers/background_light.png"))));
             else
-                userOptions.DesktopBitmap = Base64ToImage("");
+                userOptions.ApplyDesktopImage(new Bitmap(desktopImage));
+            if (!File.Exists(profileImage))
+                userOptions.SetProfileImage(new Bitmap(AssetLoader.Open(new Uri("avares://JVOS/Assets/default_avatar.png"))));
+            else
+                userOptions.ApplyProfileImage(new Bitmap(profileImage));
+            if (!File.Exists(lockscreenImage))
+                userOptions.SetLockscreenImage(new Bitmap(AssetLoader.Open(new Uri("avares://JVOS/Assets/Wallpapers/background_light.png"))));
+            else
+                userOptions.ApplyLockscreenImage(new Bitmap(lockscreenImage));
+            App.Current.Resources["DesktopStretch"] = userOptions.GetUserValue<Stretch>("DesktopStretch", Stretch.Fill);
             ColorScheme.ApplyScheme(userOptions.ColorScheme, userOptions.ColorScheme.UseDarkScheme, userOptions.ColorScheme.AccentTitle, userOptions.ColorScheme.AccentBar);
             Current = userOptions;
-            UserOptions.Current.PrepareDirectory();
             DesktopScreen.SetRunningAppButtonWidth(userOptions.HideAppTooltips);
         }
 
@@ -102,11 +122,58 @@ namespace JVOS
         {
             CreateIfIsntExsits(PlatformSpecifixController.GetLocalFilePath($"Users\\{Username}"));
             CreateIfIsntExsits(PlatformSpecifixController.GetLocalFilePath($"Users\\{Username}\\AppData"));
+            CreateIfIsntExsits(PlatformSpecifixController.GetLocalFilePath($"Users\\{Username}\\AppData\\JVOS"));
             CreateIfIsntExsits(PlatformSpecifixController.GetLocalFilePath($"Users\\{Username}\\MenuItems"));
             CreateIfIsntExsits(PlatformSpecifixController.GetLocalFilePath($"Users\\{Username}\\Desktop"));
 
             UserDirectory = PlatformSpecifixController.GetLocalFilePath($"Users\\{Username}");
             MenuDirectory = PlatformSpecifixController.GetLocalFilePath($"Users\\{Username}\\MenuItems");
+        }
+
+        public void SetDesktopImage(Bitmap bitmap)
+        {
+            bitmap.Save(PlatformSpecifixController.GetLocalFilePath($"Users\\{Username}\\AppData\\JVOS\\desktop.png"));
+            ApplyDesktopImage(bitmap);
+        }
+
+        public void SetLockscreenImage(Bitmap bitmap)
+        {
+            bitmap.Save(PlatformSpecifixController.GetLocalFilePath($"Users\\{Username}\\AppData\\JVOS\\lockscreen.png"));
+            ApplyLockscreenImage(bitmap);
+        }
+
+        public void SetProfileImage(Bitmap bitmap)
+        {
+            bitmap.Save(PlatformSpecifixController.GetLocalFilePath($"Users\\{Username}\\AppData\\JVOS\\profile.png"));
+            ApplyProfileImage(bitmap);
+        }
+
+        private void ApplyDesktopImage(Bitmap bitmap)
+        {
+            App.Current.Resources["DesktopImage"] = bitmap;
+        }
+
+        private void ApplyLockscreenImage(Bitmap bitmap)
+        {
+            App.Current.Resources["LockImage"] = bitmap;
+        }
+
+        private void ApplyProfileImage(Bitmap bitmap)
+        {
+            App.Current.Resources["ProfileImage"] = bitmap;
+        }
+
+        public T GetUserValue<T>(string name, T defaultValue)
+        {
+            if (!_userValues.ContainsKey("name"))
+                return defaultValue;
+            return (T)_userValues[name];
+        }
+
+        public void SetUserValue(string name, object value)
+        {
+            _userValues[name] = value;
+            SaveUser();
         }
 
         public void SaveColorScheme()
@@ -119,39 +186,38 @@ namespace JVOS
             UsersLocation = PlatformSpecifixController.GetLocalFilePath("Users");
             Users = new List<UserOptions>();
             Load();
+            
+
+            if(Users.Count == 0)
+            {
+                Users.Add(new UserOptions());
+                Save();
+                if (!Directory.Exists("Applications/JVOS.OOBE"))
+                    Communicator.ShowMessageDialog(new MessageDialog("Problem", "OOBE dosen't installed, \nplease install it first."));
+                else
+                    AppCommunicator.OpenApplication("Applications/JVOS.OOBE", "oobe");
+            }
         }
 
-        protected UserOptions()
+        protected UserOptions() : this("Undefined", "")
         {
-            var assets = AssetLoader.GetAssets(new Uri("avares://JVOS/Assets/default_avatar.png"), null);
-            Username = "Undefined";
-            Password = "";
-            if (assets.Count() > 0)
-                Base64Avatar = ImageToBase64(new Bitmap(assets.First().AbsolutePath));
-            else
-                Base64Avatar = "";
-            
-            DesktopImage = "";
-            JsonPath = Path.Combine(UsersLocation, "Undefined.jvon");
-            ColorScheme = new ColorScheme();
+
         }
 
         public UserOptions(string username, string password)
         {
-            
-            
+            _userValues = new();
             Username = username;
             Password = password;
-            Base64Avatar = ImageToBase64(new Bitmap(AssetLoader.Open(new Uri("avares://JVOS/Assets/default_avatar.png"))));
-            int i = 1;
-            DesktopImage = "";
             JsonPath = Path.Combine(UsersLocation, $"{username}.jvon");
             ColorScheme = new ColorScheme();
+            int i = 1;
             while (File.Exists(JsonPath))
             {
                 i++;
                 JsonPath = Path.Combine(UsersLocation, $"{username} ({i}).jvon");
             }
+            PrepareDirectory();
         }
 
         public static void Test()
@@ -217,19 +283,10 @@ namespace JVOS
         /// </summary>
         /// <param name="filename">JVON file path</param>
         /// <returns></returns>
-        public void SaveUser(string filename)
+        public void SaveUser(string? filename = null)
         {
+            filename = filename ?? this._jsonpath;
             File.WriteAllText(filename, JsonConvert.SerializeObject(this));
-        }
-
-        public void SetWallpaper(string path)
-        {
-            var bitmap = new Bitmap(path);
-            DesktopImage = ImageToBase64(bitmap);
-            DesktopBitmap = bitmap;
-            if(DesktopScreen.CurrentDesktop != null)
-                DesktopScreen.CurrentDesktop.SetBackground(DesktopBitmap, true);
-            Save();
         }
 
         public string GetPath(string v)

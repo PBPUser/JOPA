@@ -1,7 +1,9 @@
-﻿using JVOS.Screens;
+﻿using Avalonia.Layout;
+using JVOS.Screens;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reactive.Subjects;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -24,6 +26,7 @@ namespace JVOS
         public static List<UserSession> Sessions;
         public UserOptions UserOptions;
         public DesktopScreen DesktopScreen;
+
         private bool isStarted = false;
 
         static UserSession()

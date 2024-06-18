@@ -1,4 +1,6 @@
 ﻿using JVOS.ApplicationAPI;
+using JVOS.ApplicationAPI.Hub;
+using JVOS.Controls;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,18 +9,20 @@ using System.Threading.Tasks;
 
 namespace JVOS.ForkApplet
 {
-    internal class ForkHubProvider : IHubProvider
+    internal class ForkHubProvider : HubProvider
     {
         public ForkHubProvider()
         {
-            Name = "Fork Hub Provider";
-            InternalName = "org.jvos.forkapplet.forkhub";
+
         }
 
-        public override IHub Create(out object ButtonContent)
+        public override HubWindow? CreateHub() => new ForkHub();
+
+        public override void CreateButtonContent(ref JButton button)
         {
-            ButtonContent = "2";
-            return new ForkHub();
+            button.Content = "6";
         }
+
+        public override string ToString() => "Fork";
     }
 }

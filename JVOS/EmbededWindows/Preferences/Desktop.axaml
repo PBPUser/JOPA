@@ -1,0 +1,14 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+			 xmlns:controls="clr-namespace:JVOS.Controls;assembly=JVOS.Controls"
+             x:Class="JVOS.EmbededWindows.Preferences.DesktopPage">
+	<StackPanel x:Name="rootStack">
+		<Image Width="384" Source="{DynamicResource DesktopImage}"/>
+		<controls:JButton FontSize="14" x:Name="browse" Content="Browse" Width="100" HorizontalAlignment="Left"/>
+		<TextBlock Text="Stretching: " Margin="4"/>
+		<ComboBox x:Name="stetching" Margin="4" Width="256" HorizontalAlignment="Left"/>
+	</StackPanel>
+</UserControl>

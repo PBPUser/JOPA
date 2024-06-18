@@ -4,10 +4,11 @@ using JVOS.Controls;
 using JVOS.ApplicationAPI;
 using JVOS.PanoramaBar;
 using System;
+using JVOS.ApplicationAPI.Hub;
 
 namespace JVOS.Hubs
 {
-    public partial class PanoramaHub : IHub
+    public partial class PanoramaHub : HubWindow
     {
         public PanoramaHub()
         {
