@@ -8,6 +8,8 @@
 script = ExtResource("1_2j0am")
 subViewport = NodePath("SubViewport")
 Quad = NodePath("MeshInstance3D")
+Width = null
+Height = null
 
 [node name="SubViewport" type="SubViewport" parent="."]
 

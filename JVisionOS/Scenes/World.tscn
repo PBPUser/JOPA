@@ -1,9 +1,10 @@
-[gd_scene load_steps=8 format=3 uid="uid://bvoba28uu4ume"]
+[gd_scene load_steps=9 format=3 uid="uid://bvoba28uu4ume"]
 
 [ext_resource type="PackedScene" uid="uid://dart3pmwoqrsq" path="res://Prefabs/Window.tscn" id="1_qcni6"]
 [ext_resource type="PackedScene" uid="uid://dec7pepdjadp" path="res://Prefabs/AvaloniaControl.tscn" id="2_m26c6"]
 [ext_resource type="Texture2D" uid="uid://bkmh8cq8yx8gv" path="res://Assets/Street View 360.jpg" id="3_qg3ho"]
 [ext_resource type="PackedScene" uid="uid://b8y8ysrpl2v08" path="res://Scenes/XR.tscn" id="4_ppqqb"]
+[ext_resource type="Script" path="res://Scripts/UserInterface2D.cs" id="5_hmwti"]
 
 [sub_resource type="PanoramaSkyMaterial" id="PanoramaSkyMaterial_ytanv"]
 panorama = ExtResource("3_qg3ho")
@@ -36,3 +37,12 @@ transform = Transform3D(0.895727, 0, -0.444604, 0, 1, 0, 0.444604, 0, 0.895727, 
 environment = SubResource("Environment_hll4h")
 
 [node name="XrHandler" parent="." instance=ExtResource("4_ppqqb")]
+
+[node name="UserInterface2D" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("5_hmwti")

@@ -11,6 +11,14 @@ public partial class Player : CharacterBody3D
 
 	public override void _Ready() { 
 	}
+
+    public override void _Input(InputEvent @event)
+    {
+		var vec = Input.GetVector("left", "right", "forward", "backward");
+        Position += new Vector3(vec.X, 0, vec.Y);
+		
+        base._Input(@event);
+    }
     public override void _PhysicsProcess(double delta)
 	{
 		Vector3 velocity = Velocity;

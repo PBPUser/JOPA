@@ -163,6 +163,7 @@ namespace JVOS.Screens
             };
             loginWithoutPasswordBtn.Click += (a, b) =>
             {
+                loginWithoutPasswordBtn.IsEnabled = false;
                 var session = UserSession.CreateOrGetSession(UserOptions.Current);
                 session.Login();
             };
@@ -237,6 +238,7 @@ namespace JVOS.Screens
                     });
                 }).Start();
             }
+
 
         }
 

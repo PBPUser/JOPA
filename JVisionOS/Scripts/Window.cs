@@ -42,6 +42,32 @@ public partial class Window : Node3D {
         CalculateSizes();
     }
 
+    bool IsJVOSIn3DSpace = true;
+
+    public override void _Input(InputEvent @event)
+    {
+        if (Input.IsActionJustPressed("toggle_jvos"))
+        {
+            IsJVOSIn3DSpace = !IsJVOSIn3DSpace;
+            if (IsJVOSIn3DSpace)
+            {
+                UserInterface2D.Instance.Grid.Children.Remove(UserInterface.Instance.MainView);
+                UserInterface.Instance.Grid.Children.Add(UserInterface.Instance.MainView);
+                Visible = true;
+                UserInterface2D.Instance.Visible = false;
+            }
+            else
+            {
+                UserInterface.Instance.Grid.Children.Remove(UserInterface.Instance.MainView);
+                UserInterface2D.Instance.Grid.Children.Add(UserInterface.Instance.MainView);
+                Visible = false;
+                UserInterface2D.Instance.Visible = true;
+            }
+        }
+            
+        base._Input(@event);
+    }
+
     private void CalculateSizes() {
         var mesh = (QuadMesh)Quad.Mesh;
 
