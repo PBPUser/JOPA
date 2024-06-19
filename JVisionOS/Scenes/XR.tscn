@@ -1,0 +1,22 @@
+[gd_scene load_steps=4 format=3 uid="uid://b8y8ysrpl2v08"]
+
+[ext_resource type="PackedScene" uid="uid://cvx2lk7mloj1r" path="res://Prefabs/Player.tscn" id="2_80334"]
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_4ev6g"]
+size = Vector2(8, 8)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_lxddu"]
+size = Vector3(8, 0.025, 8)
+
+[node name="XrHandler" type="Node3D"]
+
+[node name="Player" parent="." instance=ExtResource("2_80334")]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 0, 0, 0)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+mesh = SubResource("PlaneMesh_4ev6g")
+
+[node name="StaticBody3D" type="StaticBody3D" parent="MeshInstance3D"]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="MeshInstance3D/StaticBody3D"]
+shape = SubResource("BoxShape3D_lxddu")

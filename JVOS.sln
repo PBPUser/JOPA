@@ -25,7 +25,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "JVOS.Regedit", "JVOS.Regedi
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "JVOS.Xbox352Emulator", "JVOS.Xbox352Emulator\JVOS.Xbox352Emulator.csproj", "{E9C0091C-4413-4B0C-85CD-FA8975BF7A4F}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "JVisionOS", "C:\Users\iwuwka\source\repos\JVOS\JVisionOS\JVisionOS.csproj", "{497C7BFE-8EE3-4D77-ADAD-8E398709F9C4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "JVisionOS", "JVisionOS\JVisionOS.csproj", "{497C7BFE-8EE3-4D77-ADAD-8E398709F9C4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

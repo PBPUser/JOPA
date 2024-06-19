@@ -1,0 +1,38 @@
+[gd_scene load_steps=8 format=3 uid="uid://bvoba28uu4ume"]
+
+[ext_resource type="PackedScene" uid="uid://dart3pmwoqrsq" path="res://Prefabs/Window.tscn" id="1_qcni6"]
+[ext_resource type="PackedScene" uid="uid://dec7pepdjadp" path="res://Prefabs/AvaloniaControl.tscn" id="2_m26c6"]
+[ext_resource type="Texture2D" uid="uid://bkmh8cq8yx8gv" path="res://Assets/Street View 360.jpg" id="3_qg3ho"]
+[ext_resource type="PackedScene" uid="uid://b8y8ysrpl2v08" path="res://Scenes/XR.tscn" id="4_ppqqb"]
+
+[sub_resource type="PanoramaSkyMaterial" id="PanoramaSkyMaterial_ytanv"]
+panorama = ExtResource("3_qg3ho")
+
+[sub_resource type="Sky" id="Sky_8kpm3"]
+sky_material = SubResource("PanoramaSkyMaterial_ytanv")
+
+[sub_resource type="Environment" id="Environment_hll4h"]
+background_mode = 2
+sky = SubResource("Sky_8kpm3")
+ambient_light_source = 3
+ssao_enabled = true
+ssil_enabled = true
+sdfgi_enabled = true
+
+[node name="World" type="Node3D"]
+
+[node name="Window" parent="." node_paths=PackedStringArray("Control") instance=ExtResource("1_qcni6")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.665457, -0.353067)
+Control = NodePath("UserInterface")
+Width = 1920
+Height = 1080
+
+[node name="UserInterface" parent="Window" instance=ExtResource("2_m26c6")]
+
+[node name="Camera3D" type="Camera3D" parent="."]
+transform = Transform3D(0.895727, 0, -0.444604, 0, 1, 0, 0.444604, 0, 0.895727, 0, 1.07419, 1.21817)
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_hll4h")
+
+[node name="XrHandler" parent="." instance=ExtResource("4_ppqqb")]

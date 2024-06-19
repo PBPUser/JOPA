@@ -1,0 +1,39 @@
+[gd_scene load_steps=5 format=3 uid="uid://cvx2lk7mloj1r"]
+
+[ext_resource type="Script" path="res://Scripts/Player.cs" id="1_ouflg"]
+[ext_resource type="ArrayMesh" uid="uid://dywkyw04m8he4" path="res://Assets/cursosor.obj" id="2_q3d1y"]
+[ext_resource type="ArrayMesh" uid="uid://bj7wd0mpgc3b4" path="res://Assets/vilka.obj" id="3_odqhd"]
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_pjipp"]
+radius = 0.3
+height = 1.68
+
+[node name="Player" type="CharacterBody3D"]
+script = ExtResource("1_ouflg")
+
+[node name="XROrigin3D" type="XROrigin3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.84, 0)
+
+[node name="XRCamera3D" type="XRCamera3D" parent="XROrigin3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.41197, 0)
+
+[node name="Left" type="XRController3D" parent="XROrigin3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.333, 1, -0.88)
+tracker = &"left_hand"
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="XROrigin3D/Left"]
+transform = Transform3D(-1, 0, 8.74228e-08, 0, 1, 0, -8.74228e-08, 0, -1, 0, 0, 0)
+mesh = ExtResource("2_q3d1y")
+skeleton = NodePath("../../Left")
+
+[node name="Right" type="XRController3D" parent="XROrigin3D"]
+transform = Transform3D(-1, 0, 8.74228e-08, 0, 1, 0, -8.74228e-08, 0, -1, -0.333, 1, -0.88)
+tracker = &"right_hand"
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="XROrigin3D/Right"]
+transform = Transform3D(-1.995, -3.01237e-07, 1.26828e-07, 3.01237e-07, -1.995, -1.52474e-14, 1.26828e-07, 3.90315e-15, 1.995, -2.08616e-07, 0, -0.34908)
+mesh = ExtResource("3_odqhd")
+skeleton = NodePath("../../Left")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+shape = SubResource("CapsuleShape3D_pjipp")

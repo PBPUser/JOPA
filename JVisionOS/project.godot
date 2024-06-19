@@ -11,10 +11,11 @@ config_version=5
 [application]
 
 config/name="JVisionOS"
-run/main_scene="res://node_3d.tscn"
+run/main_scene="res://Scenes/World.tscn"
 config/features=PackedStringArray("4.2", "C#", "Forward Plus")
 boot_splash/bg_color=Color(0, 0, 0, 1)
-boot_splash/image="res://palkovnik.bmp"
+boot_splash/show_image=false
+boot_splash/image="res://Assets/palkovnik.bmp"
 config/icon="res://icon.svg"
 
 [display]
@@ -70,4 +71,5 @@ textures/vram_compression/import_etc2_astc=true
 [xr]
 
 openxr/enabled=true
+openxr/extensions/eye_gaze_interaction=true
 shaders/enabled=true
