@@ -20,6 +20,7 @@
 				<MergeResourceInclude Source="avares://JVOS/Assets/Style/CheckBox.axaml" />
 				<MergeResourceInclude Source="avares://JVOS/Assets/Style/JButton.axaml" />
 				<MergeResourceInclude Source="avares://JVOS/Assets/Style/ListBox.axaml" />
+				<MergeResourceInclude Source="avares://JVOS/Assets/Style/RecommendMenuItem.axaml" />
 				<MergeResourceInclude Source="avares://JVOS/Assets/Style/TextBox.axaml" />
 				<MergeResourceInclude Source="avares://JVOS/Assets/Style/TextBlock.axaml" />
 			</ResourceDictionary.MergedDictionaries>

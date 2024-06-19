@@ -33,22 +33,52 @@ namespace JVOS.Controls
         {
             TitleProperty = AvaloniaProperty.RegisterAttached<RecommendMenuItem, Button, string>("Title", coerce: (a, b) =>
             {
-                ((RecommendMenuItem)a).FormattedTitle = new FormattedText(b, CultureInfo.CurrentCulture, GetFlowDirection(a as RecommendMenuItem), new Typeface(FontFamily.Default, weight: FontWeight.Bold, style: FontStyle.Italic), 16, Brushes.Black);
+                ((RecommendMenuItem)a).FormattedTitle = new FormattedText(b??"", CultureInfo.CurrentCulture, GetFlowDirection(a as RecommendMenuItem), new Typeface(FontFamily.Default, weight: FontWeight.Bold, style: FontStyle.Italic), 16, (a as RecommendMenuItem).TextColor);
+                return b??"";
+            });
+            TextColorProperty = AvaloniaProperty.RegisterAttached<RecommendMenuItem, Button, IBrush>("TextColor", coerce: (a, b) =>
+            {
+                b = b ?? TestSelectBackground;
+                var x = ((RecommendMenuItem)a);
+                x.FormattedTitle = new FormattedText(x.Title ?? "", CultureInfo.CurrentCulture, GetFlowDirection(x), new Typeface(FontFamily.Default, weight: FontWeight.Bold, style: FontStyle.Italic), 16, b);
+                x.FormattedSubtitle = new FormattedText(x.Subtitle ?? "", CultureInfo.CurrentCulture, GetFlowDirection(x), new Typeface(FontFamily.Default, weight: FontWeight.Bold, style: FontStyle.Italic), 16, b);
                 return b;
             });
             SubtitleProperty = AvaloniaProperty.RegisterAttached<RecommendMenuItem, Button, string>("Subtitle", coerce: (a, b) =>
             {
-                ((RecommendMenuItem)a).FormattedSubtitle = new FormattedText(b ??"", CultureInfo.CurrentCulture, GetFlowDirection(a as RecommendMenuItem), new Typeface(FontFamily.Default, weight: FontWeight.Bold, style: FontStyle.Italic), 14, Brushes.DarkGray);
-                return b;
+                ((RecommendMenuItem)a).FormattedSubtitle = new FormattedText(b ??"", CultureInfo.CurrentCulture, GetFlowDirection(a as RecommendMenuItem), new Typeface(FontFamily.Default, style: FontStyle.Italic), 14, (a as RecommendMenuItem).TextColor);
+                return b??"";
             });
-            PathProperty = AvaloniaProperty.RegisterAttached<RecommendMenuItem, Button, string>("Path", coerce: (a,b) =>
+            PathProperty = AvaloniaProperty.RegisterAttached<RecommendMenuItem, Button, string>("Path", coerce: (a, b) =>
             {
                 if (b == null)
                     return "";
-                ((RecommendMenuItem)a).Title = b.Split("\\").Last().Replace(".jnk", "");
                 var shortcut = Shortcut.Load(b);
+                if (String.IsNullOrEmpty(shortcut.OverwriteName))
+                    ((RecommendMenuItem)a).Title = b.Split("\\").Last().Replace(".jnk", "");
+                else
+                    ((RecommendMenuItem)a).Title = shortcut.OverwriteName;
                 ((RecommendMenuItem)a).Icon = UserOptions.Base64ToImage(shortcut.Base64Image);
                 ((RecommendMenuItem)a).Subtitle = shortcut.Description;
+                return b;
+            });
+            RecentProperty = AvaloniaProperty.RegisterAttached<RecommendMenuItem, Button, Recent>("Recent", coerce: (a, b) =>
+            {
+                if (b.Path.EndsWith(".jnk"))
+                {
+                    var shortcut = Shortcut.Load(b.Path);
+                    if (String.IsNullOrEmpty(shortcut.OverwriteName))
+                        ((RecommendMenuItem)a).Title = b.Path.Split("\\").Last().Replace(".jnk", "");
+                    else
+                        ((RecommendMenuItem)a).Title = shortcut.OverwriteName;
+                    ((RecommendMenuItem)a).Icon = UserOptions.Base64ToImage(shortcut.Base64Image);
+                    ((RecommendMenuItem)a).Subtitle = shortcut.Description;
+                }
+                else
+                {
+                    ((RecommendMenuItem)a).Title = b.Path.Split("\\").Last();
+                    ((RecommendMenuItem)a).Subtitle = b.Date.ToString("MMM dd t");
+                }
                 return b;
             });
             IconProperty = AvaloniaProperty.RegisterAttached<RecommendMenuItem, Button, Bitmap?>("Icon");
@@ -63,12 +93,20 @@ namespace JVOS.Controls
                 );
         }
 
-        public RecommendMenuItem(string path)
+        public RecommendMenuItem(object data)
         {
             Loaded += (a, b) => Height = 48;
-            Path = path;
+            if (data is string)
+                Path = (string)data;
+            else if (data is Recent)
+                Recent = (Recent)data;
         }
 
+        public Recent Recent
+        {
+            get => GetValue(RecentProperty);
+            set => SetValue(RecentProperty, value);
+        }
         public string Path
         {
             get => GetValue(PathProperty);
@@ -105,6 +143,11 @@ namespace JVOS.Controls
             get => GetValue(MouseOverProperty);
             set => SetValue(MouseOverProperty, value);
         }
+        public IBrush TextColor
+        {
+            get => GetValue(TextColorProperty);
+            set => SetValue(TextColorProperty, value);
+        }
 
         protected override void OnPointerReleased(PointerReleasedEventArgs e)
         {
@@ -128,16 +171,22 @@ namespace JVOS.Controls
         {
             context.FillRectangle(MouseOver ? TestSelectBackground : TransparentA1, new Rect(Bounds.Size), 8);
             context.DrawImage(Icon ?? DEFAULT_APP_ICON, new Rect(0, 0, Bounds.Size.Height, Bounds.Size.Height));
-            if(FormattedTitle != null)
-            context.DrawText(FormattedTitle, new Point(Bounds.Size.Height, (Bounds.Height / 2) - 3 - FormattedTitle.Height));
-            if(FormattedSubtitle != null)
-            context.DrawText(FormattedSubtitle, new Point(Bounds.Size.Height, (Bounds.Height / 2) + 3));
+            if (FormattedTitle != null)
+                context.DrawText(FormattedTitle, new Point(Bounds.Size.Height, (Bounds.Height / 2) - 3 - FormattedTitle.Height));
+            if (FormattedSubtitle != null)
+            {
+                var s = context.PushOpacity(0.5);
+                context.DrawText(FormattedSubtitle, new Point(Bounds.Size.Height, (Bounds.Height / 2) + 3));
+                s.Dispose();
+            }
             base.Render(context);
         }
 
         public static readonly AttachedProperty<string> PathProperty;
+        public static readonly AttachedProperty<Recent> RecentProperty;
         public static readonly AttachedProperty<Bitmap?> IconProperty;
         public static readonly AttachedProperty<string> TitleProperty;
+        public static readonly AttachedProperty<IBrush> TextColorProperty;
         public static readonly AttachedProperty<string> SubtitleProperty;
         public static readonly AttachedProperty<FormattedText> FormattedTitleProperty;
         public static readonly AttachedProperty<FormattedText> FormattedSubtitleProperty;

@@ -17,6 +17,7 @@
     <AvaloniaResource Remove="Assets\Style\CheckBox.axaml" />
     <AvaloniaResource Remove="Assets\Style\JButton.axaml" />
     <AvaloniaResource Remove="Assets\Style\ListBox.axaml" />
+    <AvaloniaResource Remove="Assets\Style\RecommendMenuItem.axaml" />
     <AvaloniaResource Remove="Assets\Style\TextBlock.axaml" />
     <AvaloniaResource Remove="Assets\Style\TextBox.axaml" />
   </ItemGroup>

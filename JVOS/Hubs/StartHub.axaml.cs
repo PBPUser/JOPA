@@ -27,8 +27,10 @@ namespace JVOS.Hubs
             InitializeComponent();
             _runButton.Click += OnRun;
             _thmButton.Click += OnThm;
-            _allButton.Click += OnAll;
-            _pinButton.Click += OnPin;
+            _allButton.Click += SwitchApps;
+            _moreButton.Click += SwitchRecents;
+            _pinButton.Click += SwitchHome;
+            _nazadRecommendBtn.Click += SwitchHome;
             _refButton.Click += OnRef;
             _hubButton.Click += OnHub;
 
@@ -36,16 +38,24 @@ namespace JVOS.Hubs
             clippedGrid.RenderTransform = translateTransform;
             DataContext = VM = new StartVM();
             AllApplications.ItemTemplate = StartItemDataTemplate;
-            RecomendedApplications.ItemTemplate = RecomItemDataTemplate;
-            Opened += (a, b) => VM.Refresh();
+            RecomendedApplications.ItemTemplate = MoreRecommendations.ItemTemplate = RecomItemDataTemplate;
+            Opened += (a, b) =>
+            {
+                VM.Refresh();
+                OpenPage(0);
+            };
             VM.Refresh();
         }
+
+        private void SwitchHome(object? sender, RoutedEventArgs e) => OpenPage(0);
+        private void SwitchApps(object? sender, RoutedEventArgs e) => OpenPage(1);
+        private void SwitchRecents(object? sender, RoutedEventArgs e) => OpenPage(2);
 
         static FuncDataTemplate<string> StartItemDataTemplate = new((value, namescope) =>
         {
             return new StartMenuItem(value);
         });
-        static FuncDataTemplate<string> RecomItemDataTemplate = new((value, namescope) =>
+        static FuncDataTemplate<object> RecomItemDataTemplate = new((value, namescope) =>
         {
             return new RecommendMenuItem(value);
         });
@@ -75,14 +85,24 @@ namespace JVOS.Hubs
             VM.Refresh();
         }
 
-        private void OnPin(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
+        public void OpenPage(int page = 0)
         {
-            translateTransform.X = 0;
-        }
-
-        private void OnAll(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
-        {
-            translateTransform.X = -clippyGrid.Bounds.Width;
+            switch (page)
+            {
+                case 0:
+                    translateTransform.X = 0;
+                    break;
+                case 1:
+                    translateTransform.X = -clippyGrid.Bounds.Width;
+                    MoreRecentsGrid.IsHitTestVisible = MoreRecentsGrid.IsVisible = false;
+                    AllAppsGrid.IsHitTestVisible = AllAppsGrid.IsVisible = true;
+                    break;
+                case 2:
+                    translateTransform.X = -clippyGrid.Bounds.Width;
+                    MoreRecentsGrid.IsHitTestVisible = MoreRecentsGrid.IsVisible = true;
+                    AllAppsGrid.IsHitTestVisible = AllAppsGrid.IsVisible = false;
+                    break;
+            }
         }
 
         private void OnThm(object? sender, Avalonia.Interactivity.RoutedEventArgs e)

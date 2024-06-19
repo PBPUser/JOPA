@@ -252,10 +252,10 @@ namespace JVOS.Screens
 
         public void ToggleHub(HubWindow hub, bool? forced = null)
         {
-            if (forced != null)
-                hub.IsOpen = forced.Value;
-            else
-                hub.IsOpen = !hub.IsOpen;
+            bool newState = forced ?? !hub.IsOpen;
+            if (newState == hub.IsOpen)
+                return;
+            hub.IsOpen = newState;
             if (hub.IsOpen)
             {
                 hub.OnOpened(EventArgs.Empty);
@@ -350,6 +350,7 @@ namespace JVOS.Screens
 
         public void OpenWindow(WindowFrameBase window)
         {
+            CloseAllHubs();
             _currentWindowSpace?.OpenWindow(window);
         }
 
@@ -454,11 +455,13 @@ namespace JVOS.Screens
         public void BringToFront(WindowFrameBase window)
         {
             ((Control)window).ZIndex = TopZIndex++;
+            CloseAllHubs();
         }
 
         public void CloseAllHubs()
         {
-
+            foreach (var x in HubMan.AttachedHubs)
+                ToggleHub(x, false);
         }
 
         public static Subject<double> RunningAppWidthSubject = new Subject<double>();
@@ -666,6 +669,8 @@ namespace JVOS.Screens
                 hubProvider.UpdateButtonContent(ref info.Button);
             }
 
+            public List<HubWindow> AttachedHubs = new();
+
             public void AttachHub(DesktopHubInfo info, HorizontalAlignment placement)
             {
                 var hubProvider = info.InternalHubInformation != null ? info.InternalHubInformation.Value.Provider : info.RuntimeHubInformation.Value.Provider;
@@ -724,6 +729,7 @@ namespace JVOS.Screens
                 info.Button.Classes.AddRange(new string[] { "Bar", placement == HorizontalAlignment.Right ? "Hub" : "Mid" });
                 AddHubToPanelAndList(ref info, placement);
                 Parent.baseGrid.Children.Add(hubWindow);
+                AttachedHubs.Add(hubWindow);
             }
 
             public void MoveHub(ref DesktopHubInfo info, HorizontalAlignment newPlacement, int newIndex = -1)
@@ -803,6 +809,7 @@ namespace JVOS.Screens
                 RemoveHubFromPanelAndList(ref info);
                 info.CenterHubHorizontalSubscription?.Dispose();
                 Parent.baseGrid.Children.Remove(hubWindow);
+                AttachedHubs.Remove(hubWindow);
                 if(info.RuntimeHubInformation != null)
                     JVOS.ApplicationAPI.Hub.HubManager.UnloadHub(info.RuntimeHubInformation.Value);
             }

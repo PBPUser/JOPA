@@ -18,7 +18,7 @@
 						<ContentPresenter
 							Grid.Column="1" 
 							x:Name="PART_ContentPresenter"
-							Foreground="{TemplateBinding Foreground}"
+							Foreground="{DynamicResource Foreground_BasicInner}"
                           ContentTemplate="{TemplateBinding ContentTemplate}"
                           Content="{TemplateBinding Content}"
                           Margin="{TemplateBinding Padding}"

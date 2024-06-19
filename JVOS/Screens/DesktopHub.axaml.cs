@@ -2,6 +2,7 @@ using Avalonia.Controls;
 using JVOS.ApplicationAPI;
 using JVOS.ApplicationAPI.Windows;
 using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace JVOS.Screens
 {
@@ -34,6 +35,7 @@ namespace JVOS.Screens
             window.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left;
             window.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Top;
             window.WindowLoaded += (a,b) => BringToFront(window);
+            DesktopScreen.CurrentDesktop.CloseAllHubs();
             window.WindowLoaded += (a, b) =>
             {
                 //var width = ((Control)this).Bounds.Width;
@@ -92,6 +94,7 @@ namespace JVOS.Screens
             if(window.WindowContent.AllowBringOnTop)
                 window.ZIndex = TopZIndex++;
             TopWindow.IsActivated = true;
+            DesktopScreen.CurrentDesktop.CloseAllHubs();
         }
 
         public void MinimizeWindow(WindowFrameBase window)

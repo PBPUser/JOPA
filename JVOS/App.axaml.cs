@@ -135,7 +135,8 @@ public partial class App : Application
             if (File.Exists(fext))
             {
                 string[] s = File.ReadAllText(fext).Split(":-:");
-                if(!AppCommunicator.OpenApplication(s[0], s[1], new object[]
+                UserOptions.Current.RecentManager.AddRecent(e);
+                if (!AppCommunicator.OpenApplication(s[0], s[1], new object[]
                 {
                     e
                 }))
@@ -147,6 +148,7 @@ public partial class App : Application
         else if (Directory.Exists(e))
         {
             Communicator.OpenWindow(new FileBrowser(path: e));
+            UserOptions.Current.RecentManager.AddRecent(e);
         }
     }
 

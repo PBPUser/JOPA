@@ -42,8 +42,12 @@ namespace JVOS.Controls
                     break;
                 case Avalonia.Layout.VerticalAlignment.Top:
                     deltaVertical = Math.Min(e.Vector.Y, ParentWindow.Bounds.Height - ParentWindow.MinHeight);
+                    var deltaHeight = ParentWindow.Bounds.Height;
                     //ParentWindow.WindowPositionTransform.Y -= deltaVertical;
                     ParentWindow.Height = Math.Max(32, ParentWindow.Bounds.Height - deltaVertical);
+                    var d = ParentWindow.Height = Math.Max(32, ParentWindow.Bounds.Height - deltaVertical);
+                    deltaHeight = deltaHeight - d;
+                    ParentWindow.WindowTranslateMove.Y += deltaHeight;
                     break;
                 default:
                     break;
@@ -53,8 +57,11 @@ namespace JVOS.Controls
             {
                 case Avalonia.Layout.HorizontalAlignment.Left:
                     deltaHorizontal = Math.Min(e.Vector.X, ParentWindow.Bounds.Width - ParentWindow.MinWidth);
+                    var deltaWidth = ParentWindow.Bounds.Width;
                     //ParentWindow.WindowPositionTransform.X -= e.Vector.X;
-                    ParentWindow.Width = Math.Max(32, ParentWindow.Bounds.Width - deltaHorizontal);
+                    var d = ParentWindow.Width = Math.Max(32, ParentWindow.Bounds.Width - deltaHorizontal);
+                    deltaWidth = deltaWidth - d;
+                    ParentWindow.WindowTranslateMove.X += deltaWidth;
                     break;
                 case Avalonia.Layout.HorizontalAlignment.Right:
                     deltaHorizontal = Math.Min(-e.Vector.X, ParentWindow.Bounds.Width - ParentWindow.MinWidth);

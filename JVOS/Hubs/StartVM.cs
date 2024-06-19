@@ -34,25 +34,39 @@ namespace JVOS.Hubs
         void RefreshRecommended()
         {
             ListRecommended = new();
-            var list = new List<string>();
+            var list = new List<object>();
+            var list2 = new List<object>();
+            var allr = ListAll.ToList<object>();
+            allr.AddRange(UserOptions.Current.RecentManager.Recents.Cast<object>());
             int seed = new Random().Next();
-            for(int i =0; i < 6; i++)
+            for (int i = 0; i < 6; i++)
             {
-                int r = new Random(seed + i).Next(0, ListAll.Count - 1);
-                list.Add(ListAll[r]);
+                int r = new Random(seed + i).Next(0, allr.Count - 1);
+                list.Add(allr[r]);
+            }
+            for (int i = 0; i < 12; i++)
+            {
+                int r = new Random(seed + i).Next(0, allr.Count - 1);
+                list2.Add(allr[r]);
             }
             ListRecommended = list;
+            ListMoreRecommended = list2;
         }
 
         private List<string> pinned = new();
-        private List<string> recommended = new();
+        private List<object> recommended = new();
         private List<string> all = new();
-        private List<string> extendedrec = new();
+        private List<object> extendedrec = new();
 
-        public List<string> ListRecommended
+        public List<object> ListRecommended
         {
             get => recommended;
             set => this.RaiseAndSetIfChanged(ref recommended, value);
+        }
+        public List<object> ListMoreRecommended
+        {
+            get => extendedrec;
+            set => this.RaiseAndSetIfChanged(ref extendedrec, value);
         }
 
         public List<string> ListAll { 

@@ -3,6 +3,7 @@ using Avalonia.Controls.Shapes;
 using Avalonia.Media;
 using Avalonia.Media.Imaging;
 using Avalonia.Platform;
+using DynamicData;
 using JVOS.ApplicationAPI;
 using JVOS.ApplicationAPI.App;
 using JVOS.Controls;
@@ -17,6 +18,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ZstdSharp.Unsafe;
 using Path = System.IO.Path;
 
 namespace JVOS
@@ -28,7 +30,10 @@ namespace JVOS
         public static List<UserOptions> Users;
 
         private Dictionary<string, object> _userValues;
-        
+
+        [JsonIgnore]
+        public RecentFilesManager RecentManager;
+
         public Theme Theme;
         [JsonIgnore]
         public Bitmap? DesktopBitmap;
@@ -220,6 +225,7 @@ namespace JVOS
                 JsonPath = Path.Combine(UsersLocation, $"{username} ({i}).jvon");
             }
             PrepareDirectory();
+            RecentManager = new RecentFilesManager(GetPath("AppData\\JVOS\\recents.json"));
         }
 
         public static void Test()
@@ -384,5 +390,33 @@ namespace JVOS
         private bool _hideTooltips = true;
         [JsonIgnore]
         private string? _jsonpath;
+    }
+
+    public class RecentFilesManager
+    {
+
+        public RecentFilesManager(string jsonPath)
+        {
+            JsonPath = jsonPath;
+            Recents = File.Exists(jsonPath) ? JsonConvert.DeserializeObject<List<Recent>>(File.ReadAllText(jsonPath))??new List<Recent>() : new List<Recent>();
+        }
+
+        public void AddRecent(string path)
+        {
+            Recents.RemoveMany(Recents.Where(x => x.Path == path));
+            while(Recents.Count > 100)
+                Recents.RemoveAt(new Random().Next(0, Recents.Count));
+            Recents.Add(new Recent(path, path.Split().Last()));
+            File.WriteAllText(JsonPath, JsonConvert.SerializeObject(Recents));
+        }
+
+        public void RemoveRecent(string path)
+        {
+            Recents.RemoveMany(Recents.Where(x => x.Path == path));
+            File.WriteAllText(JsonPath, JsonConvert.SerializeObject(Recents));
+        }
+
+        private string JsonPath;
+        public List<Recent> Recents;
     }
 }

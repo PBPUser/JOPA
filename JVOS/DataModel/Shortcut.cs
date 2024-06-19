@@ -30,6 +30,7 @@ namespace JVOS.DataModel
 
         public string Command;
         public string Base64Image;
+        public string OverwriteName = "";
         public string Description = "";
         public string Arguments;
     }
