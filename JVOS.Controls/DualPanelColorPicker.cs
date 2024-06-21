@@ -18,7 +18,7 @@ namespace JVOS.Controls
 {
     public class DualPanelColorPicker : TemplatedControl
     {
-        public DualPanelColorPicker()
+        static DualPanelColorPicker()
         {
             AffectsRender<DualPanelColorPicker>(
                 BackgroundProperty,
@@ -33,6 +33,11 @@ namespace JVOS.Controls
                 PickerRadiusProperty,
                 UseDarkModeProperty,
                 IsFocusedProperty);
+        }
+
+        public DualPanelColorPicker()
+        {
+            
         }
 
         public event EventHandler<Color?> ColorChanged;

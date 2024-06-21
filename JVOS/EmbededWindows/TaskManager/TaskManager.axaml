@@ -1,0 +1,17 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:controls="using:JVOS.Controls"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="JVOS.EmbededWindows.TaskManager.TaskManager">
+	<Grid RowDefinitions="auto, *, auto">
+		<controls:CustomBlurBehind Grid.RowSpan="3"/>
+		<Border Classes="Alpha" Grid.RowSpan="3"/>
+		<ListBox x:Name="listProcess" ItemsSource="{Binding LoadContexts}" Grid.Row="1"/>
+		<StackPanel Margin="4, 8" Orientation="Horizontal" Grid.Row="2" HorizontalAlignment="Right" VerticalAlignment="Center">
+			<controls:JButton x:Name="refreshBtn" Margin="4, 0" Content="Refresh" Width="100"/>
+			<controls:JButton x:Name="endBtn" Margin="4, 0" Content="End Process" Width="100"/>
+		</StackPanel>
+	</Grid>
+</UserControl>

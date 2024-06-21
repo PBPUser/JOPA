@@ -10,6 +10,8 @@ using System.Collections.Generic;
 using ReactiveUI;
 using System.Linq;
 using System.Runtime.InteropServices;
+using System.Reflection;
+using SharpCompress;
 
 namespace JVOS.EmbededWindows.Preferences
 {
@@ -31,11 +33,14 @@ namespace JVOS.EmbededWindows.Preferences
         List<ISettingsPage> pages = new List<ISettingsPage>();
 
         void AttachPages() {
-            AttachPage(new DesktopPage());
-            AttachPage(new ColorsPage());
-            AttachPage(new DisplayPage());
-            AttachPage(new HubsAdd());
-            AttachPage(new Applications());
+            var pages = Assembly.GetExecutingAssembly().GetTypes().Where(x => x.IsAssignableTo(typeof(ISettingsPage)) && !x.IsInterface);
+            foreach(var x in pages)
+            {
+                var constr = x.GetConstructors().Where(j => j.GetParameters().Length == 0);
+                if (constr.Count() == 0)
+                    continue;
+                AttachPage((ISettingsPage)constr.First().Invoke(new object[0]));
+            }
         }
 
         void AttachPage(ISettingsPage page) {

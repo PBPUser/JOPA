@@ -16,9 +16,11 @@
 				avares://JVOS/Assets/Fonts/#Anton
 			</FontFamily>
 			<ResourceDictionary.MergedDictionaries>
+				<MergeResourceInclude Source="avares://JVOS/Assets/Style/BarTooltip.axaml" />
 				<MergeResourceInclude Source="avares://JVOS/Assets/Style/Border.axaml" />
 				<MergeResourceInclude Source="avares://JVOS/Assets/Style/CheckBox.axaml" />
 				<MergeResourceInclude Source="avares://JVOS/Assets/Style/JButton.axaml" />
+				<MergeResourceInclude Source="avares://JVOS/Assets/Style/Menu.axaml" />
 				<MergeResourceInclude Source="avares://JVOS/Assets/Style/ListBox.axaml" />
 				<MergeResourceInclude Source="avares://JVOS/Assets/Style/RecommendMenuItem.axaml" />
 				<MergeResourceInclude Source="avares://JVOS/Assets/Style/TextBox.axaml" />

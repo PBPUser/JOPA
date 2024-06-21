@@ -2,6 +2,8 @@
 using Avalonia.Controls;
 using Avalonia.Layout;
 using Avalonia.Media;
+using Avalonia.Media.Imaging;
+using Avalonia.Platform;
 using Avalonia.Styling;
 using Avalonia.Threading;
 using JVOS.Controls;
@@ -10,8 +12,10 @@ using Microsoft.Extensions.Primitives;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Runtime.InteropServices;
 using System.Security;
 using System.Text;
@@ -693,6 +697,21 @@ namespace JVOS
             ClaymorphismLayer.GenerateClaymorphismLayer(BaseColor with { Saturation = 80 }, false, out scheme.AcentLightOuter, out scheme.AcentDarkOuter);
 
             return scheme;
+        }
+
+        public static Color ColorFromBitmap(byte[] array)
+        {
+            long r=0, g=0, b=0;
+            var c = array.Length / 4 - 1;
+            for (int i = 0; i < c; i++)
+            {
+                r += array[c*4+1];
+                g += array[c*4+2];
+                b += array[c*4 + 3];
+                if(i == 0)
+                    Debug.WriteLine($"{array[0]},{r}, {g}, {b}");
+            }
+            return Color.FromRgb((byte)(r / c), (byte)(g / c), (byte)(b / c));
         }
     }
 }

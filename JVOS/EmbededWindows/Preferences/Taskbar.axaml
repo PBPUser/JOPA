@@ -1,0 +1,21 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+			 xmlns:controls="clr-namespace:JVOS.Controls;assembly=JVOS.Controls"
+             x:Class="JVOS.EmbededWindows.Preferences.Taskbar">
+	<StackPanel x:Name="rootStack">
+		<Border Classes="Beta Outer" Padding="8, 4" Margin="8">
+			<StackPanel>
+				<TextBlock Text="Taskbar behaviors" Classes="h3"/>
+				<TextBlock Text="Taskbar alignment"/>
+				<ComboBox x:Name="taskbarAlignBox" SelectedIndex="1">
+					<ComboBoxItem Content="Left"/>
+					<ComboBoxItem Content="Center"/>
+				</ComboBox>
+				<CheckBox Margin="4" x:Name="hideApplicationTooltips" Content="Hide titles from taskbar icons"/>
+			</StackPanel>
+		</Border>
+	</StackPanel>
+</UserControl>

@@ -11,18 +11,32 @@ using System.Threading.Tasks;
 
 namespace JVOS.ApplicationAPI
 {
-    public class BrowseEventArgs
+    public class DialogFileSystemBrowsingEventArgs
     {
-        public BrowseEventArgs(bool isDir, Action<string> success, string filter = "*")
+        public DialogFileSystemBrowsingEventArgs(bool isDir, Action<DialogFileSystemBrowsingResult> doAfter, bool isMultiple = false, string filter = "*")
         {
             IsDirectory = isDir;
-            OnSuccess = success;
+            DoAfter = doAfter;
             Filter = filter;
+            IsMultiple = isMultiple;
         }
 
         public bool IsDirectory;
-        public Action<string> OnSuccess;
+        public bool IsMultiple;
+        public Action<DialogFileSystemBrowsingResult> DoAfter;
         public string Filter;
+    }
+
+    public struct DialogFileSystemBrowsingResult
+    {
+        public string[] Path = new string[0];
+        public bool IsSuccessfull = true;
+
+        public DialogFileSystemBrowsingResult(bool isSuccess, string[] pathes)
+        {
+            IsSuccessfull = isSuccess;
+            Path = pathes;
+        }
     }
 
     public static class Communicator
@@ -41,7 +55,7 @@ namespace JVOS.ApplicationAPI
         public static event EventHandler<string>? RegisterApp;
         public static event EventHandler<string>? CommandRun;
         public static event EventHandler<string>? PathRun;
-        public static event EventHandler<BrowseEventArgs>? BrowsePathRequest;
+        public static event EventHandler<DialogFileSystemBrowsingEventArgs>? BrowsePathRequest;
 
         public static IAppLoader AppLoader;
 
@@ -50,15 +64,15 @@ namespace JVOS.ApplicationAPI
             if (WindowOpenRequest != null)
                 WindowOpenRequest.Invoke(null, window);
         }
-        public static void BrowseDirectory(Action<string> success)
+        public static void BrowseDirectory(Action<DialogFileSystemBrowsingResult> after)
         {
             if (BrowsePathRequest != null)
-                BrowsePathRequest.Invoke(null, new BrowseEventArgs(true, success));
+                BrowsePathRequest.Invoke(null, new (true, after));
         }
-        public static void BrowseFile(Action<string> success, string filter = "*")
+        public static void BrowseFile(Action<DialogFileSystemBrowsingResult> after, string filter = "*")
         {
             if (BrowsePathRequest != null)
-                BrowsePathRequest.Invoke(null, new BrowseEventArgs(true, success, filter));
+                BrowsePathRequest.Invoke(null, new (false, after));
         }
 
         public static void OpenWindow(WindowOpenRequest request)

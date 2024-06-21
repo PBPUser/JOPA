@@ -1,4 +1,5 @@
 using Avalonia.Controls;
+using Avalonia.Controls.Templates;
 using Avalonia.Media;
 using Avalonia.Media.Imaging;
 using Avalonia.Platform;
@@ -12,6 +13,8 @@ namespace JVOS.EmbededWindows.Preferences
 {
     public partial class DesktopPage : UserControl, ISettingsPage
     {
+        DesktopSettingsVM VM;
+
         public DesktopPage()
         {
             InitializeComponent();
@@ -25,8 +28,24 @@ namespace JVOS.EmbededWindows.Preferences
                 App.Current.Resources["DesktopStretch"] = enumList[stetching.SelectedIndex];
                 UserOptions.Current.SetUserValue("DesktopStretch", enumList[stetching.SelectedIndex]);
             };
+            DataContext = VM = new DesktopSettingsVM();
+            includedImagesList.ItemTemplate = DesktopImageDataTemplate;
             browse.Click += (a, b) => Communicator.RunCommand("shell://wallpaper");
         }
+
+        static FuncDataTemplate<Uri> DesktopImageDataTemplate = new FuncDataTemplate<Uri>((a, b) =>
+        {
+            Grid g = new Grid() { MaxWidth = 128, MaxHeight = 128, Margin = new(4) };
+            Border border = new Border();
+            border.Classes.Add("Transparent");
+            border.Classes.Add("Outer");
+            g.Children.Add(new Image
+            {
+                Source = new Bitmap(AssetLoader.Open(a))
+            });
+            g.Children.Add(border);
+            return g;
+        });
 
         public string Title => "Desktop";
 

@@ -40,12 +40,5 @@
 				</ItemsPanelTemplate>
 			</Setter>
 		</Style>
-		<Style Selector="^.DesktopGrid">
-			<Setter Property="ItemsPanel">
-				<ItemsPanelTemplate>
-					<Grid IsItemsHost="true"/>
-				</ItemsPanelTemplate>
-			</Setter>
-		</Style>
 	</ControlTheme>
 </ResourceDictionary>

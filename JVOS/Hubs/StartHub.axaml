@@ -13,14 +13,22 @@
 				<RowDefinition/>
 				<RowDefinition Height="80"/>
 			</Grid.RowDefinitions>
-			<Border Grid.Row="1" Margin="8" CornerRadius="12" BoxShadow="{DynamicResource
-			BarClaymorphismInnerBoxShadow}">
-				<StackPanel Orientation="Horizontal">
-					<controls:JButton ClipToBounds="false" Grid.Column="1" Height="32" Width="100" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Foreground="{DynamicResource BarForeground}" BoxShadows="{DynamicResource ButtonBarClaymorphismBoxShadow}" ActiveBoxShadows="{DynamicResource ButtonBarClaymorphismInnerBoxShadow}"  Margin="8, 8, 4, 8" CornerRadius="16" x:Name="_refButton" HorizontalAlignment="Stretch" Content="Refresh"/>
-					<controls:JButton ClipToBounds="false" Grid.Column="1" Height="32" Width="100" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Foreground="{DynamicResource BarForeground}" BoxShadows="{DynamicResource ButtonBarClaymorphismBoxShadow}" ActiveBoxShadows="{DynamicResource ButtonBarClaymorphismInnerBoxShadow}"  Margin="8, 8, 4, 8" CornerRadius="16" x:Name="_runButton" HorizontalAlignment="Stretch" Content="Run"/>
-					<controls:JButton ClipToBounds="false" Grid.Column="1" Height="32" Width="100" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Foreground="{DynamicResource BarForeground}" BoxShadows="{DynamicResource ButtonBarClaymorphismBoxShadow}" ActiveBoxShadows="{DynamicResource ButtonBarClaymorphismInnerBoxShadow}"  Margin="8, 8, 4, 8" CornerRadius="16" x:Name="_thmButton" HorizontalAlignment="Stretch" Content="Theme"/>
-					<controls:JButton ClipToBounds="false" Grid.Column="1" Height="32" Width="100" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Foreground="{DynamicResource BarForeground}" BoxShadows="{DynamicResource ButtonBarClaymorphismBoxShadow}" ActiveBoxShadows="{DynamicResource ButtonBarClaymorphismInnerBoxShadow}"  Margin="8, 8, 4, 8" CornerRadius="16" x:Name="_hubButton" HorizontalAlignment="Stretch" Content="Hubs"/>
-				</StackPanel>
+			<Border Grid.Row="1" Margin="8" Classes="Beta Outer">
+				<Grid Margin="8, 0">
+					<controls:JButton Classes="Transparent" ClipToBounds="false" x:Name="_userBtn" HorizontalAlignment="Left">
+						<StackPanel Orientation="Horizontal">
+							<Image Width="24" Height="24"/>
+							<TextBlock/>
+						</StackPanel>
+					</controls:JButton>
+					<StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+						<controls:JButton FontFamily="Jcons" FontSize="24" Classes="Transparent" ClipToBounds="false" x:Name="_refreshButton" Width="32"/>
+						<controls:JButton FontFamily="Jcons" FontSize="24" Classes="Transparent" ClipToBounds="false" x:Name="_runButton" Width="32" Content="."/>
+						<controls:JButton FontFamily="Jcons" FontSize="24" Classes="Transparent" ClipToBounds="false" x:Name="_filesButton" Width="32" Content="D"/>
+						<controls:JButton FontFamily="Jcons" FontSize="24" Classes="Transparent" ClipToBounds="false" x:Name="_preferencesButton" Width="32" Content="C"/>
+						<controls:JButton FontFamily="Jcons" FontSize="24" Classes="Transparent" ClipToBounds="false" x:Name="_shutdownButton" Width="32" Content="."/>
+					</StackPanel>
+				</Grid>
 			</Border>
 			<Grid Margin="8" x:Name="clippyGrid" ClipToBounds="true">
 				<Grid x:Name="clippedGrid" HorizontalAlignment="Left">

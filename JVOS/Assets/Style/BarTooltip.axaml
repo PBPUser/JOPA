@@ -1,0 +1,12 @@
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+					xmlns:controls="clr-namespace:JVOS.Controls;assembly=JVOS"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+	<ControlTheme x:Key="{x:Type controls:BarTooltip}"
+				TargetType="controls:BarTooltip">
+		<Setter Property="TextColor" Value="{DynamicResource Foreground_BasicInner}"/>
+		<Setter Property="ActiveBoxShadows" Value="{DynamicResource BoxShadows_BarInner}"/>
+		<Style Selector="^.active">
+			<Setter Property="BoxShadows" Value="{DynamicResource BoxShadows_BarOuter}"/>
+		</Style> 
+	</ControlTheme>
+</ResourceDictionary>

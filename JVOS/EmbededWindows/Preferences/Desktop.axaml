@@ -8,6 +8,18 @@
 	<StackPanel x:Name="rootStack">
 		<Image Width="384" Source="{DynamicResource DesktopImage}"/>
 		<controls:JButton FontSize="14" x:Name="browse" Content="Browse" Width="100" HorizontalAlignment="Left"/>
+		<Border Classes="Beta Outer" Padding="8, 4" Margin="8">
+			<StackPanel>
+				<TextBlock Text="Included to JVOS images" Classes="h3"/>
+				<ListBox x:Name="includedImagesList" ItemsSource="{Binding IncludedWallpapers}">
+					<ListBox.ItemsPanel>
+						<ItemsPanelTemplate>
+							<StackPanel Orientation="Horizontal"/>
+						</ItemsPanelTemplate>
+					</ListBox.ItemsPanel>
+				</ListBox>
+			</StackPanel>
+		</Border>
 		<TextBlock Text="Stretching: " Margin="4"/>
 		<ComboBox x:Name="stetching" Margin="4" Width="256" HorizontalAlignment="Left"/>
 	</StackPanel>

@@ -25,7 +25,15 @@ namespace JVOS.Controls
         static BarTooltip()
         {
             IconProperty = AvaloniaProperty.RegisterAttached<BarTooltip, Thumb, Bitmap>("Icon");
-            TitleProperty = AvaloniaProperty.RegisterAttached<BarTooltip, Thumb, string>("Title");
+            FormattedTitleProperty = AvaloniaProperty.RegisterAttached<BarTooltip, Thumb, FormattedText>("FormattedTitle");
+            TextColorProperty = AvaloniaProperty.RegisterAttached<BarTooltip, Thumb, IBrush>("TextColor", defaultValue: Brushes.Black, coerce: (a, b) => {
+                ((BarTooltip)a).FormattedTitle = new(((BarTooltip)a).Title??"", System.Globalization.CultureInfo.CurrentUICulture, FlowDirection.LeftToRight, new Typeface(FontFamily.Default), 14, b);
+                return b;
+            });
+            TitleProperty = AvaloniaProperty.RegisterAttached<BarTooltip, Thumb, string>("Title", coerce: (a, b) => {
+                ((BarTooltip)a).FormattedTitle = new(((BarTooltip)a).Title??"", System.Globalization.CultureInfo.CurrentUICulture, FlowDirection.LeftToRight, new Typeface(FontFamily.Default), 14, ((BarTooltip)a).TextColor);
+                return b;
+            });
             ActiveBoxShadowsProperty = AvaloniaProperty.RegisterAttached<BarTooltip, Thumb, BoxShadows>("ActiveBoxShadows");
             BoxShadowsProperty = AvaloniaProperty.RegisterAttached<BarTooltip, Thumb, BoxShadows>("BoxShadows");
             ScaleProperty = AvaloniaProperty.RegisterAttached<BarTooltip, Thumb, double>("Scale");
@@ -34,10 +42,10 @@ namespace JVOS.Controls
             StartAnimationProperty = AvaloniaProperty.RegisterAttached<BarTooltip, Thumb, double>("StartAnimation");
             AffectsRender<BarTooltip>(
                 IconProperty, 
-                TitleProperty,
                 ScaleProperty,
                 ActiveBoxShadowsProperty,
                 BoxShadowsProperty,
+                FormattedTitleProperty,
                 DragDeltaXProperty,
                 StartAnimationProperty
                 );
@@ -49,6 +57,7 @@ namespace JVOS.Controls
             Loaded += (a, b) =>
             {
                 StartAnimation = 1;
+                UpdateFormattedText();
             };
         }
 
@@ -56,11 +65,13 @@ namespace JVOS.Controls
         public static readonly AttachedProperty<BoxShadows> ActiveBoxShadowsProperty;
         public static readonly AttachedProperty<BoxShadows> BoxShadowsProperty;
         public static readonly AttachedProperty<Bitmap> IconProperty;
+        public static readonly AttachedProperty<FormattedText> FormattedTitleProperty;
         public static readonly AttachedProperty<string> TitleProperty;
         public static readonly AttachedProperty<double> ScaleProperty;
         public static readonly AttachedProperty<double> DragDeltaXProperty;
         public static readonly AttachedProperty<double> ShadowPosProperty;
         public static readonly AttachedProperty<double> StartAnimationProperty;
+        public static readonly AttachedProperty<IBrush> TextColorProperty;
 
         private List<WindowFrameBase> JWindowFrames = new List<WindowFrameBase>();
 
@@ -86,11 +97,18 @@ namespace JVOS.Controls
 
         public void UpdateFormattedText()
         {
-            fText = new(Title, System.Globalization.CultureInfo.CurrentUICulture, FlowDirection.LeftToRight, new Typeface(FontFamily.Default), 14, Foreground);
         }
 
-        private FormattedText fText;
-
+        public IBrush TextColor
+        {
+            get => GetValue(TextColorProperty);
+            set => SetValue(TextColorProperty, value);
+        }
+        private FormattedText FormattedTitle
+        {
+            get => GetValue(FormattedTitleProperty);
+            set => SetValue(FormattedTitleProperty, value);
+        }
         private double Scale
         {
             get => (double)GetValue(ScaleProperty);
@@ -232,10 +250,9 @@ namespace JVOS.Controls
             context.DrawRectangle(TransparentA1, null, new Rect(Bounds.Size));
             var dp = 1 - (0.2 * Scale);
             var d = context.PushTransform(new ScaleTransform(dp, dp).Value);
-            if(Icon != null)
-                context.DrawImage(Icon, new Rect(4 + (Scale * 0.1 * (Bounds.Width) * StartAnimation) + DragDeltaX * (1 / dp), 4 + (Scale * 0.1 * Bounds.Height * StartAnimation), Bounds.Height - 8, Bounds.Height - 8));
+            context.DrawImage(Icon ?? RecommendMenuItem.DEFAULT_APP_ICON, new Rect(4 + (Scale * 0.1 * (Bounds.Width) * StartAnimation) + DragDeltaX * (1 / dp), 4 + (Scale * 0.1 * Bounds.Height * StartAnimation), Bounds.Height - 8, Bounds.Height - 8));
             if(DesktopScreen.RunningAppWidth > 64)
-                context.DrawText(fText, new Point(Bounds.Height + (Scale * 0.1 * (Bounds.Width)) + DragDeltaX * (1 / dp), (Bounds.Height-fText.Height) / 2 + (Scale * 0.1 * Bounds.Height)));
+                context.DrawText(FormattedTitle, new Point(Bounds.Height + (Scale * 0.1 * (Bounds.Width)) + DragDeltaX * (1 / dp), (Bounds.Height- FormattedTitle.Height) / 2 + (Scale * 0.1 * Bounds.Height)));
             d.Dispose();
             var j = context.PushOpacity(1 - ShadowPos);
             context.DrawRectangle(null, null, new Rect(new Point(DragDeltaX, 0), Bounds.Size), 12, 12, this.BoxShadows);

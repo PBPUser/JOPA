@@ -23,20 +23,20 @@ using System.Threading.Tasks;
 
 namespace JVOS.Controls
 {
-    public class RecommendMenuItem : Button
+    public class RecommendMenuItem : Control
     {
         private static Brush TransparentA1 = new SolidColorBrush(Color.FromArgb(1, 0, 0, 0), 1);
         private static Brush TestSelectBackground = new SolidColorBrush(Color.FromArgb(128, 255, 0, 255), 1);
-        static Bitmap DEFAULT_APP_ICON = new Bitmap(AssetLoader.Open(new Uri("avares://JVOS/Assets/Shell/app.png")));
+        public static Bitmap DEFAULT_APP_ICON = new Bitmap(AssetLoader.Open(new Uri("avares://JVOS/Assets/Shell/app.png")));
 
         static RecommendMenuItem()
         {
-            TitleProperty = AvaloniaProperty.RegisterAttached<RecommendMenuItem, Button, string>("Title", coerce: (a, b) =>
+            TitleProperty = AvaloniaProperty.RegisterAttached<RecommendMenuItem, Control, string>("Title", coerce: (a, b) =>
             {
                 ((RecommendMenuItem)a).FormattedTitle = new FormattedText(b??"", CultureInfo.CurrentCulture, GetFlowDirection(a as RecommendMenuItem), new Typeface(FontFamily.Default, weight: FontWeight.Bold, style: FontStyle.Italic), 16, (a as RecommendMenuItem).TextColor);
                 return b??"";
             });
-            TextColorProperty = AvaloniaProperty.RegisterAttached<RecommendMenuItem, Button, IBrush>("TextColor", coerce: (a, b) =>
+            TextColorProperty = AvaloniaProperty.RegisterAttached<RecommendMenuItem, Control, IBrush>("TextColor", coerce: (a, b) =>
             {
                 b = b ?? TestSelectBackground;
                 var x = ((RecommendMenuItem)a);
@@ -44,12 +44,12 @@ namespace JVOS.Controls
                 x.FormattedSubtitle = new FormattedText(x.Subtitle ?? "", CultureInfo.CurrentCulture, GetFlowDirection(x), new Typeface(FontFamily.Default, weight: FontWeight.Bold, style: FontStyle.Italic), 16, b);
                 return b;
             });
-            SubtitleProperty = AvaloniaProperty.RegisterAttached<RecommendMenuItem, Button, string>("Subtitle", coerce: (a, b) =>
+            SubtitleProperty = AvaloniaProperty.RegisterAttached<RecommendMenuItem, Control, string>("Subtitle", coerce: (a, b) =>
             {
                 ((RecommendMenuItem)a).FormattedSubtitle = new FormattedText(b ??"", CultureInfo.CurrentCulture, GetFlowDirection(a as RecommendMenuItem), new Typeface(FontFamily.Default, style: FontStyle.Italic), 14, (a as RecommendMenuItem).TextColor);
                 return b??"";
             });
-            PathProperty = AvaloniaProperty.RegisterAttached<RecommendMenuItem, Button, string>("Path", coerce: (a, b) =>
+            PathProperty = AvaloniaProperty.RegisterAttached<RecommendMenuItem, Control, string>("Path", coerce: (a, b) =>
             {
                 if (b == null)
                     return "";
@@ -62,7 +62,7 @@ namespace JVOS.Controls
                 ((RecommendMenuItem)a).Subtitle = shortcut.Description;
                 return b;
             });
-            RecentProperty = AvaloniaProperty.RegisterAttached<RecommendMenuItem, Button, Recent>("Recent", coerce: (a, b) =>
+            RecentProperty = AvaloniaProperty.RegisterAttached<RecommendMenuItem, Control, Recent>("Recent", coerce: (a, b) =>
             {
                 if (b.Path.EndsWith(".jnk"))
                 {
@@ -81,12 +81,10 @@ namespace JVOS.Controls
                 }
                 return b;
             });
-            IconProperty = AvaloniaProperty.RegisterAttached<RecommendMenuItem, Button, Bitmap?>("Icon");
-            FormattedTitleProperty = AvaloniaProperty.RegisterAttached<RecommendMenuItem, Button, FormattedText>("FormattedTitle");
-            FormattedSubtitleProperty = AvaloniaProperty.RegisterAttached<RecommendMenuItem, Button, FormattedText>("FormattedSubtitle");
-            MouseOverProperty = AvaloniaProperty.RegisterAttached<RecommendMenuItem, Button, bool>("MouseOver");
+            IconProperty = AvaloniaProperty.RegisterAttached<RecommendMenuItem, Control, Bitmap?>("Icon");
+            FormattedTitleProperty = AvaloniaProperty.RegisterAttached<RecommendMenuItem, Control, FormattedText>("FormattedTitle");
+            FormattedSubtitleProperty = AvaloniaProperty.RegisterAttached<RecommendMenuItem, Control, FormattedText>("FormattedSubtitle");
             AffectsRender<RecommendMenuItem>(
-                MouseOverProperty,
                 FormattedTitleProperty,
                 FormattedSubtitleProperty,
                 IconProperty
@@ -137,12 +135,6 @@ namespace JVOS.Controls
             get => GetValue(FormattedSubtitleProperty);
             set => SetValue(FormattedSubtitleProperty, value);
         }
-
-        public bool MouseOver
-        {
-            get => GetValue(MouseOverProperty);
-            set => SetValue(MouseOverProperty, value);
-        }
         public IBrush TextColor
         {
             get => GetValue(TextColorProperty);
@@ -154,22 +146,8 @@ namespace JVOS.Controls
             Communicator.RunPath(Path);
             base.OnPointerReleased(e);
         }
-
-        protected override void OnPointerEntered(PointerEventArgs e)
-        {
-            MouseOver = true;
-            base.OnPointerEntered(e);
-        }
-
-        protected override void OnPointerExited(PointerEventArgs e)
-        {
-            MouseOver = false;
-            base.OnPointerExited(e);
-        }
-
         public override void Render(DrawingContext context)
         {
-            context.FillRectangle(MouseOver ? TestSelectBackground : TransparentA1, new Rect(Bounds.Size), 8);
             context.DrawImage(Icon ?? DEFAULT_APP_ICON, new Rect(0, 0, Bounds.Size.Height, Bounds.Size.Height));
             if (FormattedTitle != null)
                 context.DrawText(FormattedTitle, new Point(Bounds.Size.Height, (Bounds.Height / 2) - 3 - FormattedTitle.Height));
@@ -190,6 +168,5 @@ namespace JVOS.Controls
         public static readonly AttachedProperty<string> SubtitleProperty;
         public static readonly AttachedProperty<FormattedText> FormattedTitleProperty;
         public static readonly AttachedProperty<FormattedText> FormattedSubtitleProperty;
-        public static readonly AttachedProperty<bool> MouseOverProperty;
     }
 }

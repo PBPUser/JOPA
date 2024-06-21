@@ -105,9 +105,9 @@ public partial class App : Application
         ApplicationManager.Load();
     }
 
-    private void Browse(object? sender, BrowseEventArgs e)
+    private void Browse(object? sender, DialogFileSystemBrowsingEventArgs e)
     {
-        Communicator.OpenWindow(new FileBrowser(e.IsDirectory ? FileBrowser.SelectMode.Directory : FileBrowser.SelectMode.File, e.OnSuccess, e.Filter));
+        Communicator.OpenWindow(new FileBrowser(e.IsDirectory ? FileBrowser.SelectMode.Directory : FileBrowser.SelectMode.File, e.DoAfter, e.Filter));
     }
 
     private void PathRun(object? sender, string e)

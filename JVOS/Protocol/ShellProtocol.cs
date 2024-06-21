@@ -1,4 +1,5 @@
 ﻿using Avalonia.Controls;
+using Avalonia.Platform;
 using JVOS.ApplicationAPI;
 using JVOS.ApplicationAPI.Windows;
 using JVOS.DataModel;
@@ -85,10 +86,21 @@ namespace JVOS.Protocol
                         Communicator.ShowMessageDialog(new MessageDialog("Shell", "This feature is not implemented on your platform."));
                         return false;
                     }
-                    Communicator.BrowseFile(a =>
+                    if(args.Length == 1)
                     {
-                        UserSession.CurrentUser.UserOptions.SetDesktopImage(new(Path.GetFullPath(a)));
-                    });
+                        Communicator.BrowseFile(a =>
+                        {
+                            if (a.IsSuccessfull)
+                                UserSession.CurrentUser.UserOptions.SetDesktopImage(new(Path.GetFullPath(a.Path.First())));
+                        });
+                    }
+                    else if(args.Length == 2)
+                        if (File.Exists(args[1]))
+                            UserSession.CurrentUser.UserOptions.SetDesktopImage(new(args[1]));
+                        else if(AssetLoader.Exists(new Uri(args[1])))
+                            UserSession.CurrentUser.UserOptions.SetDesktopImage(new(AssetLoader.Open(new Uri(args[1]))));
+                        else
+                            Communicator.ShowMessageDialog(new MessageDialog("Shell", "File dosen't exists."));
                     return true;
                 case "profile":
                     if (OperatingSystem.IsAndroid())
@@ -120,21 +132,6 @@ namespace JVOS.Protocol
                     }).GetAwaiter().GetResult();
                     if (files3.Count >= 1)
                         UserSession.CurrentUser.UserOptions.SetProfileImage(new(files3[0].Path.AbsolutePath));
-                    return true;
-                case "addappshort":
-                    if(args.Length >= 3)
-                    {
-                        string name = args[1];
-                        string[] commandx = new string[args.Length -2];
-                        Array.Copy(args, 2, commandx, 0, commandx.Length);
-                        Shortcut s = new Shortcut(string.Join(" ", commandx), name, "");
-                        File.WriteAllText(UserOptions.Current.MenuDirectory + $"\\{name}.json", JsonConvert.SerializeObject(s));
-                        Communicator.ShowMessageDialog(new MessageDialog("Shell", "Shortcut created"));
-                    }
-                    else
-                    {
-                        Communicator.ShowMessageDialog(new MessageDialog("Shell", "Too few arguments to create shortcut.\nExample shell://addappshort ShortcutName [args]"));
-                    }
                     return true;
                 default:
                     Communicator.ShowMessageDialog(new MessageDialog("Shell", "Command not found"));

@@ -12,18 +12,18 @@ namespace JVOS.EmbededWindows.Preferences
         public ColorsPage()
         {
             InitializeComponent();
-            var x = new JVOS.Controls.DualPanelColorPicker() { Padding = new Avalonia.Thickness(8), Color = Colors.Violet, CornerRadius = new Avalonia.CornerRadius(8) };
+            var x = new JVOS.Controls.DualPanelColorPicker() { Padding = new Avalonia.Thickness(8), Color = ColorScheme.Current.BasicColor, CornerRadius = new Avalonia.CornerRadius(8) };
             apply.Click += (a, b) =>
             {
                 ColorScheme.ApplyScheme(ColorScheme.CreateColorSchemeFromColor(x.Color.Value), this.useDarkMode.IsChecked == true, useAccentTitle.IsChecked == true, useAccentBar.IsChecked == true);
-                UserOptions.Current.ColorScheme = ColorScheme.Current;
+                UserOptions.Current.Theme.BaseColor = x.Color.Value;
                 UserOptions.Save();
             };
-            hideApplicationTooltips.IsChecked = UserOptions.Current.HideAppTooltips == false;
-            hideApplicationTooltips.Click += (a, b) =>
+            useAutoColor.Click += (a, b) =>
             {
-                UserOptions.Current.HideAppTooltips = hideApplicationTooltips.IsChecked == false;
-                DesktopScreen.SetRunningAppButtonWidth(hideApplicationTooltips.IsChecked == false);
+                bool use = useAutoColor.IsChecked == true;
+                UserOptions.Current.Theme.AutoColor = use;
+                ColorScheme.ApplyScheme(ColorScheme.CreateColorSchemeFromColor(use ? ColorScheme.ColorFromBitmap(UserOptions.ImageToBytes(UserOptions.Current.DesktopBitmap??new Bitmap(AssetLoader.Open(new("avares://JVOS/Assets/Shell/app.png"))))) : x.Color.Value), this.useDarkMode.IsChecked == true, useAccentTitle.IsChecked == true, useAccentBar.IsChecked == true);
             };
             rootStack.Children.Insert(0, x);
         }

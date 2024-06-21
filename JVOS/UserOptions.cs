@@ -56,8 +56,16 @@ namespace JVOS
             {
                 image.Save(ms, 100);
                 byte[] imageBytes = ms.ToArray();
-                string base64String = Convert.ToBase64String(imageBytes);
-                return base64String;
+                return Convert.ToBase64String(imageBytes);
+            }
+        }
+
+        public static byte[] ImageToBytes(Bitmap image)
+        {
+            using (MemoryStream ms = new MemoryStream())
+            {
+                image.Save(ms, 100);
+                return ms.ToArray();
             }
         }
 
@@ -120,7 +128,7 @@ namespace JVOS
             else
                 userOptions.ApplyLockscreenImage(new Bitmap(lockscreenImage));
             App.Current.Resources["DesktopStretch"] = userOptions.GetUserValue<Stretch>("DesktopStretch", Stretch.Fill);
-            ColorScheme.ApplyScheme(userOptions.ColorScheme, userOptions.ColorScheme.UseDarkScheme, userOptions.ColorScheme.AccentTitle, userOptions.ColorScheme.AccentBar);
+            ColorScheme.ApplyScheme(ColorScheme.CreateColorSchemeFromColor(userOptions.Theme.BaseColor), userOptions.ColorScheme.UseDarkScheme, userOptions.ColorScheme.AccentTitle, userOptions.ColorScheme.AccentBar);
             Current = userOptions;
             DesktopScreen.SetRunningAppButtonWidth(userOptions.HideAppTooltips);
         }
@@ -312,7 +320,7 @@ namespace JVOS
             string path = GetPath("AppData\\StartMenu\\All");
             if(!Directory.Exists(path))
                 Directory.CreateDirectory(path);
-            foreach(var dir in Directory.GetDirectories("Applications"))
+            foreach(var dir in Directory.GetDirectories(PlatformSpecifixController.GetLocalFilePath("Applications")))
             {
                 var f = $"{dir}\\manifest.json";
                 if (File.Exists(f))
@@ -337,6 +345,7 @@ namespace JVOS
             File.WriteAllText($"{path}\\Files.jnk", JsonConvert.SerializeObject(new Shortcut("shell://embeded JVOS.EmbededWindows.FileBrowser", ImageToBase64(new Bitmap(AssetLoader.Open(new Uri("avares://JVOS/Assets/Shell/folder.png")))), "With ZHABA Support!")));
             File.WriteAllText($"{path}\\Run.jnk", JsonConvert.SerializeObject(new Shortcut("shell://embeded JVOS.EmbededWindows.RunDialog", ImageToBase64(new Bitmap(AssetLoader.Open(new Uri("avares://JVOS/Assets/Shell/run.png")))), "AMOGUS")));
             File.WriteAllText($"{path}\\Settings.jnk", JsonConvert.SerializeObject(new Shortcut("shell://embeded JVOS.EmbededWindows.Preferences.PreferencesHub", ImageToBase64(new Bitmap(AssetLoader.Open(new Uri("avares://JVOS/Assets/Shell/preferences.png")))), "PERSOANALIZE JOPA LIKE GOD!")));
+            File.WriteAllText($"{path}\\Task Manager.jnk", JsonConvert.SerializeObject(new Shortcut("shell://embeded JVOS.EmbededWindows.TaskManager.TaskManager", ImageToBase64(new Bitmap(AssetLoader.Open(new Uri("avares://JVOS/Assets/Shell/taskmgr.png")))), "With ZHABA Support!")));
         }
 
         public string? Username {

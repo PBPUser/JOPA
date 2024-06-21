@@ -49,20 +49,10 @@ public partial class Window : Node3D {
         if (Input.IsActionJustPressed("toggle_jvos"))
         {
             IsJVOSIn3DSpace = !IsJVOSIn3DSpace;
-            if (IsJVOSIn3DSpace)
-            {
-                UserInterface2D.Instance.Grid.Children.Remove(UserInterface.Instance.MainView);
-                UserInterface.Instance.Grid.Children.Add(UserInterface.Instance.MainView);
-                Visible = true;
-                UserInterface2D.Instance.Visible = false;
-            }
-            else
-            {
-                UserInterface.Instance.Grid.Children.Remove(UserInterface.Instance.MainView);
-                UserInterface2D.Instance.Grid.Children.Add(UserInterface.Instance.MainView);
-                Visible = false;
-                UserInterface2D.Instance.Visible = true;
-            }
+            Visible = IsJVOSIn3DSpace;
+            UserInterface2D.Instance.Visible = !IsJVOSIn3DSpace;
+            (IsJVOSIn3DSpace ? UserInterface2D.Instance.Grid : UserInterface.Instance.Grid).Children.Remove(UserInterface.Instance.MainView);
+            (!IsJVOSIn3DSpace ? UserInterface2D.Instance.Grid : UserInterface.Instance.Grid).Children.Add(UserInterface.Instance.MainView);
         }
             
         base._Input(@event);
@@ -180,7 +170,6 @@ public partial class Window : Node3D {
 
         if(result.Count > 0) {
             position = (Vector3)result["position"];
-
             return true;
         } else {
             return false;

@@ -25,14 +25,16 @@ namespace JVOS.Hubs
         public StartHub()
         {
             InitializeComponent();
-            _runButton.Click += OnRun;
-            _thmButton.Click += OnThm;
+            _refreshButton.Content = "<";
+
+            _runButton.Click += RunBtnClick;
+            _filesButton.Click += FilesBtnClick;
             _allButton.Click += SwitchApps;
             _moreButton.Click += SwitchRecents;
             _pinButton.Click += SwitchHome;
             _nazadRecommendBtn.Click += SwitchHome;
-            _refButton.Click += OnRef;
-            _hubButton.Click += OnHub;
+            _refreshButton.Click += RefreshBtnClick;
+            _preferencesButton.Click += PreferencesBtnClick;
 
             translateTransform.Transitions = new Avalonia.Animation.Transitions() { new DoubleTransition() { Duration = TimeSpan.FromMilliseconds(1000), Property = TranslateTransform.XProperty, Easing = new ElasticEaseOut() { }  } };
             clippedGrid.RenderTransform = translateTransform;
@@ -60,7 +62,7 @@ namespace JVOS.Hubs
             return new RecommendMenuItem(value);
         });
 
-        private void OnHub(object? sender, RoutedEventArgs e)
+        private void PreferencesBtnClick(object? sender, RoutedEventArgs e)
         {
             WindowManager.OpenInWindow(new PreferencesHub());
         }
@@ -80,7 +82,7 @@ namespace JVOS.Hubs
             base.OnLoaded(e);
         }
 
-        private void OnRef(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
+        private void RefreshBtnClick(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
         {
             VM.Refresh();
         }
@@ -105,13 +107,13 @@ namespace JVOS.Hubs
             }
         }
 
-        private void OnThm(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
+        private void FilesBtnClick(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
         {
-            WindowManager.OpenInWindow(new EaseOfAccess());
+            WindowManager.OpenInWindow(new FileBrowser());
             WindowManager.CloseAllHubsInActiveWindowSpace();
         }
 
-        private void OnRun(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
+        private void RunBtnClick(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
         {
             WindowManager.OpenInWindow(new RunDialog());
             WindowManager.CloseAllHubsInActiveWindowSpace();

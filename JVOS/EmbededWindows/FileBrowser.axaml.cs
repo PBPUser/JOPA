@@ -18,6 +18,7 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Text.Json.Nodes;
+using Bitmap = Avalonia.Media.Imaging.Bitmap;
 
 namespace JVOS.EmbededWindows
 {
@@ -43,20 +44,30 @@ namespace JVOS.EmbededWindows
             return icon;
         });
 
-        public FileBrowser(SelectMode selectMode = SelectMode.None, Action<string>? afterBrowse = null, string filter = "*", string path = "")
+        public override void Closed()
+        {
+            AfterBrowse?.Invoke(new DialogFileSystemBrowsingResult(false, new string[] { }));
+            base.Closed();
+        }
+
+        Action<DialogFileSystemBrowsingResult>? AfterBrowse;
+
+        public FileBrowser(SelectMode selectMode = SelectMode.None, Action<DialogFileSystemBrowsingResult>? afterBrowse = null, string filter = "*", string path = "")
         {
             InitializeComponent();
             Mode = selectMode;
+            AfterBrowse = afterBrowse;
             if(afterBrowse != null)
             {
                 ok.Click += (a, b) =>
                 {
                     Frame.Close();
-                    afterBrowse.Invoke(VM.Elements[listFiles.SelectedIndex]);
+                    afterBrowse.Invoke(new DialogFileSystemBrowsingResult(true, new string[] { VM.Elements[listFiles.SelectedIndex] }));
                 };
                 cancel.Click += (a, b) =>
                 {
                     Frame.Close();
+                    afterBrowse.Invoke(new DialogFileSystemBrowsingResult(false, new string[] { }));
                 };
                 BrowsePanel.IsVisible = true;
             }
