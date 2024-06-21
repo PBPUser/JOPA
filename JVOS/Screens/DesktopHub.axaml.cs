@@ -19,11 +19,6 @@ namespace JVOS.Screens
         public DesktopScreen ParentScreen;
         public DesktopHubViewModel VM;
 
-        private override Size IWindowSpace.GetWindowSpace()
-        {
-
-        }
-
         public void CloseWindow(WindowFrameBase window)
         {
             WindowFrames.Remove(window);
