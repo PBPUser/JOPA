@@ -15,9 +15,13 @@
 			<FontFamily x:Key="BubblegumSansFont">
 				avares://JVOS/Assets/Fonts/#Anton
 			</FontFamily>
+			<FontFamily x:Key="JconsFont">
+				avares://JVOS/Assets/Fonts/#JCons
+			</FontFamily>
 			<ResourceDictionary.MergedDictionaries>
 				<MergeResourceInclude Source="avares://JVOS/Assets/Style/BarTooltip.axaml" />
 				<MergeResourceInclude Source="avares://JVOS/Assets/Style/Border.axaml" />
+				<MergeResourceInclude Source="avares://JVOS/Assets/Style/ComboBox.axaml" />
 				<MergeResourceInclude Source="avares://JVOS/Assets/Style/CheckBox.axaml" />
 				<MergeResourceInclude Source="avares://JVOS/Assets/Style/JButton.axaml" />
 				<MergeResourceInclude Source="avares://JVOS/Assets/Style/Menu.axaml" />

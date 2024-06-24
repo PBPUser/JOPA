@@ -1,0 +1,72 @@
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+	<ControlTheme x:Key="{x:Type CheckBox}"
+				TargetType="CheckBox">
+		<Setter Property="Foreground" Value="{DynamicResource Foreground_BasicInner}"/>
+		<Setter Property="VerticalContentAlignment" Value="Center"/>
+		<Setter Property="ClipToBounds" Value="false"/>
+		<Setter Property="Template">
+			<Setter.Value>
+				<ControlTemplate>
+					<Grid ColumnDefinitions="32, *">
+						<Border 
+							x:Name="PART_Border" CornerRadius="6" 
+							BoxShadow="{DynamicResource ButtonShadow_BasicOuter}"
+							Width="24" Height="24" Margin="4">
+							<TextBlock Opacity="0" Foreground="{DynamicResource Foreground_BasicInner}" x:Name="PART_TextBlock" Text="+" FontSize="24" FontWeight="Bold" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+						</Border>
+						<ContentPresenter
+							Grid.Column="1" 
+							x:Name="PART_ContentPresenter"
+							Foreground="{DynamicResource Foreground_BasicInner}"
+                          ContentTemplate="{TemplateBinding ContentTemplate}"
+                          Content="{TemplateBinding Content}"
+                          Margin="{TemplateBinding Padding}"
+                          RecognizesAccessKey="True"
+                          HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                          VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                          TextWrapping="Wrap" />
+					</Grid>
+				</ControlTemplate>
+			</Setter.Value>
+		</Setter>
+		<Style Selector="^ /template/ TextBlock#PART_TextBlock">
+			<Setter Property="Transitions">
+				<Transitions>
+					<TransformOperationsTransition Property="RenderTransform" Duration="0:0:.125" />
+					<BrushTransition Property="Foreground" Duration="0:0:.125"/>
+				</Transitions>
+			</Setter>
+		</Style>
+		<Style Selector="^ /template/ Border#PART_Border">
+			<Setter Property="Transitions">
+				<Transitions>
+					<BrushTransition Property="Background" Duration="0:0:.125"/>
+					<BoxShadowsTransition Property="BoxShadow" Duration="0:0:.125"/>
+				</Transitions>
+			</Setter>
+		</Style>
+		<Style Selector="^:pressed">
+			<Style Selector="^ /template/ TextBlock#PART_TextBlock">
+				<Setter Property="RenderTransform" Value="scale(0.8)"/>
+			</Style>
+			<Style Selector="^ /template/ Border#PART_Border">
+				<Setter Property="BoxShadow" Value="{DynamicResource ButtonShadow_BasicInner}"/>
+			</Style>
+		</Style>
+		<Style Selector="^:checked">
+			<Style Selector="^ /template/ Border#PART_Border">
+				<Setter Property="Background" Value="{DynamicResource Background_AccentOuter}"/>
+				<Setter Property="BoxShadow" Value="{DynamicResource ButtonShadow_AccentOuter}"/>
+			</Style>
+			<Style Selector="^ /template/ TextBlock#PART_TextBlock">
+				<Setter Property="Opacity" Value="1"/>
+			</Style>
+			<Style Selector="^:pressed">
+				<Style Selector="^ /template/ Border#PART_Border">
+					<Setter Property="BoxShadow" Value="{DynamicResource ButtonShadow_AccentInner}"/>
+				</Style>
+			</Style>
+		</Style>
+	</ControlTheme>
+</ResourceDictionary>

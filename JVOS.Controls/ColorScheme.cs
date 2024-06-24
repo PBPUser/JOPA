@@ -10,6 +10,9 @@ using JVOS.Controls;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Primitives;
 using Newtonsoft.Json;
+using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.PixelFormats;
+using SkiaSharp;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -22,6 +25,7 @@ using System.Text;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using Tmds.DBus.Protocol;
+using Color = Avalonia.Media.Color;
 
 namespace JVOS
 {
@@ -699,18 +703,25 @@ namespace JVOS
             return scheme;
         }
 
-        public static Color ColorFromBitmap(byte[] array)
+        public static Color ColorFromBitmap(Bitmap bitmap)
         {
+            if (bitmap == null)
+                return Colors.Black;
+            var x = Path.GetTempFileName() + ".png";
+            bitmap.Save(x, 100);
+            using var image = SixLabors.ImageSharp.Image.Load<Rgba32>(x);
+            File.Delete(x);
+            byte[] pixels = new byte[image.Width * image.Height * 4];
+            image.CopyPixelDataTo(pixels);
             long r=0, g=0, b=0;
-            var c = array.Length / 4 - 1;
-            for (int i = 0; i < c; i++)
+            long c = pixels.Length / 4;
+            for(int i =0; i < c; i++)
             {
-                r += array[c*4+1];
-                g += array[c*4+2];
-                b += array[c*4 + 3];
-                if(i == 0)
-                    Debug.WriteLine($"{array[0]},{r}, {g}, {b}");
+                r += pixels[i*4];
+                g += pixels[i*4+1];
+                b += pixels[i*4+2];
             }
+            pixels = new byte[0];
             return Color.FromRgb((byte)(r / c), (byte)(g / c), (byte)(b / c));
         }
     }

@@ -42,8 +42,8 @@
 								<StackPanel Orientation="Horizontal">
 									<Image Source="../Assets/Taskbar/natribu.png"/>
 									<StackPanel VerticalAlignment="Center">
-										<TextBlock x:Name="barRandWordTitle" Text="" FontSize="14" Foreground="{DynamicResource BarForeground}" FontFamily="{DynamicResource AntonFont}"/>
-										<TextBlock x:Name="barRandWordSubtitle" Text="Loading..." FontSize="12" Foreground="{DynamicResource BarForeground}" FontFamily="{DynamicResource AntonFont}" Opacity="0.5"/>
+										<TextBlock x:Name="barRandWordTitle" Text="" FontSize="14" FontFamily="{DynamicResource AntonFont}"/>
+										<TextBlock x:Name="barRandWordSubtitle" Text="Loading..." FontSize="12" FontFamily="{DynamicResource AntonFont}" Opacity="0.5"/>
 									</StackPanel>
 								</StackPanel>
 							</controls:JButton>
@@ -65,7 +65,6 @@
 								
 							</Grid>
 							<StackPanel x:Name="runnedApps" Orientation="Horizontal">
-
 							</StackPanel>
 						</StackPanel>
 					</ScrollViewer>

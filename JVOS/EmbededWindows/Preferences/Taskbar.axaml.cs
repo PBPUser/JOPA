@@ -24,6 +24,8 @@ namespace JVOS.EmbededWindows.Preferences
             taskbarAlignBox.SelectionChanged += (a, b) =>
             {
                 DesktopScreen.CurrentDesktop.SetBarAlign(taskbarAlignBox.SelectedIndex == 0 ? HorizontalAlignment.Left : HorizontalAlignment.Center, true);
+                UserOptions.Current.TaskbarAlignment = taskbarAlignBox.SelectedIndex == 0 ? HorizontalAlignment.Left : HorizontalAlignment.Center;
+                UserOptions.Current.SaveUser();
             };
         }
 

@@ -13,19 +13,42 @@ namespace JVOS.EmbededWindows.Preferences
         {
             InitializeComponent();
             var x = new JVOS.Controls.DualPanelColorPicker() { Padding = new Avalonia.Thickness(8), Color = ColorScheme.Current.BasicColor, CornerRadius = new Avalonia.CornerRadius(8) };
-            apply.Click += (a, b) =>
-            {
-                ColorScheme.ApplyScheme(ColorScheme.CreateColorSchemeFromColor(x.Color.Value), this.useDarkMode.IsChecked == true, useAccentTitle.IsChecked == true, useAccentBar.IsChecked == true);
-                UserOptions.Current.Theme.BaseColor = x.Color.Value;
-                UserOptions.Save();
-            };
             useAutoColor.Click += (a, b) =>
             {
                 bool use = useAutoColor.IsChecked == true;
                 UserOptions.Current.Theme.AutoColor = use;
-                ColorScheme.ApplyScheme(ColorScheme.CreateColorSchemeFromColor(use ? ColorScheme.ColorFromBitmap(UserOptions.ImageToBytes(UserOptions.Current.DesktopBitmap??new Bitmap(AssetLoader.Open(new("avares://JVOS/Assets/Shell/app.png"))))) : x.Color.Value), this.useDarkMode.IsChecked == true, useAccentTitle.IsChecked == true, useAccentBar.IsChecked == true);
+                x.IsHitTestVisible = x.IsVisible = !use;
+                UserOptions.Current.ReloadAutoColor();
             };
-            rootStack.Children.Insert(0, x);
+            useAccentBar.Click += (a, b) =>
+            {
+                bool use = useAccentBar.IsChecked == true;
+                UserOptions.Current.Theme.AccentTaskbar = use;
+                UserOptions.Current.ReloadAutoColor(false);
+            };
+            useDarkMode.Click += (a, b) =>
+            {
+                bool use = useDarkMode.IsChecked == true;
+                UserOptions.Current.Theme.DarkScheme = use;
+                UserOptions.Current.ReloadAutoColor(false);
+            };
+            useAccentTitle.Click += (a, b) =>
+            {
+                bool use = useAccentTitle.IsChecked == true;
+                UserOptions.Current.Theme.AccentTitlebars = use;
+                UserOptions.Current.ReloadAutoColor(false);
+            };
+            x.PointerReleased += (a, b) =>
+            {
+                UserOptions.Current.Theme.BaseColor = x.Color.Value;
+                UserOptions.Current.ReloadAutoColor();
+            };
+            x.IsHitTestVisible = x.IsVisible = !UserOptions.Current.Theme.AutoColor;
+            useDarkMode.IsChecked = UserOptions.Current.Theme.DarkScheme;
+            useAccentBar.IsChecked = UserOptions.Current.Theme.AccentTaskbar;
+            useAccentTitle.IsChecked = UserOptions.Current.Theme.AccentTitlebars;
+            useAutoColor.IsChecked = UserOptions.Current.Theme.AutoColor;
+            coloringStack.Children.Insert(2, x);
         }
 
         public string Title => "Colors";

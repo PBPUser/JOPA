@@ -9,11 +9,13 @@
 		<Border Classes="Beta Outer" Padding="8, 4" Margin="8">
 			<StackPanel>
 				<TextBlock Text="Taskbar behaviors" Classes="h3"/>
-				<TextBlock Text="Taskbar alignment"/>
-				<ComboBox x:Name="taskbarAlignBox" SelectedIndex="1">
-					<ComboBoxItem Content="Left"/>
-					<ComboBoxItem Content="Center"/>
-				</ComboBox>
+				<Grid>
+					<TextBlock HorizontalAlignment="Left" VerticalAlignment="Center" Text="Taskbar alignment"/>
+					<ComboBox HorizontalAlignment="Right" VerticalAlignment="Center" x:Name="taskbarAlignBox" SelectedIndex="1">
+						<ComboBoxItem Content="Left"/>
+						<ComboBoxItem Content="Center"/>
+					</ComboBox>
+				</Grid>
 				<CheckBox Margin="4" x:Name="hideApplicationTooltips" Content="Hide titles from taskbar icons"/>
 			</StackPanel>
 		</Border>

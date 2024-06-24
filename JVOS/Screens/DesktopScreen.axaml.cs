@@ -48,7 +48,6 @@ namespace JVOS.Screens
             CHubXTransition = new DoubleTransition() { Property = TranslateTransform.XProperty, Duration = TimeSpan.FromMilliseconds(500), Easing = new CubicEaseIn() };
             CHubYTransition = new DoubleTransition() { Property = TranslateTransform.YProperty, Duration = TimeSpan.FromMilliseconds(500), Easing = new CubicEaseIn() };
 
-            SetBarAlign(UserOptions.Current.TaskbarAlignment, false);
             
             //LanguageSwitcher = (LanguageSwitcherHub)AttachHub(new LanguageSwitcherHub(), VerticalAlignment.Bottom, HorizontalAlignment.Right, Orientation.Vertical);
             
@@ -75,6 +74,8 @@ namespace JVOS.Screens
             keyBtn.Click += (a, b) => MainView.GLOBAL.SwitchAdaptiveControllerState();
             Loaded += (a, b) => Communicator.OpenWindow(new DesktopWindow());
             Loaded += (a, b) => Communicator.OpenWindow(JumpList);
+            Loaded += (a, b) => SetBarAlign(UserOptions.Current.TaskbarAlignment, false);
+            Loaded += (a, b) => UserOptions.Current.ReloadAutoColor(true);
             CurrentDesktop = this;
             LoadHubs();
         }
@@ -308,8 +309,6 @@ namespace JVOS.Screens
         {
             SetCurrentWindowHub(0);
             UpdateStrings();
-            if(UserOptions.Current.DesktopBitmap != null)
-                SetBackground(UserOptions.Current.DesktopBitmap, false);
             base.ScreenShown();
         }
 
@@ -320,7 +319,7 @@ namespace JVOS.Screens
 
         private bool isBackgroundAnimationPlaying = false;
 
-        public void SetBackground(Bitmap image,bool animate)
+        public void _SetBackground(Bitmap image,bool animate)
         {
             if (isBackgroundAnimationPlaying)
                 return;

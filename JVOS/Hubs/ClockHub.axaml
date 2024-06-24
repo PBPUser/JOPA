@@ -11,17 +11,7 @@
 		<controls:CustomBlurBehind CornerRadius="12"/>
 		<Border Classes="Bar Alpha Outer">
 			<StackPanel>
-				<TextBlock Text="1488" FontSize="64" FontWeight="Bold" Foreground="{DynamicResource BarForeground}" Margin="48, 32"/>
-				<Border Margin="8" Classes="Transparent Alpha Bar Inner">
-					<Grid>
-						<Grid.ColumnDefinitions>
-							<ColumnDefinition/>
-							<ColumnDefinition/>
-						</Grid.ColumnDefinitions>
-						<controls:JButton Classes="Bar Alpha Transparent" Height="32" x:Name="_setLeft" Content="Left"/>
-						<controls:JButton Classes="Bar Alpha Transparent" Height="32" x:Name="_setCenter" Content="Right" Grid.Column="1"/>
-					</Grid>
-				</Border>
+				<TextBlock Text="1488" FontSize="64" FontWeight="Bold" Margin="48, 32"/>
 			</StackPanel>
 		</Border>
 	</Grid>

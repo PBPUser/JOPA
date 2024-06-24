@@ -5,6 +5,7 @@ using Avalonia.Media.Imaging;
 using Avalonia.Platform;
 using DynamicData;
 using JVOS.ApplicationAPI;
+using JVOS.Protocol;
 using JVOS.Screens;
 using System;
 using System.Linq;
@@ -20,6 +21,7 @@ namespace JVOS.EmbededWindows.Preferences
             InitializeComponent();
             var enumList = Enum.GetValues(typeof(Stretch)).Cast<Stretch>().ToArray();
             stetching.SelectedIndex = enumList.IndexOf((Stretch)App.Current.Resources["DesktopStretch"]);
+
             stetching.ItemsSource = enumList;
             stetching.SelectionChanged += (a, b) =>
             {
@@ -30,7 +32,15 @@ namespace JVOS.EmbededWindows.Preferences
             };
             DataContext = VM = new DesktopSettingsVM();
             includedImagesList.ItemTemplate = DesktopImageDataTemplate;
+            includedImagesList.PointerReleased += IncludedImagesList_PointerReleased;
             browse.Click += (a, b) => Communicator.RunCommand("shell://wallpaper");
+        }
+
+        private void IncludedImagesList_PointerReleased(object? sender, Avalonia.Input.PointerReleasedEventArgs e)
+        {
+            if (includedImagesList.SelectedItem == null)
+                return;
+            UserOptions.Current.SetDesktopImage(new (AssetLoader.Open((Uri)includedImagesList.SelectedItem)));
         }
 
         static FuncDataTemplate<Uri> DesktopImageDataTemplate = new FuncDataTemplate<Uri>((a, b) =>

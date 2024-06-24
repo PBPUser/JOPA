@@ -1,4 +1,5 @@
 ﻿using Avalonia.Controls;
+using Avalonia.Media;
 using Avalonia.Media.Imaging;
 using Avalonia.Platform;
 using JVOS.ApplicationAPI.Hub;
@@ -24,7 +25,9 @@ namespace JVOS.Hubs
 
         public override void CreateButtonContent(ref JButton button)
         {
-            button.Content = "cl:ck";
+            button.Content = "14:88";
+            button.Width = 160;
+            button.FontFamily = (FontFamily)App.Current.Resources["AntonFont"];
         }
 
         public override string ToString() => "Clock";

@@ -129,8 +129,8 @@ namespace JVOS
             else
                 userOptions.ApplyLockscreenImage(new Bitmap(lockscreenImage));
             App.Current.Resources["DesktopStretch"] = userOptions.GetUserValue<Stretch>("DesktopStretch", Stretch.Fill);
-            ColorScheme.ApplyScheme(ColorScheme.CreateColorSchemeFromColor(userOptions.Theme.BaseColor), userOptions.ColorScheme.UseDarkScheme, userOptions.ColorScheme.AccentTitle, userOptions.ColorScheme.AccentBar);
             Current = userOptions;
+            userOptions.ReloadAutoColor();
             DesktopScreen.SetRunningAppButtonWidth(userOptions.HideAppTooltips);
         }
 
@@ -150,6 +150,13 @@ namespace JVOS
         {
             bitmap.Save(PlatformSpecifixController.GetLocalFilePath($"Users\\{Username}\\AppData\\JVOS\\desktop.png"));
             ApplyDesktopImage(bitmap);
+            if (Theme.AutoColor)
+                ReloadAutoColor();
+        }
+
+        public void ReloadAutoColor(bool reloadColor = true)
+        {
+            ColorScheme.ApplyScheme(reloadColor ? ColorScheme.CreateColorSchemeFromColor(Theme.AutoColor ? ColorScheme.ColorFromBitmap((Bitmap)App.Current.Resources["DesktopImage"]) : Theme.BaseColor) : ColorScheme.Current, Theme.DarkScheme, Theme.AccentTitlebars, Theme.AccentTaskbar);
         }
 
         public void SetLockscreenImage(Bitmap bitmap)
@@ -400,7 +407,7 @@ namespace JVOS
         private bool _hideTooltips = true;
         [JsonIgnore]
         private string? _jsonpath;
-        public HorizontalAlignment TaskbarAlignment;
+        public HorizontalAlignment TaskbarAlignment = HorizontalAlignment.Center;
     }
 
     public class RecentFilesManager

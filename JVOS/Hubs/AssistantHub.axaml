@@ -6,7 +6,7 @@
 			 mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="JVOS.Hubs.AssistantHub">
 	<Grid>
-		<Border Classes="Alpha"/>
+		<Border Classes="Bar Alpha Outer"/>
 		<Image x:Name="Person" Width="128" RenderTransformOrigin=".5, .5" Height="128"/>
 	</Grid>
 </UserControl>
