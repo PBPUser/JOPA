@@ -1,5 +1,6 @@
 ﻿using Avalonia.Controls;
 using Avalonia.Interactivity;
+using Avalonia.Media.Imaging;
 using JVOS.ApplicationAPI.App;
 using System;
 using System.Collections.Generic;
@@ -28,8 +29,15 @@ namespace JVOS.ApplicationAPI.Windows
         public int ID { get; set; } = -1;
         public IWindowSpace WindowSpace;
         public WindowContentBase WindowContent { get; set; }
+        public virtual Bitmap? Icon => null;
+        public virtual string Title => "undefined";
         public virtual bool Minimized { get; set; }
         public virtual bool IsActivated { get; set; }
+
+        public virtual void SetPosition(double x, double y)
+        {
+
+        }
 
         private void SendRequestToCloseWindow()
         {
@@ -80,7 +88,7 @@ namespace JVOS.ApplicationAPI.Windows
 
         public virtual void Deactivated()
         {
-
+            WindowContent.Deactivated();
         }
 
         public virtual void ChangeState(WindowFrameState FrameState)
@@ -108,6 +116,11 @@ namespace JVOS.ApplicationAPI.Windows
         public virtual WindowFrameState GetState()
         {
             return WindowFrameState.Default;
+        }
+
+        public virtual void Minimize()
+        {
+
         }
 
         public event EventHandler<EventArgs>? WindowLoaded = null;

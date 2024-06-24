@@ -36,7 +36,17 @@ namespace JVOS.ApplicationAPI.Windows
 
         public virtual string GetPanelId() => "";
 
+        public void BringToFront()
+        {
+            Frame.BringToFront();
+        }
+
         public virtual void Opened()
+        {
+
+        }
+
+        public virtual void Deactivated()
         {
 
         }

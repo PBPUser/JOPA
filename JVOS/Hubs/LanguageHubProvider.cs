@@ -24,7 +24,12 @@ namespace JVOS.Hubs
 
         public override void CreateButtonContent(ref JButton button)
         {
-            button.Content = "lng";
+            button.Content = (LanguageWorker.Current ?? new Language() { ShortName = "??" }).ShortName;
+        }
+
+        public override void UpdateButtonContent(ref JButton button)
+        {
+            button.Content = (LanguageWorker.Current ?? new Language() { ShortName = "??" }).ShortName;
         }
 
         public override string ToString() => "Language Switcher";

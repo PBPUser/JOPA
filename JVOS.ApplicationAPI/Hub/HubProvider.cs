@@ -1,4 +1,5 @@
-﻿using JVOS.Controls;
+﻿using Avalonia.Media.Imaging;
+using JVOS.Controls;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,11 +15,14 @@ namespace JVOS.ApplicationAPI.Hub
         }
 
         public Dictionary<string, string> Properties = new();
+        public virtual string Description => "An example description";
+        public virtual Bitmap? Icon => null;
 
         public virtual void UpdateButtonContent(ref JButton button)
         {
 
         }
+
 
         public virtual HubWindow? CreateHub()
         {

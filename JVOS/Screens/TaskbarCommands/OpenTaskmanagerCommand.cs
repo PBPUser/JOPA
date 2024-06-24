@@ -1,4 +1,5 @@
 ﻿using JVOS.ApplicationAPI;
+using JVOS.EmbededWindows.TaskManager;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -6,11 +7,11 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
 
-namespace JVOS.EmbededWindows.Desktop.Commands
+namespace JVOS.Screens.TaskbarCommands
 {
-    internal class CreateDirectoryCommand : ICommand
+    internal class OpenTaskmanagerCommand : ICommand
     {
-        public static readonly CreateDirectoryCommand Instance = new();
+        public static readonly OpenTaskmanagerCommand Instance = new OpenTaskmanagerCommand();
 
         public event EventHandler? CanExecuteChanged;
 
@@ -21,7 +22,7 @@ namespace JVOS.EmbededWindows.Desktop.Commands
 
         public void Execute(object? parameter)
         {
-            Communicator.OpenWindow(new CreateDirectoryWindow(true));
+            Communicator.OpenWindow(new TaskManager());
         }
     }
 }

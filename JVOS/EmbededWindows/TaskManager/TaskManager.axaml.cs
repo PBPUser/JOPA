@@ -21,6 +21,8 @@ namespace JVOS.EmbededWindows.TaskManager
             refreshBtn.Click += (a, b) => VM.Refresh();
             endBtn.Click += (a, b) =>
             {
+                if (listProcess.SelectedItem == null)
+                    return;
                 try
                 {
                     ((AssemblyLoadContext)listProcess.SelectedItem).Unload();

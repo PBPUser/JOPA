@@ -17,13 +17,16 @@
 		</ItemsControl.ItemsPanel>
 		<ItemsControl.ContextMenu>
 			<ContextMenu>
+				<MenuItem Header="Sort by">
+					<MenuItem Header="Name" Command="{x:Static dc:SortByNameCommand.Instance}"/>
+				</MenuItem>
 				<MenuItem Header="Refresh" Command="{x:Static dc:RefreshCommand.Instance}"/>
 				<MenuItem Header="Create">
 					<MenuItem Header="Directory" Command="{x:Static dc:CreateDirectoryCommand.Instance}"/>
 					<MenuItem Header="Shortcut" Command="{x:Static dc:CreateShortcutCommand.Instance}"/>
 				</MenuItem>
-				<MenuItem Header="Display" Command="{x:Static dc:CreateDirectoryCommand.Instance}"/>
-				<MenuItem Header="Persoanalization" Command="{x:Static dc:CreateDirectoryCommand.Instance}"/>
+				<MenuItem Header="Display Settings" Command="{x:Static dc:OpenDisplaySettingsCommand.Instance}"/>
+				<MenuItem Header="Wallpaper Settings" Command="{x:Static dc:OpenWallpaperSettingsCommand.Instance}"/>
 			</ContextMenu>
 		</ItemsControl.ContextMenu>
 	</ItemsControl >

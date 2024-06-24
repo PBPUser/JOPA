@@ -1,4 +1,5 @@
 ﻿using JVOS.ApplicationAPI;
+using JVOS.EmbededWindows.Preferences;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,9 +9,9 @@ using System.Windows.Input;
 
 namespace JVOS.EmbededWindows.Desktop.Commands
 {
-    internal class CreateDirectoryCommand : ICommand
+    internal class OpenDisplaySettingsCommand : ICommand
     {
-        public static readonly CreateDirectoryCommand Instance = new();
+        public static readonly OpenDisplaySettingsCommand Instance = new();
 
         public event EventHandler? CanExecuteChanged;
 
@@ -21,7 +22,7 @@ namespace JVOS.EmbededWindows.Desktop.Commands
 
         public void Execute(object? parameter)
         {
-            Communicator.OpenWindow(new CreateDirectoryWindow(true));
+            Communicator.OpenWindow(new PreferencesHub("display"));
         }
     }
 }

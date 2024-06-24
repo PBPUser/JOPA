@@ -1,0 +1,17 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:c="using:JVOS.Controls" IsVisible="true"
+             mc:Ignorable="d" Width="384" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="JVOS.EmbededWindows.JumpListWindow">
+	<Grid>
+		<Border Classes="Alpha"/>
+		<StackPanel>
+			<c:JButton Content="{Binding AppName}" IsVisible="{Binding ShowAppItem}"/>
+			<c:JButton Content="{Binding PinTitle}" IsVisible="{Binding ShowPinItem}"/>
+			<c:JButton Content="Close Window" x:Name="closebtn"/>
+		</StackPanel>
+	</Grid>
+
+</UserControl>

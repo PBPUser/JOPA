@@ -5,6 +5,8 @@
 	 xmlns:api="clr-namespace:JVOS.ApplicationAPI;assembly=JVOS.ApplicationAPI"
 	 xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 	 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	 xmlns:dc="using:JVOS.Screens.TaskbarCommands"
+	 xmlns:h="using:JVOS.Hubs"
 	 xmlns:controls="clr-namespace:JVOS.Controls;assembly=JVOS.Controls"
 	 mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
 	 x:Class="JVOS.Screens.DesktopScreen">
@@ -19,12 +21,19 @@
 			<Grid>
 				<TextBlock Margin="8, 0" VerticalAlignment="Center" HorizontalAlignment="Left"/>
 				<StackPanel HorizontalAlignment="Right" Orientation="Horizontal">
-
+					
 				</StackPanel>
 			</Grid>
 		</Border>
 		<controls:CustomBlurBehind ZIndex="999998" Height="72.1488" Margin="8" CornerRadius="12" VerticalAlignment="Bottom"/>
 		<Border x:Name="barBorder" Classes="Bar Outer" ZIndex="999999" ClipToBounds="true" VerticalAlignment="Bottom" Height="72.1488" Margin="8" CornerRadius="12">
+			<Border.ContextMenu>
+				<ContextMenu>
+					<MenuItem Header="Customize Hubs" Command="{x:Static dc:OpenHubsSettingsCommand.Instance}"/>
+					<MenuItem Header="Task Manager" Command="{x:Static dc:OpenTaskmanagerCommand.Instance}"/>
+					<MenuItem Header="Taskbar Settings" Command="{x:Static dc:OpenBarSettingsCommand.Instance}"/>
+				</ContextMenu>
+			</Border.ContextMenu>
 			<Grid>
 				<Border HorizontalAlignment="Left" ClipToBounds="false" Background="{DynamicResource ButtonBarBackground}" CornerRadius="12" Margin="4" BoxShadow="{DynamicResource ButtonBarClaymorphismBoxShadow}" >
 					<ScrollViewer>

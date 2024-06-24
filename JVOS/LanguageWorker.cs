@@ -11,7 +11,7 @@ namespace JVOS
 {
     public static class LanguageWorker
     {
-        private static Language? Current;
+        public static Language? Current;
         public static List<Language> Languages = new List<Language>();
         private static string LanguagesLoc;
 

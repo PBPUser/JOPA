@@ -44,6 +44,7 @@
     <None Remove="Assets\Resources.xml" />
     <None Remove="Assets\Shell\add.png" />
     <None Remove="Assets\Shell\app.png" />
+    <None Remove="Assets\Shell\assistant.png" />
     <None Remove="Assets\Shell\colors.png" />
     <None Remove="Assets\Shell\desktop.png" />
     <None Remove="Assets\Shell\file.png" />
@@ -53,6 +54,8 @@
     <None Remove="Assets\Shell\preferences.png" />
     <None Remove="Assets\Shell\run.png" />
     <None Remove="Assets\Sounds\error.wav" />
+    <None Remove="Assets\Sounds\extrasearch.mp3" />
+    <None Remove="Assets\Sounds\search.mp3" />
     <None Remove="Assets\sugar.png" />
     <None Remove="Assets\Taskbar\assistent.png" />
     <None Remove="Assets\Taskbar\desktopSwitch.png" />

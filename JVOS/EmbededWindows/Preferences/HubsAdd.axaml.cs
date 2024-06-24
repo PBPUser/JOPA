@@ -1,4 +1,5 @@
 using Avalonia.Controls;
+using Avalonia.Controls.Templates;
 using Avalonia.Layout;
 using Avalonia.Media.Imaging;
 using Avalonia.Platform;
@@ -20,6 +21,8 @@ namespace JVOS.EmbededWindows.Preferences
 {
     public partial class HubsAdd : UserControl, ISettingsPage
     {
+        static Bitmap DEFAULT_ICON = new Bitmap(AssetLoader.Open(new("avares://JVOS/Assets/Taskbar/exhubs.png")));
+
         public HubsAdd()
         {
             InitializeComponent();
@@ -29,10 +32,30 @@ namespace JVOS.EmbededWindows.Preferences
             this.dwBtn.Click += DownBtnClick;
             this.upBtn.Click += UpBtnClick;
             Desktop = DesktopScreen.CurrentDesktop;
+            AvailableHubs.ItemTemplate = HubDataTemplate;
             UpdateExList();
             UpdateAvailableList();
         }
 
+        static FuncDataTemplate<HubConfigurationStructure> HubDataTemplate = new FuncDataTemplate<HubConfigurationStructure>((a, b) =>
+        {
+            DockPanel dock = new();
+            Image icon = new() { Width = 64, Height = 64 };
+            icon.Source = a.Icon ?? DEFAULT_ICON;
+            TextBlock blockTitle = new(){ Text = a.HubName };
+            blockTitle.Classes.Add("h3");
+            TextBlock blockDescription = new(){ Text = a.Description };
+            TextBlock blockProvider = new(){ Text = a.Provider, FontStyle = Avalonia.Media.FontStyle.Italic };
+            DockPanel.SetDock(icon, Dock.Left);
+            DockPanel.SetDock(blockTitle, Dock.Top);
+            DockPanel.SetDock(blockDescription, Dock.Top);
+            DockPanel.SetDock(blockProvider, Dock.Top);
+            dock.Children.Add(icon);
+            dock.Children.Add(blockTitle);
+            dock.Children.Add(blockDescription);
+            dock.Children.Add(blockProvider);
+            return dock;
+        });
         private void DownBtnClick(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
         {
             var selectedbox = ExistingHubsTabs.SelectedIndex == 0 ? LeftExistingHubs : ExistingHubsTabs.SelectedIndex == 1 ? CenterExistingHubs : RightExistingHubs;
@@ -112,15 +135,18 @@ namespace JVOS.EmbededWindows.Preferences
         private DesktopScreen.HubManager.HubConfig.HubConfigurationStructure[] GetHubConfigurationStructures(string path)
         {
             var manifest = HubManager.GetHubManifest(Path.Combine(path, "manifest.jvon"));
-            return manifest.ProvidenNames.Select(x => GetExternalHubConfig(x, path)).ToArray();
+            return manifest.ProvidenNames.Select(x => GetExternalHubConfig(x, path, "", "", null)).ToArray();
         }
 
-        private DesktopScreen.HubManager.HubConfig.HubConfigurationStructure GetExternalHubConfig(string hubName, string path)
+        private DesktopScreen.HubManager.HubConfig.HubConfigurationStructure GetExternalHubConfig(string hubName, string path, string provider, string description, Bitmap? image )
         {
             return new DesktopScreen.HubManager.HubConfig.HubConfigurationStructure()
             {
                 HubName = hubName,
-                Path = path
+                Path = path,
+                Description = description,
+                Provider = provider,
+                Icon = image
             };
         }
 
@@ -129,7 +155,10 @@ namespace JVOS.EmbededWindows.Preferences
             return new DesktopScreen.HubManager.HubConfig.HubConfigurationStructure()
             {
                 HubName = t.ToString(),
-                Path = path
+                Path = path,
+                Icon = ((Bitmap?)t.GetField("Icon", BindingFlags.Static)?.GetValue(null)),
+                Description= (string)t.GetField("Description", BindingFlags.Static)?.GetValue(null),
+                Provider = "Built-in to JVOS"
             };
         }
 

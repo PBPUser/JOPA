@@ -47,7 +47,8 @@ namespace JVOS.Screens
             OHubYTransition = new DoubleTransition() { Property = TranslateTransform.YProperty, Duration = TimeSpan.FromMilliseconds(500), Easing = new CubicEaseOut() };
             CHubXTransition = new DoubleTransition() { Property = TranslateTransform.XProperty, Duration = TimeSpan.FromMilliseconds(500), Easing = new CubicEaseIn() };
             CHubYTransition = new DoubleTransition() { Property = TranslateTransform.YProperty, Duration = TimeSpan.FromMilliseconds(500), Easing = new CubicEaseIn() };
-            
+
+            SetBarAlign(UserOptions.Current.TaskbarAlignment, false);
             
             //LanguageSwitcher = (LanguageSwitcherHub)AttachHub(new LanguageSwitcherHub(), VerticalAlignment.Bottom, HorizontalAlignment.Right, Orientation.Vertical);
             
@@ -73,9 +74,12 @@ namespace JVOS.Screens
             CHubTransitions.Add(CHubYTransition);
             keyBtn.Click += (a, b) => MainView.GLOBAL.SwitchAdaptiveControllerState();
             Loaded += (a, b) => Communicator.OpenWindow(new DesktopWindow());
+            Loaded += (a, b) => Communicator.OpenWindow(JumpList);
             CurrentDesktop = this;
             LoadHubs();
         }
+
+        public JumpListWindow JumpList = new();
 
         DoubleTransition WidgetPlaceTransition = new DoubleTransition() { Duration = TimeSpan.FromMilliseconds(500), Property = WidthProperty, Easing = new SineEaseIn() };
         DoubleTransition AppBarTransition = new DoubleTransition() { Duration = TimeSpan.FromMilliseconds(500), Property = TranslateTransform.XProperty, Easing = new SineEaseIn() };
@@ -104,7 +108,7 @@ namespace JVOS.Screens
 
         HorizontalAlignment BarAlignment = HorizontalAlignment.Center;
 
-        private void SetBarAlign(HorizontalAlignment horizontalAlignment)
+        public void SetBarAlign(HorizontalAlignment horizontalAlignment, bool animate)
         {
             if (horizontalAlignment == HorizontalAlignment.Stretch || horizontalAlignment == HorizontalAlignment.Right || horizontalAlignment == BarAlignment) return;
             HorizontalBarSubjectAlignment.OnNext(horizontalAlignment);
@@ -114,25 +118,6 @@ namespace JVOS.Screens
             this.barRandWordTitle.Text = $"{xAppsPos}";
             switch (BarAlignment)
             {
-                case HorizontalAlignment.Center:
-                    new Thread(() =>
-                    {
-                        Thread.Sleep(500);
-                        Dispatcher.UIThread.Invoke(() =>
-                        {
-                            AppBarTransition.Duration = TimeSpan.FromMilliseconds(0);
-                            AppsBarTransform.X = 0;
-                            BtnBarTransform.X = 0;
-                            widgetsBtnPlace.Children.Remove(widgetsBtn);
-                            leftStack.Children.Add(widgetsBtn);
-                            appsPlace.HorizontalAlignment = HorizontalAlignment.Center;
-                        });
-                    }).Start();
-                    AppBarTransition.Duration = TimeSpan.FromMilliseconds(500);
-                    widgetsBtnPlace.Width = 0;
-                    AppsBarTransform.X = (barBorder.Bounds.Width- appsPlace.Bounds.Width)/2;
-                    BtnBarTransform.X = -xWidgetPos- (barBorder.Bounds.Width - appsPlace.Bounds.Width) / 2;
-                    break;
                 case HorizontalAlignment.Left:
                     new Thread(() =>
                     {
@@ -148,9 +133,28 @@ namespace JVOS.Screens
                         });
                     }).Start();
                     widgetsBtnPlace.Width = this.widgetsBtn.Bounds.Width;
-                    AppBarTransition.Duration = TimeSpan.FromMilliseconds(500);
+                    AppBarTransition.Duration = animate ? TimeSpan.FromMilliseconds(500) : TimeSpan.Zero;
                     AppsBarTransform.X = -xAppsPos;
                     BtnBarTransform.X = 198;
+                    break;
+                default:
+                    new Thread(() =>
+                    {
+                        Thread.Sleep(500);
+                        Dispatcher.UIThread.Invoke(() =>
+                        {
+                            AppBarTransition.Duration = TimeSpan.FromMilliseconds(0);
+                            AppsBarTransform.X = 0;
+                            BtnBarTransform.X = 0;
+                            widgetsBtnPlace.Children.Remove(widgetsBtn);
+                            leftStack.Children.Add(widgetsBtn);
+                            appsPlace.HorizontalAlignment = HorizontalAlignment.Center;
+                        });
+                    }).Start();
+                    AppBarTransition.Duration = animate ? TimeSpan.FromMilliseconds(500) : TimeSpan.Zero;
+                    widgetsBtnPlace.Width = 0;
+                    AppsBarTransform.X = (barBorder.Bounds.Width - appsPlace.Bounds.Width) / 2;
+                    BtnBarTransform.X = -xWidgetPos - (barBorder.Bounds.Width - appsPlace.Bounds.Width) / 2;
                     break;
             }
         }
@@ -590,16 +594,22 @@ namespace JVOS.Screens
 
                 public struct HubConfigurationStructure
                 {
-                    public HubConfigurationStructure(string path, string hubname)
+                    public HubConfigurationStructure(string path, string hubname, string provider, string description, Bitmap? icon)
                     {
                         Path = path;
                         HubName = hubname;
+                        Provider = provider;
+                        Description = description;
+                        Icon = icon;
                     }
 
                     public HubConfigurationStructure()
                     {
                         Path = "";
                         HubName = "";
+                        Provider = "";
+                        Description = "";
+                        Icon = null;
                     }
 
                     public override string ToString()
@@ -609,6 +619,9 @@ namespace JVOS.Screens
 
                     public string Path = "";
                     public string HubName = "";
+                    public string Provider = "";
+                    public string Description = "";
+                    public Bitmap? Icon = null;
                 }
             }
 

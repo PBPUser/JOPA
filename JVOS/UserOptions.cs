@@ -1,5 +1,6 @@
 ﻿using Avalonia;
 using Avalonia.Controls.Shapes;
+using Avalonia.Layout;
 using Avalonia.Media;
 using Avalonia.Media.Imaging;
 using Avalonia.Platform;
@@ -399,6 +400,7 @@ namespace JVOS
         private bool _hideTooltips = true;
         [JsonIgnore]
         private string? _jsonpath;
+        public HorizontalAlignment TaskbarAlignment;
     }
 
     public class RecentFilesManager

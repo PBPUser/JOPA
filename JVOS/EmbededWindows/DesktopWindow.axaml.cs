@@ -64,9 +64,17 @@ namespace JVOS.EmbededWindows
 
             List<DesktopItemPlacement> Placements = new();
 
+            public void Sort(List<string> elements, Comparer<string> comparer)
+            {
+                elements.Sort(comparer);
+                Placements.Clear();
+                foreach (var x in elements)
+                    SetPlacementForItem(GetFreePosition(), x);
+            }
+
             public void SetPlacementForItem(Point newPlacement, string path)
             {
-                var i = Placements.IndexOf(Placements.Where(x => x.Path == path).First());
+                var i = Placements.IndexOf(Placements.Where(x => x.Path == path).FirstOrDefault());
                 Placements.RemoveAt(i);
                 Placements.Add(new DesktopItemPlacement()
                 {

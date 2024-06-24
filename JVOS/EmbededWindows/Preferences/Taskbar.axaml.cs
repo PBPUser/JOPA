@@ -1,4 +1,5 @@
 using Avalonia.Controls;
+using Avalonia.Layout;
 using Avalonia.Media;
 using Avalonia.Media.Imaging;
 using Avalonia.Platform;
@@ -13,10 +14,16 @@ namespace JVOS.EmbededWindows.Preferences
         {
             InitializeComponent();
             hideApplicationTooltips.IsChecked = UserOptions.Current.HideAppTooltips == false;
+            taskbarAlignBox.SelectedIndex = UserOptions.Current.TaskbarAlignment == HorizontalAlignment.Left ? 0 : 1;
             hideApplicationTooltips.Click += (a, b) =>
             {
                 UserOptions.Current.HideAppTooltips = hideApplicationTooltips.IsChecked == false;
                 DesktopScreen.SetRunningAppButtonWidth(hideApplicationTooltips.IsChecked == false);
+                UserOptions.Current.SaveUser();
+            };
+            taskbarAlignBox.SelectionChanged += (a, b) =>
+            {
+                DesktopScreen.CurrentDesktop.SetBarAlign(taskbarAlignBox.SelectedIndex == 0 ? HorizontalAlignment.Left : HorizontalAlignment.Center, true);
             };
         }
 

@@ -10,6 +10,7 @@ using Avalonia.Threading;
 using JVOS.ApplicationAPI;
 using JVOS.ApplicationAPI.Windows;
 using JVOS.Screens;
+using JVOS.Views;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -201,8 +202,14 @@ namespace JVOS.Controls
 
         protected override void OnPointerPressed(PointerPressedEventArgs e)
         {
-            if (!e.Pointer.IsPrimary)
+            if (e.Pointer.Type == PointerType.Mouse && e.KeyModifiers == KeyModifiers.Alt)
+            {
+
+                DesktopScreen.CurrentDesktop.JumpList.BringToFront();
+                DesktopScreen.CurrentDesktop.JumpList.VM.SetWindowFrame(this.JWindowFrames[0]);
                 return;
+            }
+                
             Scale = 1;
             startDeltaX = Bounds.X;
             ShadowPos = 1;

@@ -242,6 +242,12 @@ namespace JVOS
             TopBorder.IsVisible = visible;
         }
 
+        public override void SetPosition(double x, double y)
+        {
+            WindowTranslateMove.X = x;
+            WindowTranslateMove.Y = y;
+        }
+
         public override bool GetFrameVisibility()
         {
             return TopBorder.IsVisible;

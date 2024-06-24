@@ -28,6 +28,11 @@ namespace JVOS.EmbededWindows
 
         Bitmap? image;
 
+        public override void Deactivated()
+        {
+
+        }
+
         private void Browse(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
         {
             var files = TopLevel.GetTopLevel(this).StorageProvider.OpenFilePickerAsync(new FilePickerOpenOptions()
