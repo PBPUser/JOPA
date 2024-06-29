@@ -17,17 +17,13 @@
     <AvaloniaResource Remove="Assets\Style\Border.axaml" />
     <AvaloniaResource Remove="Assets\Style\CheckBox.axaml" />
     <AvaloniaResource Remove="Assets\Style\ComboBox.axaml" />
+    <AvaloniaResource Remove="Assets\Style\DesktopIcon.axaml" />
     <AvaloniaResource Remove="Assets\Style\JButton.axaml" />
     <AvaloniaResource Remove="Assets\Style\ListBox.axaml" />
     <AvaloniaResource Remove="Assets\Style\Menu.axaml" />
     <AvaloniaResource Remove="Assets\Style\RecommendMenuItem.axaml" />
     <AvaloniaResource Remove="Assets\Style\TextBlock.axaml" />
     <AvaloniaResource Remove="Assets\Style\TextBox.axaml" />
-  </ItemGroup>
-
-  
-  <ItemGroup>
-    <AvaloniaXaml Remove="Resources.axaml" />
   </ItemGroup>
 
   
@@ -50,6 +46,7 @@
     <None Remove="Assets\Shell\desktop.png" />
     <None Remove="Assets\Shell\file.png" />
     <None Remove="Assets\Shell\folder.png" />
+    <None Remove="Assets\Shell\language.png" />
     <None Remove="Assets\Shell\message.png" />
     <None Remove="Assets\Shell\monitor.png" />
     <None Remove="Assets\Shell\preferences.png" />
@@ -69,6 +66,12 @@
     <None Remove="Assets\Wallpapers\zhaba-ulan.jpg" />
     <None Remove="Assets\warning.png" />
     <None Remove="Assets\wellcum.png" />
+    <None Remove="Resources\WidgetManifests\Clock.json" />
+  </ItemGroup>
+
+  
+  <ItemGroup>
+    <AvaloniaResource Include="Resources\WidgetManifests\Clock.json" />
   </ItemGroup>
 
   <ItemGroup>
@@ -77,13 +80,10 @@
     <PackageReference Include="Avalonia.Fonts.Inter" Version="11.0.10" />
     <!--Condition below is needed to remove Avalonia.Diagnostics package from build output in Release configuration.-->
     <PackageReference Include="HtmlAgilityPack" Version="1.11.53" />
+    <PackageReference Include="NetCoreAudio" Version="2.0.0" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageReference Include="SharpCompress" Version="0.36.0" />
     <PackageReference Include="System.Reactive" Version="6.0.0" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <AvaloniaResource Include="Resources.axaml" />
   </ItemGroup>
 
   <ItemGroup>
@@ -122,11 +122,17 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Update="EmbededWindows\Desktop\AddWidgetWindow.axaml.cs">
+      <DependentUpon>AddWidgetWindow.axaml</DependentUpon>
+    </Compile>
     <Compile Update="EmbededWindows\FileBrowser.axaml.cs">
       <DependentUpon>FileBrowser.axaml</DependentUpon>
     </Compile>
     <Compile Update="EmbededWindows\Desktop\CreateShortcut.axaml.cs">
       <DependentUpon>CreateShortcut.axaml</DependentUpon>
+    </Compile>
+    <Compile Update="EmbededWindows\Preferences\Languages.axaml.cs">
+      <DependentUpon>Languages.axaml</DependentUpon>
     </Compile>
     <Compile Update="EmbededWindows\Preferences\Applications.axaml.cs">
       <DependentUpon>Applications.axaml</DependentUpon>

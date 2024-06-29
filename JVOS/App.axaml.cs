@@ -15,6 +15,7 @@ using JVOS.EmbededWindows;
 using JVOS.Protocol;
 using JVOS.ViewModels;
 using JVOS.Views;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -101,6 +102,11 @@ public partial class App : Application
         Communicator.AppLoader = new AppLoader();
         ApplicationManager.AppsLoaded += AppsLoaoded;
         ProtocolWorker.LoadProtocolWorker();
+
+        AppDomain.CurrentDomain.UnhandledException += (a, b) =>
+        {
+            Communicator.OpenWindow(new IllegalOperationCatcher($"{b.ExceptionObject} \nTerminating: {b.IsTerminating}"));
+        };
 
         ApplicationManager.Load();
     }

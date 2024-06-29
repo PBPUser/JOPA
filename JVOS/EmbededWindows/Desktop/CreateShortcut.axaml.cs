@@ -25,6 +25,7 @@ namespace JVOS.EmbededWindows.Desktop
                 else
                 {
                     Directory.CreateDirectory(str);
+                    DesktopWindow.Current.VM.Refresh();
                     this.Frame.Close();
                 }
             };

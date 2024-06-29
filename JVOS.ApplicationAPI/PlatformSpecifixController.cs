@@ -9,16 +9,25 @@ namespace JVOS.ApplicationAPI
 {
     public static class PlatformSpecifixController
     {
-        public static string GetLocalFilePath(string dir)
+        public static string GetLocalFilePath(string dir, bool createSubPathIfNotExists = false)
         {
+            string s = "";
             if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
-                return Path.GetFullPath(dir);
-            return System.IO.Path.Combine(AppContext.BaseDirectory, dir);
+                s = Path.GetFullPath(dir);
+            else
+                s = System.IO.Path.Combine(AppContext.BaseDirectory, dir);
+            if (createSubPathIfNotExists)
+            {
+                List<string> split = s.Replace('/', '\\').Split('\\').ToList();
+                split.RemoveAt(split.Count - 1);
+                Directory.CreateDirectory(String.Join('/', split));
+            }
+            return s;
         }
 
         public static bool IsAndroid()
         {
-            return RuntimeInformation.OSDescription.ToLower().Contains("android");
+            return RuntimeInformation.RuntimeIdentifier.ToLower().Contains("android");
         }
     }
 }

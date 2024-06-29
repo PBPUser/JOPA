@@ -331,6 +331,7 @@ namespace JVOS
             AnimationsTranslate.Y = 128;
             Opacity = 0;
             StopAnimationAfterWhile(() => base.Close(action));
+            base.Close(action);
         }
 
         public override WindowFrameState GetState()

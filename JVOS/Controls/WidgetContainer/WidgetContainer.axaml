@@ -1,0 +1,24 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="JVOS.Controls.WidgetContainer.WidgetContainer">
+	<Grid ColumnDefinitions="auto, auto" x:Name="root">
+		<Border Background="Transparent" Child="{Binding Widget}"/>
+		<Border Classes="Title Widget Outer" VerticalAlignment="Top" Grid.Column="1" Margin="4, 0" Padding="4">
+			<StackPanel Orientation="Vertical">
+				<Rectangle Height="4"/>
+				<Rectangle RadiusX="8" RadiusY="8" Width="16" Height="16" Fill="Red" x:Name="CloseButtonRect"/>
+				<Rectangle Height="4"/>
+				<Rectangle RadiusX="8" RadiusY="8" Width="16" Height="16" Fill="Yellow" x:Name="MinimizeButtonRect"/>
+				<Rectangle Height="4"/>
+				<Rectangle RadiusX="8" RadiusY="8" Width="16" Height="16" Fill="Green" x:Name="RestoreButtonRect"/>
+				<Rectangle Height="4"/>
+			</StackPanel>
+		</Border>
+		<Border Classes="Title Widget Outer" VerticalAlignment="Bottom" Grid.Column="1" Margin="4, 0">
+			<TextBlock Text="{Binding Title}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+		</Border>
+	</Grid>
+</UserControl>

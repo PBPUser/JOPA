@@ -1,0 +1,8 @@
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+					xmlns:c="using:JVOS.Controls"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+	<ControlTheme x:Key="{x:Type c:DesktopIcon}"
+				TargetType="c:DesktopIcon">
+		<Setter Property="TextBrush" Value="{DynamicResource Foreground_Desktop}"/>
+	</ControlTheme>
+</ResourceDictionary>

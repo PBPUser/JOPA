@@ -130,6 +130,7 @@ namespace JVOS
                 userOptions.ApplyLockscreenImage(new Bitmap(lockscreenImage));
             App.Current.Resources["DesktopStretch"] = userOptions.GetUserValue<Stretch>("DesktopStretch", Stretch.Fill);
             Current = userOptions;
+            Communicator.ShowMessageDialog(new MessageDialog("Color", userOptions.Theme.BaseColor.ToString()));
             userOptions.ReloadAutoColor();
             DesktopScreen.SetRunningAppButtonWidth(userOptions.HideAppTooltips);
         }
@@ -156,7 +157,11 @@ namespace JVOS
 
         public void ReloadAutoColor(bool reloadColor = true)
         {
-            ColorScheme.ApplyScheme(reloadColor ? ColorScheme.CreateColorSchemeFromColor(Theme.AutoColor ? ColorScheme.ColorFromBitmap((Bitmap)App.Current.Resources["DesktopImage"]) : Theme.BaseColor) : ColorScheme.Current, Theme.DarkScheme, Theme.AccentTitlebars, Theme.AccentTaskbar);
+            Color foreground = ColorScheme.Current.DesktopForeground;
+            var scheme = reloadColor ? ColorScheme.CreateColorSchemeFromColor(Theme.AutoColor ? ColorScheme.ColorFromBitmap((Bitmap)App.Current.Resources["DesktopImage"], out foreground) : Theme.BaseColor) : ColorScheme.Current;
+            if(reloadColor)
+                scheme.DesktopForeground = foreground;
+            ColorScheme.ApplyScheme(scheme, Theme.DarkScheme, Theme.AccentTitlebars, Theme.AccentTaskbar);
         }
 
         public void SetLockscreenImage(Bitmap bitmap)
@@ -241,6 +246,7 @@ namespace JVOS
                 JsonPath = Path.Combine(UsersLocation, $"{username} ({i}).jvon");
             }
             PrepareDirectory();
+            Theme = new();
             RecentManager = new RecentFilesManager(GetPath("AppData\\JVOS\\recents.json"));
         }
 

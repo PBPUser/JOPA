@@ -5,10 +5,15 @@ namespace JVOS
     public struct Theme
     {
         public Color BaseColor = Color.FromRgb(40, 76, 100);
-        public bool AutoColor;
-        public bool DarkScheme;
-        public bool AccentTaskbar;
-        public bool AccentTitlebars;
+        public bool AutoColor = false;
+        public bool DarkScheme = false;
+        public bool AccentTaskbar = false;
+        public bool AccentTitlebars = false;
+
+        public Theme()
+        {
+            BaseColor = Color.FromRgb(40, 76, 100);
+        }
 
         public Theme(Color BaseColor, bool autoColor, bool DarkScheme, bool AccentTaskbar, bool AccentTitlebars)
         {

@@ -32,6 +32,7 @@ using System.Reflection;
 using System.Runtime.Loader;
 using DynamicData;
 using SharpCompress;
+using Avalonia.Interactivity;
 
 namespace JVOS.Screens
 {
@@ -72,12 +73,19 @@ namespace JVOS.Screens
             CHubTransitions.Add(CHubXTransition);
             CHubTransitions.Add(CHubYTransition);
             keyBtn.Click += (a, b) => MainView.GLOBAL.SwitchAdaptiveControllerState();
-            Loaded += (a, b) => Communicator.OpenWindow(new DesktopWindow());
-            Loaded += (a, b) => Communicator.OpenWindow(JumpList);
-            Loaded += (a, b) => SetBarAlign(UserOptions.Current.TaskbarAlignment, false);
-            Loaded += (a, b) => UserOptions.Current.ReloadAutoColor(true);
+
+            
             CurrentDesktop = this;
             LoadHubs();
+        }
+
+        protected override void OnLoaded(RoutedEventArgs e)
+        {
+            base.OnLoaded(e);
+            Communicator.OpenWindow(new DesktopWindow());
+            Communicator.OpenWindow(JumpList);
+            SetBarAlign(UserOptions.Current.TaskbarAlignment, false);
+            UserOptions.Current.ReloadAutoColor(true);
         }
 
         public JumpListWindow JumpList = new();
@@ -510,10 +518,22 @@ namespace JVOS.Screens
                             new HubConfigurationStructure()
                             {
                                 HubName = typeof(StartHubProvider).ToString()
+                            },
+                            new HubConfigurationStructure()
+                            {
+                                HubName = typeof(AssistantHubProvider).ToString()
                             }
                         },
                         Right = new List<HubConfigurationStructure>()
                         {
+                            new HubConfigurationStructure()
+                            {
+                                HubName = typeof(VolumeHubProvider).ToString()
+                            },
+                            new HubConfigurationStructure()
+                            {
+                                HubName = typeof(LanguageHubProvider).ToString()
+                            },
                             new HubConfigurationStructure()
                             {
                                 HubName = typeof(ClockHubProvider).ToString()

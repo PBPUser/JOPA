@@ -9,7 +9,10 @@ using DynamicData;
 using JVOS.ApplicationAPI;
 using JVOS.ApplicationAPI.Windows;
 using JVOS.Controls;
+using JVOS.Controls.WidgetContainer;
+using JVOS.DataModel;
 using JVOS.Views;
+using JVOS.Widgets;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -29,6 +32,23 @@ namespace JVOS.EmbededWindows
 
         static FuncDataTemplate<string> DesktopItemDataTemplate = new((value, namescope) =>
         {
+            if (value.EndsWith(".jwi"))
+            {
+                var c = JsonConvert.DeserializeObject<DesktopWidget>(File.ReadAllText(value));
+                if(c != null)
+                {
+                    var j = WidgetManager.GetWidget(c); 
+                    if(j != null)
+                    {
+                        j.Width = c.Size.Width;
+                        j.Height = c.Size.Height;
+                        var container = new WidgetContainer(j, value, c);
+                        container.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left;
+                        container.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Top;
+                        return container;
+                    }
+                }
+            }
             return new DesktopIcon(value);
         });
 
@@ -75,7 +95,8 @@ namespace JVOS.EmbededWindows
             public void SetPlacementForItem(Point newPlacement, string path)
             {
                 var i = Placements.IndexOf(Placements.Where(x => x.Path == path).FirstOrDefault());
-                Placements.RemoveAt(i);
+                if(i > -1)
+                    Placements.RemoveAt(i);
                 Placements.Add(new DesktopItemPlacement()
                 {
                     Path = path,

@@ -5,10 +5,15 @@ using Avalonia.Media;
 using Avalonia.Media.Imaging;
 using Avalonia.Platform;
 using Avalonia.Threading;
+using JVOS.ApplicationAPI;
 using JVOS.ApplicationAPI.Hub;
 using JVOS.Screens;
+using NetCoreAudio;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
+using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -21,22 +26,22 @@ namespace JVOS.Hubs
             personRotateTransitions.Add(new DoubleTransition()
             {
                 Property = RotateTransform.AngleProperty,
-                Duration = TimeSpan.FromMilliseconds(rotateDuration)
+                Duration = TimeSpan.FromSeconds(rotateDuration)
             });
             personTransitions.Add(new ThicknessTransition()
             {
                 Property = MarginProperty,
-                Duration = TimeSpan.FromMilliseconds(offsetDuration)
+                Duration = TimeSpan.FromSeconds(offsetDuration)
             });
             personTranslateTransitions.Add(new DoubleTransition()
             {
                 Property = TranslateTransform.XProperty,
-                Duration = TimeSpan.FromMilliseconds(moveDuration)
+                Duration = TimeSpan.FromSeconds(moveDuration)
             });
             personTranslateTransitions.Add(new DoubleTransition()
             {
                 Property = TranslateTransform.YProperty,
-                Duration = TimeSpan.FromMilliseconds(moveDuration)
+                Duration = TimeSpan.FromSeconds(moveDuration)
             });
 
         }
@@ -57,6 +62,8 @@ namespace JVOS.Hubs
             personTranslateTransform.Transitions = personTranslateTransitions;
             personRotateTransform.Transitions = personRotateTransitions;
 
+            Person.RenderTransform = transform;
+
             Opened += HubOpen;
             Closed += HubClose;
         }
@@ -68,7 +75,7 @@ namespace JVOS.Hubs
 
         private void HubOpen(object? sender, EventArgs e)
         {
-
+            PlaySound();
         }
 
         const double rotateDuration = .125;
@@ -82,91 +89,70 @@ namespace JVOS.Hubs
         TranslateTransform personTranslateTransform = new();
         RotateTransform personRotateTransform = new();
 
-        bool isPreviousPlaying = false;
+        List<DispatcherTimer> Timers = new();
 
-        List<CancellationToken> Tokens = new();
-
-        CancellationToken LoopAnimation(double length, Action action, Action action2)
+        DispatcherTimer LoopAnimation(double interval, Action action)
         {
-            CancellationToken token = new();
-            bool statement = false;
-            Task.Run(() =>
-            {
-                while (true)
-                {
-                    if (token.IsCancellationRequested)
-                        return;
-                    statement = !statement;
-                    Dispatcher.UIThread.Invoke(statement ? action : action2);
-                    Thread.Sleep((int)length);
-                }
-            });
-            return token;
+            DispatcherTimer timer = new() {
+                Interval = TimeSpan.FromSeconds(interval),
+            };
+            timer.Tick += (a, b) => Dispatcher.UIThread.Invoke(action);
+            Timers.Add(timer);
+            timer.IsEnabled = true;
+            return timer;
         }
 
         void StopAnimation()
         {
             DesktopScreen.CurrentDesktop.CloseAllHubs();
-            isPreviousPlaying = false;
-            var c = Tokens.Count;
+            var c = Timers.Count;
             for (int i = 0; i < c; i++)
             {
-                var token = Tokens[0];
-                token.Register(() => { });
-                Tokens.RemoveAt(0);
+                var timer = Timers[0];
+                timer.Stop();
+                Timers.RemoveAt(0);
             }
         }
         
         void PlaySound()
         {
-            isPreviousPlaying = true;
             int j = new Random().Next(0, 10);
-            switch (j)
-            {
-                case 1:
-                    Person.Margin = new Thickness(0);
-                    Tokens.Add(LoopAnimation(rotateDuration, () => personRotateTransform.Angle = 360, () => personRotateTransform.Angle = 0));
-                    break;
-                case 4:
-                    Tokens.Add(LoopAnimation(rotateDuration, () => personRotateTransform.Angle = 45, () => personRotateTransform.Angle = -45));
-                    Tokens.Add(LoopAnimation(moveDuration, () => personTranslateTransform.X = 40, () => personTranslateTransform.X = -40));
-                    break;
-                default:
-                    Tokens.Add(LoopAnimation(offsetDuration, () => Person.Margin = new(0, -128, 0, 128), () => Person.Margin = new(0, 128, 0, -128)));
-                    if (j > 7)
-                        Tokens.Add(LoopAnimation(rotateDuration, () => personRotateTransform.Angle = 360, () => personRotateTransform.Angle = 0));
-                    else
-                        personTranslateTransform.Y = 0;
-                    if (j > 5 && j < 8)
-                        Tokens.Add(LoopAnimation(moveDuration, () => personTranslateTransform.X = 50, () => personTranslateTransform.X = -50));
-                    else
-                        personTranslateTransform.X = 0;
-                    break;
-            }
             new Thread(() =>
             {
-                //using (var ms = File.OpenRead(j != 1 ? "assets/search.mp3" : "assets/pole_chudes.mp3"))
-                //using (var rdr = new Mp3FileReader(ms))
-                //using (var wavStream = WaveFormatConversionStream.CreatePcmStream(rdr))
-                //using (var baStream = new BlockAlignReductionStream(wavStream))
-                //using (var waveOut = new WaveOut(WaveCallbackInfo.FunctionCallback()))
+                if (PlatformSpecifixController.IsAndroid())
+                    return;
+                var fname = PlatformSpecifixController.GetLocalFilePath("Assets\\Sounds\\search.mp3", true);
+                if (!File.Exists(fname))
                 {
-                    //waveOut.Init(rdr);
-                    //waveOut.Play();
-                    //while (waveOut.PlaybackState == PlaybackState.Playing)
-                    Thread.Sleep(2000);
+                    using var stream = AssetLoader.Open(new("avares://JVOS/Assets/Sounds/search.mp3"));
+                    using var fs = File.OpenWrite(fname);
+                    stream.CopyTo(fs);
+                    fs.Close();
+                }
+
+                double c = 0;
+
+                LoopAnimation(rotateDuration, () => {
+                    c++;
+                    personRotateTransform.Angle += Math.Sin(c) * 16;
+                });
+                LoopAnimation(moveDuration, () =>
+                {
+                    personTranslateTransform.Y = DateTime.Now.Microsecond % 51;
+                });
+
+                var player = new Player();
+                player.PlaybackFinished += (a, b) =>
+                {
                     Dispatcher.UIThread.Invoke(() =>
                     {
                         if (j != 0x10)
-                        {
                             PlayTTS();
-                        }
                         else
-                        {
                             StopAnimation();
-                        }
                     });
-                }
+                };
+                player.Play(fname);
             }).Start();
         }
 

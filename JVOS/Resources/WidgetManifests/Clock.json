@@ -1,0 +1,8 @@
+{
+  "AutoUpdating": true,
+  "AutoUpdateCycleLength": 1000,
+  "Icon": "",
+  "Preview": "",
+  "Name":  "Clock",
+  "ClassName": "JVOS.Widgets.Embeded.Clock"
+}

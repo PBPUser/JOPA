@@ -501,7 +501,6 @@ namespace JVOS
                 }
                 FSWatcher watcher = new FSWatcher(dir, "colorscheme.json");
                 watcher.Changed += (a, b) => {
-                    Console.WriteLine("File Changed");
                         var x = JsonConvert.DeserializeObject<ColorScheme>(File.ReadAllText(loc));
                         ColorScheme.ApplyScheme(x);
                 };
@@ -542,6 +541,8 @@ namespace JVOS
 
         public Color BasicColor = Color.FromRgb(40, 76, 100);
 
+        public Color DesktopForeground = Colors.Chocolate;
+
         public ClaymorphismLayer AlphaLightInner, AlphaLightOuter, AlphaDarkInner, AlphaDarkOuter;
         public ClaymorphismLayer BettaLightInner, BettaLightOuter, BettaDarkInner, BettaDarkOuter;
         public ClaymorphismLayer BasicLightInner, BasicLightOuter, BasicDarkInner, BasicDarkOuter;
@@ -572,10 +573,10 @@ namespace JVOS
             ResourceBunch.SetResource($"Background_{postfix}", !accent ? ResourceBunch.GetResource<Brush>($"Background_{basicPostfix}") : ResourceBunch.GetResource<Brush>($"Background_{accentPostfix}"));
         }
 
-        public static void ApplyScheme(ColorScheme scheme, bool? UseDarkScheme = null, bool? AccentTitle = null, bool? AccentBar = null, bool? UseBlur = null)
+        public static void ApplyScheme(ColorScheme scheme, bool? UseDarkScheme = null, bool? AccentTitle = null, bool? AccentBar = null, bool? UseBlur = null, bool reloadScheme = false)
         {
             bool useDark = false, accentTitle = false, accentBar = false, useBlur = true;
-            if(UseDarkScheme != null && AccentBar != null && AccentTitle != null)
+            if(reloadScheme)
             {
                 scheme = CreateColorSchemeFromColor(scheme.BasicColor);
                 useDark=scheme.UseDarkScheme = UseDarkScheme ?? scheme.UseDarkScheme;
@@ -630,53 +631,9 @@ namespace JVOS
             ApplyClaymorhismLayer(accentTitle, "BasicInner", "BasicInner", "InactiveTitleInner");
             ApplyClaymorhismLayer(accentTitle, "BasicOuter", "BasicOuter", "InactiveTitleOuter");
 
+            ResourceBunch.SetResource("Foreground_Desktop", new SolidColorBrush(scheme.DesktopForeground));
+
             OnUpdated(scheme);
-
-        }
-
-        private static Style CreateActionButtonStyle(Color colorBase, bool darkMode, string? classes = null)
-        {
-            var j = new ActionSpecificButtonBase(colorBase, darkMode);
-            if (classes == null)
-                return CreateStyle<JButton>(
-                        (JButton.BoxShadowsProperty, j.DefaultStateShadows),
-                        (JButton.ActiveBoxShadowsProperty, j.HoldStateShadows),
-                        (JButton.ForegroundProperty, new SolidColorBrush(j.Foreground)),
-                        (JButton.HorizontalContentAlignmentProperty, HorizontalAlignment.Center),
-                        (JButton.VerticalContentAlignmentProperty, VerticalAlignment.Center),
-                        (JButton.ClipToBoundsProperty, false),
-                        (JButton.BackgroundProperty, new LinearGradientBrush() { GradientStops = new GradientStops { new GradientStop(j.GradientStartBackground, 0), new GradientStop(j.GradientStopBackground, 1) } }),
-                        (JButton.OvergroundProperty, new LinearGradientBrush() { GradientStops = new GradientStops { new GradientStop(j.GradientStartBackground, 0), new GradientStop(j.GradientStopBackground, 1) } }),
-                        (JButton.HovergroundProperty, new LinearGradientBrush() { GradientStops = new GradientStops { new GradientStop(j.GradientStartBackground, 0), new GradientStop(j.GradientStopBackground, 1) } })
-                    );
-            else
-                return CreateStyle<JButton>(classes,
-                        (JButton.BoxShadowsProperty, j.DefaultStateShadows),
-                        (JButton.ActiveBoxShadowsProperty, j.HoldStateShadows),
-                        (JButton.ForegroundProperty, new SolidColorBrush(j.Foreground)),
-                        (JButton.ClipToBoundsProperty, false),
-                        (JButton.HorizontalContentAlignmentProperty, HorizontalAlignment.Center),
-                        (JButton.VerticalContentAlignmentProperty, VerticalAlignment.Center),
-                        (JButton.BackgroundProperty, new LinearGradientBrush() { GradientStops = new GradientStops { new GradientStop(j.GradientStartBackground, 0), new GradientStop(j.GradientStopBackground, 1) } }),
-                        (JButton.OvergroundProperty, new LinearGradientBrush() { GradientStops = new GradientStops { new GradientStop(j.GradientStartBackground, 0), new GradientStop(j.GradientStopBackground, 1) } }),
-                        (JButton.HovergroundProperty, new LinearGradientBrush() { GradientStops = new GradientStops { new GradientStop(j.GradientStartBackground, 0), new GradientStop(j.GradientStopBackground, 1) } })
-                    );
-        }
-
-        private static Style CreateStyle<T>(params (AvaloniaProperty, object?)[] x)
-        {
-            var style = new Style(x => x.OfType(typeof(T)));
-            foreach (var s in x)
-                style.Setters.Add(new Setter(s.Item1, s.Item2));
-            return style;
-        }
-
-        private static Style CreateStyle<T>(string Class, params (AvaloniaProperty, object?)[] x)
-        {
-            var style = new Style(x => x.OfType(typeof(T)).Class(Class));
-            foreach (var s in x)
-                style.Setters.Add(new Setter(s.Item1, s.Item2));
-            return style;
         }
 
         public static ColorScheme CreateColorSchemeFromColor(Color color)
@@ -703,8 +660,9 @@ namespace JVOS
             return scheme;
         }
 
-        public static Color ColorFromBitmap(Bitmap bitmap)
+        public static Color ColorFromBitmap(Bitmap bitmap, out Color foreground)
         {
+            foreground = Colors.BlueViolet;
             if (bitmap == null)
                 return Colors.Black;
             var x = Path.GetTempFileName() + ".png";
@@ -722,6 +680,8 @@ namespace JVOS
                 b += pixels[i*4+2];
             }
             pixels = new byte[0];
+            long j = (r + g + b) / (c * 3);
+            foreground = j < 128 ? Colors.White : Colors.Black;
             return Color.FromRgb((byte)(r / c), (byte)(g / c), (byte)(b / c));
         }
     }

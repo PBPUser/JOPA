@@ -26,6 +26,7 @@
 					<MenuItem Header="Shortcut" Command="{x:Static dc:CreateShortcutCommand.Instance}"/>
 				</MenuItem>
 				<MenuItem Header="Display Settings" Command="{x:Static dc:OpenDisplaySettingsCommand.Instance}"/>
+				<MenuItem Header="Add Widgets" Command="{x:Static dc:AddWidgetCommand.Instance}"/>
 				<MenuItem Header="Wallpaper Settings" Command="{x:Static dc:OpenWallpaperSettingsCommand.Instance}"/>
 			</ContextMenu>
 		</ItemsControl.ContextMenu>

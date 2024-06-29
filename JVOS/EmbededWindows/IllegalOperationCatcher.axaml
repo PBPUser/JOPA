@@ -1,0 +1,22 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+    xmlns:c="using:JVOS.Controls"         
+    xmlns:local="using:JVOS.EmbededWindows"         
+	x:Class="JVOS.EmbededWindows.IllegalOperationCatcher">
+	<Grid>
+		<c:CustomBlurBehind/>
+		<Border Classes="Alpha Outer"/>
+		<Grid Grid.RowDefinitions="2*, 5*">
+			<Grid Grid.ColumnDefinitions="*, auto">
+				<TextBlock Margin="16" Text="{x:Static local:IllegalOperationCatcherVM.IllegialText}"/>
+				<c:JButton x:Name="okBtn" Content="OK" Grid.Column="1" Width="100" Margin="16" VerticalAlignment="Top"/>
+				<c:JButton x:Name="detailsBtn" Content="Details >>>" Grid.Column="1" Width="100" Margin="16" VerticalAlignment="Bottom"/>
+			</Grid>
+			<TextBox Text="{Binding Details}" Grid.Row="1" Margin="16, 0, 16, 16"/>
+		</Grid>
+	</Grid>
+
+</UserControl>

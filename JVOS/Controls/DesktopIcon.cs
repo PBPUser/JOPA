@@ -27,11 +27,22 @@ namespace JVOS.Controls
     {
         private static Brush TransparentA1 = new SolidColorBrush(Color.FromArgb(1, 0, 0, 0), 1);
         private static Brush TestSelectBackground = new SolidColorBrush(Color.FromArgb(128, 255, 0, 255), 1);
+        private static Brush MaskForTitle;
         static Bitmap FOLDER_ICON = new Bitmap(AssetLoader.Open(new Uri("avares://JVOS/Assets/Shell/folder.png")));
         static Bitmap FILE_ICON = new Bitmap(AssetLoader.Open(new Uri("avares://JVOS/Assets/Shell/file.png")));
 
         static DesktopIcon()
         {
+            MaskForTitle = new LinearGradientBrush()
+            {
+                StartPoint = new RelativePoint(0.8, 0, RelativeUnit.Relative),
+                EndPoint = new RelativePoint(1, 0, RelativeUnit.Relative),
+                GradientStops = new GradientStops()
+                    {
+                        new GradientStop(Colors.Black, 0),
+                        new GradientStop(Colors.Transparent, 1)
+                    }
+            };
             TransitionsTransform =
             [
                 new DoubleTransition() { Property = TranslateTransform.XProperty, Duration = TimeSpan.FromMilliseconds(175) },
@@ -39,7 +50,7 @@ namespace JVOS.Controls
             ];
             TitleProperty = AvaloniaProperty.RegisterAttached<DesktopIcon, Thumb, string>("Title", coerce: (a,b) =>
             {
-                ((DesktopIcon)a).FormattedTitle = new FormattedText(b, CultureInfo.CurrentCulture, GetFlowDirection(a as DesktopIcon), new Typeface(FontFamily.Default, weight: FontWeight.Bold, style: FontStyle.Italic), 14, Brushes.Black);
+                ((DesktopIcon)a).ReloadFormattedTitle(text: b);
                 return b;
             });
             PathProperty = AvaloniaProperty.RegisterAttached<DesktopIcon, Thumb, string>("Path", coerce: (a,b) =>
@@ -60,9 +71,15 @@ namespace JVOS.Controls
             IconProperty = AvaloniaProperty.RegisterAttached<DesktopIcon, Thumb, Bitmap?>("Icon");
             FormattedTitleProperty = AvaloniaProperty.RegisterAttached<DesktopIcon, Thumb, FormattedText>("FormattedTitle");
             MouseOverProperty = AvaloniaProperty.RegisterAttached<DesktopIcon, Thumb, bool>("MouseOver");
+            TextBrushProperty = AvaloniaProperty.RegisterAttached<DesktopIcon, Thumb, IBrush>("TextBrush", coerce: (a,b) =>
+            {
+                ((DesktopIcon)a).ReloadFormattedTitle(Color: b);
+                return b;
+            });
             AffectsRender<DesktopIcon>(
                 MouseOverProperty,
                 IconProperty,
+                FormattedTitleProperty,
                 IsDirProperty
                 );
         }
@@ -86,6 +103,22 @@ namespace JVOS.Controls
             RenderTransform = tt;
         }
 
+        private void ReloadFormattedTitle(string? text = null, IBrush? Color = null)
+        {
+            FormattedTitle = new FormattedText(
+                text??Title??"", 
+                CultureInfo.CurrentCulture, 
+                GetFlowDirection(this), 
+                new Typeface(
+                    FontFamily.Default, 
+                    weight: FontWeight.Bold, 
+                    style: FontStyle.Italic
+                    ), 
+                14, 
+                Color??TextBrush??Brushes.Magenta
+                );
+        }
+
         public string Path
         {
             get => GetValue(PathProperty);
@@ -95,6 +128,11 @@ namespace JVOS.Controls
         {
             get => GetValue(TitleProperty);
             set => SetValue(TitleProperty, value);
+        }
+        public IBrush TextBrush
+        {
+            get => GetValue(TextBrushProperty);
+            set => SetValue(TextBrushProperty, value);
         }
         public Bitmap? Icon
         {
@@ -137,11 +175,11 @@ namespace JVOS.Controls
 
         protected override void OnPointerReleased(PointerReleasedEventArgs e)
         {
-            if(e.Timestamp-timestampMD < 50000000)
+            if(e.Timestamp-timestampMD < 1000)
             {
                 Communicator.RunPath(Path);
             }
-               timestampMD = e.Timestamp;
+            timestampMD = e.Timestamp;
             base.OnPointerReleased(e);
         }
 
@@ -159,9 +197,16 @@ namespace JVOS.Controls
 
         public override void Render(DrawingContext context)
         {
-            context.FillRectangle(MouseOver ? TestSelectBackground : TransparentA1, new Rect(Bounds.Size), 8);
+            context.FillRectangle(MouseOver ? TestSelectBackground : TransparentA1, new Rect(Bounds.Size), 12);
             context.DrawImage(IsDirectory ? FOLDER_ICON : (Icon ?? FILE_ICON), new Rect(Bounds.Size - new Size(0, 20)));
-            context.DrawText(FormattedTitle, new Point((Bounds.Width - FormattedTitle.Width) / 2, Bounds.Height - FormattedTitle.Height));
+
+            if (FormattedTitle.Width > Bounds.Size.Width)
+                context.PushOpacityMask(MaskForTitle, new Rect(Bounds.Size));
+            
+            context.DrawText(FormattedTitle, new Point(
+                FormattedTitle.Width > Bounds.Size.Width ? 0 : (Bounds.Width - FormattedTitle.Width) / 2, 
+                Bounds.Height - FormattedTitle.Height
+                ));
             base.Render(context);
         }
 
@@ -171,5 +216,6 @@ namespace JVOS.Controls
         public static readonly AttachedProperty<string> TitleProperty;
         public static readonly AttachedProperty<FormattedText> FormattedTitleProperty;
         public static readonly AttachedProperty<bool> MouseOverProperty;
+        public static readonly AttachedProperty<IBrush> TextBrushProperty;
     }
 }

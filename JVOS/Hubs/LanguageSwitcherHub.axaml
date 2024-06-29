@@ -12,10 +12,8 @@
 		<Border Classes="Bar Alpha Outer" MinWidth="256" MinHeight="192">
 			<DockPanel>
 				<TextBlock Text="Select Language" DockPanel.Dock="Top" Classes="h1 Bar"/>
-				<controls:JButton DockPanel.Dock="Bottom" Height="32" Classes="Bar Alpha" Content="Language preferences"/>
-				<ListBox Classes="Bar Alpha Language" x:Name="languages">
-
-				</ListBox>
+				<controls:JButton x:Name="lngPrefBtn" DockPanel.Dock="Bottom" Height="32" Classes="Bar Alpha" Content="Language preferences"/>
+				<ListBox Classes="Bar Alpha Language" x:Name="languages"/>
 			</DockPanel>
 		</Border>
 	</Grid>

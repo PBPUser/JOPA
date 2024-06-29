@@ -1,5 +1,6 @@
 ﻿using Avalonia.Controls;
 using Avalonia.Media.Imaging;
+using Avalonia.Threading;
 using JVOS.ApplicationAPI;
 using JVOS.ApplicationAPI.App;
 using JVOS.ApplicationAPI.Hub;
@@ -62,7 +63,7 @@ namespace JVOS
 
         public static void PreloadApp(string Path)
         {
-            string 
+            string
                 manifest = $"{Path}\\manifest.json",
                 icon = $"{Path}\\icon.png";
 
@@ -74,8 +75,9 @@ namespace JVOS
                 string appdll = $"{Path}\\application.dll";
                 if (!File.Exists(appdll))
                     return;
-                if(Directory.Exists($"{Path}\\libraries"))
-                    foreach(var s in Directory.GetFiles($"{Path}\\libraries")) {
+                if (Directory.Exists($"{Path}\\libraries"))
+                    foreach (var s in Directory.GetFiles($"{Path}\\libraries"))
+                    {
                         LoadLib(System.IO.Path.GetFullPath(s));
                     }
                 PreloadDll(System.IO.Path.GetFullPath(appdll));
@@ -95,7 +97,7 @@ namespace JVOS
 
         private static void LoadLib(string file)
         {
-            
+
         }
 
         private static void PreloadDll(string Path)
@@ -103,7 +105,7 @@ namespace JVOS
             var assembly = Assembly.LoadFile(Path);
             Type initType = typeof(IInitializer);
             Type[] inits = assembly.GetTypes().Where(x => initType.IsAssignableFrom(x) && x.IsClass).ToArray();
-            foreach(var init in inits)
+            foreach (var init in inits)
             {
                 try
                 {
@@ -160,62 +162,78 @@ namespace JVOS
         public bool LoadApp(string path, object[]? args, out JVOS.ApplicationAPI.App.App? app)
         {
             app = null;
-                if (!Directory.Exists(path))
-                    return false;
-                if (!File.Exists(path + "\\manifest.jvon"))
-                    return false;
+            if (!Directory.Exists(path))
+                return false;
+            if (!File.Exists(path + "\\manifest.jvon"))
+                return false;
 
-                var manifest = JsonConvert.DeserializeObject<AppManifest>(File.ReadAllText(path + "\\manifest.jvon"));
-                if (manifest == null)
-                    return false;
+            var manifest = JsonConvert.DeserializeObject<AppManifest>(File.ReadAllText(path + "\\manifest.jvon"));
+            if (manifest == null)
+                return false;
 
-                if (!File.Exists(path + $"\\{manifest.DllName}"))
+            if (!File.Exists(path + $"\\{manifest.DllName}"))
+            {
+                Communicator.ShowMessageDialog(new MessageDialog("App loader", $"Dll not exists {manifest.DllName} not exists"));
+                return false;
+            }
+
+            Debug.WriteLine(APP_TYPE.FullName);
+
+            Debug.WriteLine(" ");
+
+            var appContext = new AssemblyLoadContext($"domain_{manifest.Name}_{DateTime.Now.ToBinary()}", true);
+
+            appContext.Unloading += (a) =>
+            {
+                
+                Dispatcher.UIThread.Invoke(() => Communicator.ShowMessageDialog(new MessageDialog("App manager", "Application context successfully unloaded")));
+                GC.Collect();
+                GC.WaitForPendingFinalizers();
+            };
+            appContext.Resolving += (a, b) =>
+            {
+                return AssemblyLoadContext.GetLoadContext(Assembly.GetExecutingAssembly()).Assemblies.Where(x => x.FullName == b.FullName).FirstOrDefault();
+            };
+            Assembly assembly;
+
+            using (var fs = new FileStream(path + $"\\{manifest.DllName}", FileMode.Open))
+            {
+                assembly = appContext.LoadFromStream(fs);
+            }
+            foreach (var xz in assembly.GetTypes())
+            {
+                var type = xz.BaseType;
+                string st = "";
+                while (type != null)
                 {
-                    Communicator.ShowMessageDialog(new MessageDialog("App loader", $"Dll not exists {manifest.DllName} not exists"));
-                    return false;
+                    st += ":" + type.FullName;
+                    type = type.BaseType;
                 }
+                Debug.WriteLine(xz.FullName + st);
+            }
 
-                Debug.WriteLine(APP_TYPE.FullName);
+            Type[] appTypes = assembly.GetTypes().Where(x => APP_TYPE.IsAssignableFrom(x) && x.IsClass).ToArray();
 
-                Debug.WriteLine(" ");
+            AppCommunicator appCommunicator = new AppCommunicator();
+            appCommunicator.assembly = assembly;
+            appCommunicator.assemblyContext = appContext;
+            appCommunicator.manifest = manifest;
 
-                var appContext = new AssemblyLoadContext($"domain_{manifest.Name}_{DateTime.Now.ToBinary()}", true);
-                appContext.Resolving += (a, b) =>
-                {
-                    return AssemblyLoadContext.GetLoadContext(Assembly.GetExecutingAssembly()).Assemblies.Where(x => x.FullName == b.FullName).FirstOrDefault();
-                };
-                Assembly assembly;
+            app = (JVOS.ApplicationAPI.App.App)(appTypes[0].GetConstructors()[0].Invoke(new object[] { appCommunicator }));
+            appCommunicator.app = app;
+            app.Communicator = appCommunicator;
 
-                using (var fs = new FileStream(path + $"\\{manifest.DllName}", FileMode.Open))
-                {
-                    assembly = appContext.LoadFromStream(fs);
-                }
-                foreach (var xz in assembly.GetTypes())
-                {
-                    var type = xz.BaseType;
-                    string st = "";
-                    while (type != null)
-                    {
-                        st += ":" + type.FullName;
-                        type = type.BaseType;
-                    }
-                    Debug.WriteLine(xz.FullName + st);
-                }
-
-                Type[] appTypes = assembly.GetTypes().Where(x => APP_TYPE.IsAssignableFrom(x) && x.IsClass).ToArray();
-
-                AppCommunicator appCommunicator = new AppCommunicator();
-                appCommunicator.assembly = assembly;
-                appCommunicator.assemblyContext = appContext;
-                appCommunicator.manifest = manifest;
-
-                app = (JVOS.ApplicationAPI.App.App)(appTypes[0].GetConstructors()[0].Invoke(new object[] { appCommunicator }));
-                appCommunicator.app = app;
-                app.Communicator = appCommunicator;
-
-                return true;
+            return true;
         }
 
+    }
+
+    public class ApplicationAsseblyLoadContext : AssemblyLoadContext
+    {
+        public ApplicationAsseblyLoadContext(string name = "") : base(name, true)
+        {
+
+        }
     }
 
 }

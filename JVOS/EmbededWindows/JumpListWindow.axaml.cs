@@ -1,5 +1,6 @@
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Interactivity;
 using JVOS.ApplicationAPI.Windows;
 
 namespace JVOS.EmbededWindows
@@ -14,8 +15,13 @@ namespace JVOS.EmbededWindows
             DataContext = VM = new WindowJumpListVM();
             closebtn.Click += CloseClick;
             Title = "Jump List";
-            Loaded += (a,b) => Frame.SetFrameVisibility(false);
-            Loaded += (a,b) => Frame.Minimize();
+        }
+
+        protected override void OnLoaded(RoutedEventArgs e)
+        {
+            base.OnLoaded(e);
+            Frame.SetFrameVisibility(false);
+            Frame.ToggleVisibilityState(false);
         }
 
         public override void Deactivated()

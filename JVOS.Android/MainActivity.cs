@@ -9,7 +9,7 @@ using Avalonia.ReactiveUI;
 namespace JVOS.Android;
 
 [Activity(
-    Label = "JVOS.Android",
+    Label = "JVOS Mobile",
     Theme = "@style/MyTheme.NoActionBar",
     Icon = "@drawable/icon",
     MainLauncher = true,

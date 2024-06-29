@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace JVOS.ApplicationAPI.Windows
 {
-    public abstract class WindowContentBase : UserControl
+    public abstract class WindowContentBase : UserControl, IDisposable
     {
         protected WindowContentBase()
         {
@@ -54,6 +54,21 @@ namespace JVOS.ApplicationAPI.Windows
         public virtual void Closed()
         {
 
+        }
+
+        public virtual void OnDispose()
+        {
+
+        }
+
+        bool isDisposed = false;
+
+        public void Dispose()
+        {
+            if (isDisposed)
+                return;
+            isDisposed = true;
+            OnDispose();
         }
     }
 }

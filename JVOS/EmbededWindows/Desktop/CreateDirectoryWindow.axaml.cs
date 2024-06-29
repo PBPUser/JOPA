@@ -24,12 +24,13 @@ namespace JVOS.EmbededWindows.Desktop
                 string str = UserOptions.Current.GetPath("Desktop") + "\\" + tb.Text  + ".jnk";
                 if (File.Exists(str))
                 {
-                    Communicator.ShowMessageDialog(new MessageDialog("Warning", "Directory with name " + tb.Text + " already exists."));
+                    Communicator.ShowMessageDialog(new MessageDialog("Warning", "Shortcut with name " + tb.Text + " already exists."));
                 }
                 else
                 {
                     File.WriteAllText(str, JsonConvert.SerializeObject(new Shortcut(tx.Text ?? "", icon == null ? "" : UserOptions.ImageToBase64(icon), "")));
                     this.Frame.Close();
+                    DesktopWindow.Current.VM.Refresh();
                 }
             };
             browse.Click += (a, b) =>

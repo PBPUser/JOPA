@@ -92,6 +92,9 @@
 				<Setter Property="Background" Value="{DynamicResource Background_TitleInner}"/>
 				<Setter Property="BoxShadow" Value="{DynamicResource BoxShadows_TitleInner}"/>
 			</Style>
+			<Style Selector="^.Widget">
+				<Setter Property="Height" Value="NaN"/>
+			</Style>
 			<Style Selector="^.Outer">
 				<Setter Property="Background" Value="{DynamicResource Background_TitleOuter}"/>
 				<Setter Property="BoxShadow" Value="{DynamicResource BoxShadows_TitleOuter}"/>

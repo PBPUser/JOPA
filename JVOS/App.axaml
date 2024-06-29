@@ -23,6 +23,7 @@
 				<MergeResourceInclude Source="avares://JVOS/Assets/Style/Border.axaml" />
 				<MergeResourceInclude Source="avares://JVOS/Assets/Style/ComboBox.axaml" />
 				<MergeResourceInclude Source="avares://JVOS/Assets/Style/CheckBox.axaml" />
+				<MergeResourceInclude Source="avares://JVOS/Assets/Style/DesktopIcon.axaml" />
 				<MergeResourceInclude Source="avares://JVOS/Assets/Style/JButton.axaml" />
 				<MergeResourceInclude Source="avares://JVOS/Assets/Style/Menu.axaml" />
 				<MergeResourceInclude Source="avares://JVOS/Assets/Style/ListBox.axaml" />
