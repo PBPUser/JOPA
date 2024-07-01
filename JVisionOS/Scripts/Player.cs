@@ -1,22 +1,35 @@
+using Avalonia.Controls;
 using Godot;
+using JVOS.ApplicationAPI;
 using System;
 
 public partial class Player : CharacterBody3D
 {
+	public static Player Instance;
+
 	public const float Speed = 5.0f;
 	public const float JumpVelocity = 4.5f;
 
 	// Get the gravity from the project settings to be synced with RigidBody nodes.
 	public float gravity = ProjectSettings.GetSetting("physics/3d/default_gravity").AsSingle();
 
-	public override void _Ready() { 
+	public override void _Ready() {
+		Instance = this;
+        Communicator.WindowSwitching += Communicator_WindowSwitching;
 	}
+
+    private void Communicator_WindowSwitching(object? sender, JVOS.ApplicationAPI.Windows.WindowFrameBase e)
+    {
+		((Grid)e.Parent).Children.Remove(e);
+		var window = new WindowFrame();
+		GetParent().AddChild(window);
+		window.Position = Position + new Vector3(0, 0, 1);
+		window.SetWindow(e);
+    }
 
     public override void _Input(InputEvent @event)
     {
 		var vec = Input.GetVector("left", "right", "forward", "backward");
-        Position += new Vector3(vec.X, 0, vec.Y);
-		
         base._Input(@event);
     }
     public override void _PhysicsProcess(double delta)

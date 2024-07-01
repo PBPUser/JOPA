@@ -1,0 +1,44 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+			 xmlns:api="using:JVOS.ApplicationAPI"
+			 xmlns:controls="clr-namespace:JVOS.Controls;assembly=JVOS.Controls"
+             x:Class="JVOS.EmbededWindows.Preferences.About">
+	<StackPanel x:Name="rootStack">
+		<Border Classes="Beta Outer" Margin="8">
+			<StackPanel>
+				<TextBlock Classes="h3">JVOS Specifications: </TextBlock>
+				<UniformGrid Columns="2">
+					<TextBlock Margin="8" Text="JVOS Version: " HorizontalAlignment="Right"/>
+					<TextBlock Margin="8" Text="{x:Static api:JVOSRuntimeInformation.OSVersion}" HorizontalAlignment="Left"/>
+					<TextBlock Margin="8" Text="API Version: " HorizontalAlignment="Right"/>
+					<TextBlock Margin="8" Text="{x:Static api:JVOSRuntimeInformation.APIVersion}" HorizontalAlignment="Left"/>
+					<TextBlock VerticalAlignment="Center" Margin="8" Text="Libraries Versions: " HorizontalAlignment="Right"/>
+					<controls:JButton Margin="8" Content="Show" Width="100" HorizontalAlignment="Left"/>
+				</UniformGrid>
+			</StackPanel>
+		</Border>
+		<Border Classes="Beta Outer" Margin="8">
+			<StackPanel>
+				<TextBlock Classes="h3">Device Specifications: </TextBlock>
+				<UniformGrid Columns="2">
+					
+				</UniformGrid>
+			</StackPanel>
+		</Border>
+		<Border Classes="Beta Outer" Margin="8">
+			<StackPanel>
+				<TextBlock Classes="h3">Runtime Specifications: </TextBlock>
+				<UniformGrid Columns="2">
+					<TextBlock Margin="8" Text="Runtime Version: " HorizontalAlignment="Right"/>
+					<TextBlock Margin="8" Text="{x:Static api:JVOSRuntimeInformation.OSRuntimeVersion}" HorizontalAlignment="Left"/>
+					<TextBlock Margin="8" Text="Runtime Type: " HorizontalAlignment="Right"/>
+					<TextBlock Margin="8" Text="{x:Static api:JVOSRuntimeInformation.OSRuntimeType}" HorizontalAlignment="Left"/>
+					
+				</UniformGrid>
+			</StackPanel>
+		</Border>
+	</StackPanel>
+</UserControl>

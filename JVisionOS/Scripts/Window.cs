@@ -54,7 +54,11 @@ public partial class Window : Node3D {
             (IsJVOSIn3DSpace ? UserInterface2D.Instance.Grid : UserInterface.Instance.Grid).Children.Remove(UserInterface.Instance.MainView);
             (!IsJVOSIn3DSpace ? UserInterface2D.Instance.Grid : UserInterface.Instance.Grid).Children.Add(UserInterface.Instance.MainView);
         }
-            
+        if (Input.IsActionPressed("forward"))
+            CameraJV.Instance.RotateX(.1f);
+        if (Input.IsActionPressed("backward"))
+            CameraJV.Instance.RotateX(-.1f);
+
         base._Input(@event);
     }
 

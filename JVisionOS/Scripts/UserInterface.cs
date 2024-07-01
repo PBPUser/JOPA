@@ -7,6 +7,7 @@ using JVOS.ViewModels;
 using JVOS.Views;
 using System.Diagnostics;
 using Avalonia.Controls;
+using JVOS.ApplicationAPI;
 
 public partial class UserInterface : JLeb.Estragonia.AvaloniaControl
 {
@@ -17,6 +18,7 @@ public partial class UserInterface : JLeb.Estragonia.AvaloniaControl
     [STAThread]
     public override void _Ready()
     {
+        Communicator.GodotSet();
         Instance = this;
         AppBuilder.Configure<App>()
             .UseGodot()

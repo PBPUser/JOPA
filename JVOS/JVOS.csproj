@@ -131,6 +131,9 @@
     <Compile Update="EmbededWindows\Desktop\CreateShortcut.axaml.cs">
       <DependentUpon>CreateShortcut.axaml</DependentUpon>
     </Compile>
+    <Compile Update="EmbededWindows\Preferences\About.axaml.cs">
+      <DependentUpon>About.axaml</DependentUpon>
+    </Compile>
     <Compile Update="EmbededWindows\Preferences\Languages.axaml.cs">
       <DependentUpon>Languages.axaml</DependentUpon>
     </Compile>

@@ -1,7 +1,9 @@
-﻿using Avalonia.Media.Imaging;
+﻿using Avalonia.Controls;
+using Avalonia.Media.Imaging;
 using JVOS.ApplicationAPI.App;
 using JVOS.ApplicationAPI.Hub;
 using JVOS.ApplicationAPI.Windows;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using ReactiveUI;
 using System;
 using System.Collections.Generic;
@@ -55,6 +57,7 @@ namespace JVOS.ApplicationAPI
         public static event EventHandler<string>? RegisterApp;
         public static event EventHandler<string>? CommandRun;
         public static event EventHandler<string>? PathRun;
+        public static event EventHandler<WindowFrameBase>? WindowSwitching;
         public static event EventHandler<DialogFileSystemBrowsingEventArgs>? BrowsePathRequest;
 
         public static IAppLoader AppLoader;
@@ -64,6 +67,13 @@ namespace JVOS.ApplicationAPI
             if (WindowOpenRequest != null)
                 WindowOpenRequest.Invoke(null, window);
         }
+
+        public static void OnWindowSwitching(WindowFrameBase e)
+        {
+            if (WindowSwitching != null)
+                WindowSwitching.Invoke(null, e);
+        }
+        
         public static void BrowseDirectory(Action<DialogFileSystemBrowsingResult> after)
         {
             if (BrowsePathRequest != null)
@@ -170,6 +180,12 @@ namespace JVOS.ApplicationAPI
         }
 
         private static bool isMobileMode = false;
+
+        public static void GodotSet()
+        {
+            IsGodot = true;
+            JVOSRuntimeInformation.isGodot = true;
+        }
 
         public static bool IsGodot { get; internal set; }
 
