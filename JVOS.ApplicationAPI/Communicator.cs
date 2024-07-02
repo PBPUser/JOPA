@@ -32,7 +32,7 @@ namespace JVOS.ApplicationAPI
     public struct DialogFileSystemBrowsingResult
     {
         public string[] Path = new string[0];
-        public bool IsSuccessfull = true;   
+        public bool IsSuccessfull = true;
 
         public DialogFileSystemBrowsingResult(bool isSuccess, string[] pathes)
         {
