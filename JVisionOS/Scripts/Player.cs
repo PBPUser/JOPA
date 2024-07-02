@@ -21,8 +21,7 @@ public partial class Player : CharacterBody3D
         Communicator.WindowSwitching += Communicator_WindowSwitching;
 	}
 
-    private void Communicator_WindowSwitching(object? sender, JVOS.ApplicationAPI.Windows.WindowFrameBase e)
-    {
+    private void Communicator_WindowSwitching(object? sender, JVOS.ApplicationAPI.Windows.WindowFrameBase e) {
         e.GetVisualParent<Grid>().Children.Remove(e);
 		var windowScene = GD.Load<PackedScene>("res://Prefabs/WindowFrame.tscn");
 		var window = windowScene.Instantiate<WindowFrame>();
@@ -31,36 +30,10 @@ public partial class Player : CharacterBody3D
         window.SetWindow(e);
     }
 
-    Vector2 cameraPC = new();
-
-    public override void _Input(InputEvent @event)
-    {
-        if (isMouseCaptured && @event is InputEventMouseMotion e)
-            cameraPC -= e.Relative;
-        if (Input.IsActionJustPressed("toggle_mouse_capture"))
-            ToggleMouseCapture();
-
-        base._Input(@event);
-    }
-
     bool isMouseCaptured = false;
     float cameraRotationX;
-    private void ToggleMouseCapture()
-    {
-        isMouseCaptured = !isMouseCaptured;
-        PlayerUI.Instance.Visible = isMouseCaptured;
-        if (isMouseCaptured)
-        {
-            Input.MouseMode = Input.MouseModeEnum.Captured;
-        }
-        else
-        {
-            Input.MouseMode = Input.MouseModeEnum.Visible;
-        }
-    }
 
-    public override void _PhysicsProcess(double delta)
-	{
+    public override void _PhysicsProcess(double delta) {
 		Vector3 velocity = Velocity;
 
 		// Add the gravity.
@@ -88,10 +61,6 @@ public partial class Player : CharacterBody3D
 			velocity.Z = Mathf.MoveToward(Velocity.Z, 0, Speed);
 		}
         
-        RotationDegrees = RotationDegrees with { 
-            X = Mathf.Clamp((cameraPC.Y) * (float)delta * CameraSpeed + RotationDegrees.X, -95, 140),
-            Y = Mathf.Wrap((cameraPC.X) * (float)delta * CameraSpeed * (RotationDegrees.X > 90 ? -1 : 1) + RotationDegrees.Y, 0, 360)
-        };
         Velocity = velocity;
 		MoveAndSlide();
 	}
