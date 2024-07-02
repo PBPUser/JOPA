@@ -7,7 +7,7 @@
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Avalonia.Markup.Xaml.Loader" Version="11.0.10" />
-    <PackageReference Include="JLeb.Estragonia" Version="1.1.1" />
+    <PackageReference Include="JLeb.Estragonia" Version="1.2.0-preview1" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\JVOS\JVOS.csproj" />

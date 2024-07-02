@@ -1,17 +1,18 @@
-[gd_scene load_steps=13 format=3 uid="uid://bvoba28uu4ume"]
+[gd_scene load_steps=14 format=3 uid="uid://bvoba28uu4ume"]
 
 [ext_resource type="Script" path="res://Scripts/UlanWorld.cs" id="1_8nbxk"]
 [ext_resource type="PackedScene" uid="uid://dart3pmwoqrsq" path="res://Prefabs/Window.tscn" id="1_qcni6"]
 [ext_resource type="PackedScene" uid="uid://cvx2lk7mloj1r" path="res://Prefabs/Player.tscn" id="1_u8445"]
 [ext_resource type="PackedScene" uid="uid://dec7pepdjadp" path="res://Prefabs/AvaloniaControl.tscn" id="2_m26c6"]
 [ext_resource type="Script" path="res://Scripts/CameraJV.cs" id="3_jsycu"]
+[ext_resource type="Texture2D" uid="uid://bkmh8cq8yx8gv" path="res://Assets/Street View 360.jpg" id="3_qg3ho"]
+[ext_resource type="PackedScene" uid="uid://b8y8ysrpl2v08" path="res://Scenes/XR.tscn" id="4_ppqqb"]
 [ext_resource type="Script" path="res://Scripts/UserInterface2D.cs" id="5_hmwti"]
-[ext_resource type="Texture2D" uid="uid://clbbdvuitnm3j" path="res://Assets/Street View 360 (2).jpg" id="5_hy6bw"]
 [ext_resource type="Script" path="res://Scripts/PlayerUI.cs" id="9_fe0px"]
 [ext_resource type="Texture2D" uid="uid://b4fv47qhagocb" path="res://Assets/cursoshair.png" id="10_v0wfc"]
 
 [sub_resource type="PanoramaSkyMaterial" id="PanoramaSkyMaterial_ytanv"]
-panorama = ExtResource("5_hy6bw")
+panorama = ExtResource("3_qg3ho")
 
 [sub_resource type="Sky" id="Sky_8kpm3"]
 sky_material = SubResource("PanoramaSkyMaterial_ytanv")
@@ -19,7 +20,6 @@ sky_material = SubResource("PanoramaSkyMaterial_ytanv")
 [sub_resource type="Environment" id="Environment_hll4h"]
 background_mode = 2
 sky = SubResource("Sky_8kpm3")
-sky_rotation = Vector3(0, 3.14159, 0)
 ambient_light_source = 3
 ssao_enabled = true
 ssil_enabled = true
@@ -47,6 +47,9 @@ target_position = Vector3(0, 0, -1)
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_hll4h")
+
+[node name="XrHandler" parent="." instance=ExtResource("4_ppqqb")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0849895, -0.469103, -1.17735)
 
 [node name="UserInterface2D" type="Control" parent="."]
 layout_mode = 3
