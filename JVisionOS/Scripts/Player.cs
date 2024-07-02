@@ -31,20 +31,12 @@ public partial class Player : CharacterBody3D
         window.SetWindow(e);
     }
 
+    Vector2 cameraPC = new();
+
     public override void _Input(InputEvent @event)
     {
         if (isMouseCaptured && @event is InputEventMouseMotion e)
-        {
-            CameraJV.Instance.RotateY(-e.Relative.X * CameraSpeed);
-            var s = -(e.Relative.Y * CameraSpeed);
-            if (cameraRotationX + s > -50 && s < cameraRotationX + 50)
-            {
-                cameraRotationX += s;
-                CameraJV.Instance.RotateX(s);
-            }
-            Debug.WriteLine(e.Relative);
-            Rotation = CameraJV.Instance.Rotation;
-        }
+            cameraPC -= e.Relative;
         if (Input.IsActionJustPressed("toggle_mouse_capture"))
             ToggleMouseCapture();
 
@@ -95,8 +87,11 @@ public partial class Player : CharacterBody3D
 			velocity.X = Mathf.MoveToward(Velocity.X, 0, Speed);
 			velocity.Z = Mathf.MoveToward(Velocity.Z, 0, Speed);
 		}
-
-        CameraJV.Instance.Position = Position;
+        
+        RotationDegrees = RotationDegrees with { 
+            X = Mathf.Clamp((cameraPC.Y) * (float)delta * CameraSpeed + RotationDegrees.X, -95, 140),
+            Y = Mathf.Wrap((cameraPC.X) * (float)delta * CameraSpeed * (RotationDegrees.X > 90 ? -1 : 1) + RotationDegrees.Y, 0, 360)
+        };
         Velocity = velocity;
 		MoveAndSlide();
 	}

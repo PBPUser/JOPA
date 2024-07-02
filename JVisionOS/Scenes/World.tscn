@@ -37,9 +37,13 @@ Height = 1080
 
 [node name="UserInterface" parent="Window" instance=ExtResource("2_m26c6")]
 
-[node name="Camera3D" type="Camera3D" parent="."]
-transform = Transform3D(0.895727, 0, -0.444604, 0, 1, 0, 0.444604, 0, 0.895727, 0, 1.07419, 1.21817)
+[node name="Camera3D" type="Camera3D" parent="." node_paths=PackedStringArray("Raycast")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.71492, 1.21817)
 script = ExtResource("3_jsycu")
+Raycast = NodePath("RayCast3D")
+
+[node name="RayCast3D" type="RayCast3D" parent="Camera3D"]
+target_position = Vector3(0, 0, -1)
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_hll4h")
