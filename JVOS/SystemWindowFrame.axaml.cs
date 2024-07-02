@@ -87,8 +87,14 @@ namespace JVOS
             CloseButtonRect.PointerReleased += (a, b) => Close();
             RestoreButtonRect.PointerReleased += (a, b) => AnimateChangeWindowState();
             MinimizeButtonRect.PointerReleased += (a, b) => ToggleVisibilityState(false);
-            GodotButtonRect.PointerReleased += (a, b) => Communicator.OnWindowSwitching(this);
+            GodotButtonRect.PointerReleased += MoveWindowToGodotSpace;
             Loaded += (a, b) => PlayOpenAnimation();
+        }
+
+        private void MoveWindowToGodotSpace(object? sender, PointerReleasedEventArgs e)
+        {
+            this.TransformGroup.Children.Clear();
+            Communicator.OnWindowSwitching(this);
         }
 
         private void InitInactive()

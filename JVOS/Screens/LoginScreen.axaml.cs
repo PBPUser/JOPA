@@ -255,7 +255,7 @@ namespace JVOS.Screens
             window.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Top;
             window.Loaded += (a,b) => BringToFront(window);
         }
-
+            
         public void MinimizeWindow(WindowFrameBase window)
         {
 

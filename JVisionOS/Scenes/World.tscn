@@ -1,11 +1,15 @@
-[gd_scene load_steps=10 format=3 uid="uid://bvoba28uu4ume"]
+[gd_scene load_steps=14 format=3 uid="uid://bvoba28uu4ume"]
 
+[ext_resource type="Script" path="res://Scripts/UlanWorld.cs" id="1_8nbxk"]
 [ext_resource type="PackedScene" uid="uid://dart3pmwoqrsq" path="res://Prefabs/Window.tscn" id="1_qcni6"]
+[ext_resource type="PackedScene" uid="uid://cvx2lk7mloj1r" path="res://Prefabs/Player.tscn" id="1_u8445"]
 [ext_resource type="PackedScene" uid="uid://dec7pepdjadp" path="res://Prefabs/AvaloniaControl.tscn" id="2_m26c6"]
 [ext_resource type="Script" path="res://Scripts/CameraJV.cs" id="3_jsycu"]
 [ext_resource type="Texture2D" uid="uid://bkmh8cq8yx8gv" path="res://Assets/Street View 360.jpg" id="3_qg3ho"]
 [ext_resource type="PackedScene" uid="uid://b8y8ysrpl2v08" path="res://Scenes/XR.tscn" id="4_ppqqb"]
 [ext_resource type="Script" path="res://Scripts/UserInterface2D.cs" id="5_hmwti"]
+[ext_resource type="Script" path="res://Scripts/PlayerUI.cs" id="9_fe0px"]
+[ext_resource type="Texture2D" uid="uid://b4fv47qhagocb" path="res://Assets/cursoshair.png" id="10_v0wfc"]
 
 [sub_resource type="PanoramaSkyMaterial" id="PanoramaSkyMaterial_ytanv"]
 panorama = ExtResource("3_qg3ho")
@@ -22,12 +26,14 @@ ssil_enabled = true
 sdfgi_enabled = true
 
 [node name="World" type="Node3D"]
+script = ExtResource("1_8nbxk")
 
 [node name="Window" parent="." node_paths=PackedStringArray("Control") instance=ExtResource("1_qcni6")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.665457, -0.353067)
+Control = NodePath("UserInterface")
+Speed = 0.75
 Width = 1920
 Height = 1080
-Control = NodePath("UserInterface")
 
 [node name="UserInterface" parent="Window" instance=ExtResource("2_m26c6")]
 
@@ -39,6 +45,7 @@ script = ExtResource("3_jsycu")
 environment = SubResource("Environment_hll4h")
 
 [node name="XrHandler" parent="." instance=ExtResource("4_ppqqb")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0849895, -0.469103, -1.17735)
 
 [node name="UserInterface2D" type="Control" parent="."]
 layout_mode = 3
@@ -48,3 +55,31 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("5_hmwti")
+
+[node name="Player" parent="." instance=ExtResource("1_u8445")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.869743, -1.39008)
+
+[node name="PlayerUI" type="Control" parent="." node_paths=PackedStringArray("Crosshair")]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("9_fe0px")
+Crosshair = NodePath("CursosHair")
+
+[node name="CursosHair" type="TextureRect" parent="PlayerUI"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -20.0
+offset_top = -20.0
+offset_right = 20.0
+offset_bottom = 20.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("10_v0wfc")

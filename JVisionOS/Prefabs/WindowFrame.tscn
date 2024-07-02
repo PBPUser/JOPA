@@ -10,6 +10,7 @@ subViewport = NodePath("SubViewport")
 Quad = NodePath("MeshInstance3D")
 
 [node name="SubViewport" type="SubViewport" parent="."]
+transparent_bg = true
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="."]
 mesh = SubResource("QuadMesh_fets7")
