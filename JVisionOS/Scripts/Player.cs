@@ -11,7 +11,7 @@ public partial class Player : CharacterBody3D
 
 	public const float Speed = 5.0f;
 	public const float JumpVelocity = 4.5f;
-    public float CameraSpeed = 0.01f;
+    public float CameraSpeed = 1f;
 
     // Get the gravity from the project settings to be synced with RigidBody nodes.
     public float gravity = ProjectSettings.GetSetting("physics/3d/default_gravity").AsSingle();
@@ -36,7 +36,9 @@ public partial class Player : CharacterBody3D
     public override void _Input(InputEvent @event)
     {
         if (isMouseCaptured && @event is InputEventMouseMotion e)
-            cameraPC -= e.Relative;
+            cameraPC = -e.Relative;
+        else
+            cameraPC = Vector2.Zero;
         if (Input.IsActionJustPressed("toggle_mouse_capture"))
             ToggleMouseCapture();
 
@@ -92,6 +94,8 @@ public partial class Player : CharacterBody3D
             X = Mathf.Clamp((cameraPC.Y) * (float)delta * CameraSpeed + RotationDegrees.X, -95, 140),
             Y = Mathf.Wrap((cameraPC.X) * (float)delta * CameraSpeed * (RotationDegrees.X > 90 ? -1 : 1) + RotationDegrees.Y, 0, 360)
         };
+        CameraJV.Instance.Position = Position;
+        CameraJV.Instance.Rotation = Rotation;
         Velocity = velocity;
 		MoveAndSlide();
 	}

@@ -8,8 +8,6 @@
 script = ExtResource("1_vckse")
 subViewport = NodePath("SubViewport")
 Quad = NodePath("MeshInstance3D")
-Width = null
-Height = null
 
 [node name="SubViewport" type="SubViewport" parent="."]
 transparent_bg = true
