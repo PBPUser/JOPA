@@ -8,6 +8,8 @@ using JVOS.Views;
 using System.Diagnostics;
 using Avalonia.Controls;
 using JVOS.ApplicationAPI;
+using System.Drawing;
+using Avalonia.Media;
 
 public partial class UserInterface : JLeb.Estragonia.AvaloniaControl
 {

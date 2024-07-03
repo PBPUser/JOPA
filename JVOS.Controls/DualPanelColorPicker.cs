@@ -297,7 +297,6 @@ namespace JVOS.Controls
                 context.DrawEllipse(new SolidColorBrush(Color.Value), null, ARPickerPosition, PickerRadius, PickerRadius);
                 context.DrawEllipse(new SolidColorBrush(Color.Value), null, GBPickerPosition, PickerRadius, PickerRadius);
             }
-            Debug.WriteLine("Rendering...");
             base.Render(context);
         }
 

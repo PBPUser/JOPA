@@ -2,21 +2,15 @@ using Godot;
 using System;
 using System.Diagnostics;
 
-public partial class PlayerUI : Control
+public partial class WindowViewPort : SubViewport
 {
-	[Export]
-	public TextureRect Crosshair;
-
-	[Export]
-	public RichTextLabel Label;
-
-	public static PlayerUI Instance;
-
+	public WindowViewPort()
+	{
+        Debug.WriteLine("a new WindowViewPort created");
+    }
 	// Called when the node enters the scene tree for the first time.
 	public override void _Ready()
 	{
-		Instance = this;
-		Visible = false;
 	}
 
 	// Called every frame. 'delta' is the elapsed time since the previous frame.

@@ -13,6 +13,7 @@ public partial class Player : CharacterBody3D
 	public const float JumpVelocity = 4.5f;
     public float CameraSpeed = 0.01f;
 
+    static PackedScene packedSceneWindowFrame = GD.Load<PackedScene>("res://Prefabs/WindowFrame.tscn");
     // Get the gravity from the project settings to be synced with RigidBody nodes.
     public float gravity = ProjectSettings.GetSetting("physics/3d/default_gravity").AsSingle();
 
@@ -23,9 +24,12 @@ public partial class Player : CharacterBody3D
 
     private void Communicator_WindowSwitching(object? sender, JVOS.ApplicationAPI.Windows.WindowFrameBase e) {
         e.GetVisualParent<Grid>().Children.Remove(e);
-		var windowScene = GD.Load<PackedScene>("res://Prefabs/WindowFrame.tscn");
-		var window = windowScene.Instantiate<WindowFrame>();
+		var window = packedSceneWindowFrame.Instantiate<WindowFrame>(PackedScene.GenEditState.Instance);
         window.Position = new Vector3(0, 1, 0);
+		e.ActivateStateChanged += (a, b) => {
+			window.Activated = b;
+		};
+		
         UlanWorld.Ulan.AddChild(window);
         window.SetWindow(e);
     }

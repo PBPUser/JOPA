@@ -80,10 +80,6 @@ namespace JVOS
             }
             catch (Exception e)
             {
-                Debug.WriteLine(base64String);
-                Debug.WriteLine($"{e.Message}");
-                Debug.WriteLine($"{e.StackTrace}");
-                Debug.WriteLine($"{e.Source}");
                 return null;
             }
 
@@ -98,9 +94,6 @@ namespace JVOS
             }
             catch(Exception e)
             {
-                App.SendNotification($"{e.Message}");
-                App.SendNotification($"{e.StackTrace}");
-                App.SendNotification($"{e.Source}");
                 return null;
             }
 

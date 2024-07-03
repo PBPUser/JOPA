@@ -13,11 +13,6 @@ public partial class UlanWorld : Node3D
 	// Called every frame. 'delta' is the elapsed time since the previous frame.
 	public override void _Process(double delta)
 	{
-        if (Input.IsActionJustPressed("create_qube"))
-        {
-			var scene = GD.Load<PackedScene>("res://Prefabs/qube.tscn");
-			var qube = scene.Instantiate<RigidBody3D>();
-			this.AddChild(qube);
-        }
+        
     }
 }

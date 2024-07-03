@@ -25,6 +25,9 @@ namespace JVOS.ApplicationAPI.Windows
             request.Communicatior.AddWindow(this);
         }
 
+
+        public event EventHandler<bool> ActivateStateChanged;
+        bool isLoaded = false;
         private AppCommunicator? ApplicationCommunicator = null;
         public int ID { get; set; } = -1;
         public IWindowSpace WindowSpace;
@@ -83,11 +86,12 @@ namespace JVOS.ApplicationAPI.Windows
 
         public virtual void Activated()
         {
-
+            ActivateStateChanged?.Invoke(this, true);
         }
 
         public virtual void Deactivated()
         {
+            ActivateStateChanged?.Invoke(this, false);
             WindowContent.Deactivated();
         }
 
@@ -98,8 +102,11 @@ namespace JVOS.ApplicationAPI.Windows
 
         private void OnLoaded()
         {
+            if (isLoaded)
+                return;
             if(WindowLoaded != null)
                 WindowLoaded(this, EventArgs.Empty);
+            isLoaded = true;
         }
 
         public virtual string GetPanelId()

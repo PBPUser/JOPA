@@ -1,16 +1,26 @@
-[gd_scene load_steps=3 format=3 uid="uid://bb8qjnqxllvb6"]
+[gd_scene load_steps=6 format=3 uid="uid://bb8qjnqxllvb6"]
 
 [ext_resource type="Script" path="res://Scripts/WindowFrame.cs" id="1_vckse"]
+[ext_resource type="PackedScene" uid="uid://dtdd0tofaj27s" path="res://Prefabs/WindowFrameSubview.tscn" id="2_e5qk5"]
+[ext_resource type="Script" path="res://Scripts/WindowViewPort.cs" id="3_plr1s"]
 
 [sub_resource type="QuadMesh" id="QuadMesh_fets7"]
 
-[node name="WindowFrameHost" type="Node3D" node_paths=PackedStringArray("subViewport", "Quad")]
-script = ExtResource("1_vckse")
-subViewport = NodePath("SubViewport")
-Quad = NodePath("MeshInstance3D")
+[sub_resource type="BoxShape3D" id="BoxShape3D_hwb0i"]
 
-[node name="SubViewport" type="SubViewport" parent="."]
-transparent_bg = true
+[node name="WindowFrameHost" type="StaticBody3D" node_paths=PackedStringArray("Collision", "subViewport", "Quad")]
+script = ExtResource("1_vckse")
+Collision = NodePath("CollisionShape3D")
+subViewport = NodePath("WindowViewPort")
+Quad = NodePath("MeshInstance3D")
+Width = null
+Height = null
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="."]
 mesh = SubResource("QuadMesh_fets7")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+shape = SubResource("BoxShape3D_hwb0i")
+
+[node name="WindowViewPort" parent="." instance=ExtResource("2_e5qk5")]
+script = ExtResource("3_plr1s")

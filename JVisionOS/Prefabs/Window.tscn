@@ -1,15 +1,30 @@
-[gd_scene load_steps=3 format=3 uid="uid://dart3pmwoqrsq"]
+[gd_scene load_steps=5 format=3 uid="uid://dart3pmwoqrsq"]
 
 [ext_resource type="Script" path="res://Scripts/Window.cs" id="1_2j0am"]
 
 [sub_resource type="QuadMesh" id="QuadMesh_ivh78"]
 
-[node name="Window" type="Node3D" node_paths=PackedStringArray("subViewport", "Quad")]
+[sub_resource type="BoxShape3D" id="BoxShape3D_3rs7b"]
+
+[sub_resource type="BoxMesh" id="BoxMesh_d1j2e"]
+
+[node name="Window" type="StaticBody3D" node_paths=PackedStringArray("subViewport", "Quad", "Collision", "TestMesh")]
 script = ExtResource("1_2j0am")
 subViewport = NodePath("SubViewport")
 Quad = NodePath("MeshInstance3D")
+Collision = NodePath("CollisionShape3D")
+TestMesh = NodePath("MeshInstance3D2")
+Speed = null
+Width = null
+Height = null
 
 [node name="SubViewport" type="SubViewport" parent="."]
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="."]
 mesh = SubResource("QuadMesh_ivh78")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+shape = SubResource("BoxShape3D_3rs7b")
+
+[node name="MeshInstance3D2" type="MeshInstance3D" parent="."]
+mesh = SubResource("BoxMesh_d1j2e")

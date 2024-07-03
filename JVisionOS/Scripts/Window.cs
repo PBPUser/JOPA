@@ -1,13 +1,18 @@
+using Avalonia.Controls.Primitives;
 using Godot;
 using System;
 
-public partial class Window : Node3D {
+public partial class Window : StaticBody3D {
     [Export]
-    SubViewport subViewport;
+    public SubViewport subViewport;
     [Export]
     public Control Control;
     [Export]
     public MeshInstance3D Quad;
+    [Export]
+    public CollisionShape3D Collision;
+    [Export]
+    public MeshInstance3D TestMesh;
     [Export]
     public float Speed;
 
@@ -41,6 +46,8 @@ public partial class Window : Node3D {
         area.MouseEntered += MouseEnteredArea;
         Control.Reparent(subViewport);
 
+        TestMesh.Visible = false;
+
         CalculateSizes();
     }
 
@@ -55,6 +62,9 @@ public partial class Window : Node3D {
             UserInterface2D.Instance.Visible = !IsJVOSIn3DSpace;
             (IsJVOSIn3DSpace ? UserInterface2D.Instance.Grid : UserInterface.Instance.Grid).Children.Remove(UserInterface.Instance.MainView);
             (!IsJVOSIn3DSpace ? UserInterface2D.Instance.Grid : UserInterface.Instance.Grid).Children.Add(UserInterface.Instance.MainView);
+        }
+        if (Input.IsActionJustPressed("toggle_test_mesh")) {
+            TestMesh.Visible = !TestMesh.Visible;
         }
 
         base._Input(@event);
@@ -73,7 +83,8 @@ public partial class Window : Node3D {
         mesh.Size = new Vector2(subViewport.Size.X / 1024f, subViewport.Size.Y / 1024f);
 
         ((BoxShape3D)shape.Shape).Size = new Vector3(mesh.Size.X, mesh.Size.Y, .1f);
-        ((BoxShape3D)areaShape.Shape).Size = new Vector3(mesh.Size.X, mesh.Size.Y, .3f);
+        TestMesh.Scale = ((BoxShape3D)Collision.Shape).Size = ((BoxShape3D)areaShape.Shape).Size = new Vector3(mesh.Size.X, mesh.Size.Y, .1f);
+        
     }
 
     public override void _ExitTree() {

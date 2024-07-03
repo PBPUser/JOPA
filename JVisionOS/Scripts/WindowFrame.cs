@@ -4,15 +4,16 @@ using JVOS.ApplicationAPI.Windows;
 using System;
 using System.Reflection.Metadata;
 
-public partial class WindowFrame : Node3D
+public partial class WindowFrame : StaticBody3D
 {
     public WindowFrame()
     {
-        var scene = GD.Load<PackedScene>("res://Prefabs/WindowUI.tscn");
-        Interface = scene.Instantiate<WindowUI>();
-        Control = Interface;
+        
     }
 
+    public bool Activated = false;
+    [Export]
+    CollisionShape3D Collision;
     [Export]
     SubViewport subViewport;
     [Export]
@@ -55,8 +56,10 @@ public partial class WindowFrame : Node3D
         mesh.Size = new Vector2(subViewport.Size.X / 1024f, subViewport.Size.Y / 1024f);
 
         ((BoxShape3D)shape.Shape).Size = new Vector3(mesh.Size.X, mesh.Size.Y, .1f);
-        ((BoxShape3D)areaShape.Shape).Size = new Vector3(mesh.Size.X, mesh.Size.Y, .3f);
+        ((BoxShape3D)Collision.Shape).Size = ((BoxShape3D)areaShape.Shape).Size = new Vector3(mesh.Size.X, mesh.Size.Y, .1f);
     }
+
+    static PackedScene packagedSceneWindowUI = GD.Load<PackedScene>("res://Prefabs/WindowUI.tscn");
 
     CollisionShape3D shape = new() { Shape = new BoxShape3D() };
     CollisionShape3D areaShape = new() { Shape = new BoxShape3D() };
@@ -65,6 +68,13 @@ public partial class WindowFrame : Node3D
     // Called when the node enters the scene tree for the first time.
     public override void _Ready()
     {
+        Interface = packagedSceneWindowUI.Instantiate<WindowUI>(PackedScene.GenEditState.Instance);
+        Control = Interface;
+
+        //var sceneS = GD.Load<PackedScene>("res://Prefabs/WindowFrameSubview.tscn");
+        //subViewport = sceneS.Instantiate<SubViewport>();
+
+        AddChild(subViewport);
         area.AddChild(areaShape);
         subViewport.AddChild(Control);
         CalculateSizes();
@@ -73,9 +83,23 @@ public partial class WindowFrame : Node3D
 	// Called every frame. 'delta' is the elapsed time since the previous frame.
 	public override void _Process(double delta)
 	{
+        
 	}
 
-	public void SetWindow(WindowFrameBase window)
+    double prevSin = 0;
+    double pPos = 0;
+
+    public override void _PhysicsProcess(double delta)
+    {
+        var sin = Math.Sin(Time.GetTicksMsec() / 250d) * .2f;
+
+        pPos = GlobalPosition.X - prevSin;
+        GlobalPosition = new Vector3(GlobalPosition.X, (float)(pPos + sin), GlobalPosition.Z);
+
+        prevSin = sin;
+    }
+
+    public void SetWindow(WindowFrameBase window)
 	{
 		Interface.SetWindow(window);
         Width = (int)window.Bounds.Width;

@@ -6,7 +6,7 @@
 [ext_resource type="PackedScene" uid="uid://dec7pepdjadp" path="res://Prefabs/AvaloniaControl.tscn" id="2_m26c6"]
 [ext_resource type="Script" path="res://Scripts/CameraJV.cs" id="3_jsycu"]
 [ext_resource type="Script" path="res://Scripts/UserInterface2D.cs" id="5_hmwti"]
-[ext_resource type="Texture2D" uid="uid://clbbdvuitnm3j" path="res://Assets/Street View 360 (2).jpg" id="5_hy6bw"]
+[ext_resource type="Texture2D" uid="uid://d3jiy4dx02aji" path="res://Assets/Street View 360 (2).jpg" id="5_hy6bw"]
 [ext_resource type="Script" path="res://Scripts/PlayerUI.cs" id="9_fe0px"]
 [ext_resource type="Texture2D" uid="uid://b4fv47qhagocb" path="res://Assets/cursoshair.png" id="10_v0wfc"]
 
@@ -60,7 +60,7 @@ script = ExtResource("5_hmwti")
 [node name="Player" parent="." instance=ExtResource("1_u8445")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.869743, -1.39008)
 
-[node name="PlayerUI" type="Control" parent="." node_paths=PackedStringArray("Crosshair")]
+[node name="PlayerUI" type="Control" parent="." node_paths=PackedStringArray("Crosshair", "Label")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -69,6 +69,7 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("9_fe0px")
 Crosshair = NodePath("CursosHair")
+Label = NodePath("RichTextLabel")
 
 [node name="CursosHair" type="TextureRect" parent="PlayerUI"]
 layout_mode = 1
@@ -84,3 +85,11 @@ offset_bottom = 20.0
 grow_horizontal = 2
 grow_vertical = 2
 texture = ExtResource("10_v0wfc")
+
+[node name="RichTextLabel" type="RichTextLabel" parent="PlayerUI"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
